@@ -3,13 +3,16 @@ package org.ninehells.pipe9;
 import android.app.Activity;
 import android.os.Bundle;
 
+import org.ninehells.pipe9.View;
+
 public class Pipe9 extends Activity
 {
-    /** Called when the activity is first created. */
-    @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
-    }
+	@Override
+	public void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+
+		View view = new View(this);
+		setContentView(view);
+	}
 }
