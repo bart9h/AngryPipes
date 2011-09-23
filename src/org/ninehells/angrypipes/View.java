@@ -1,4 +1,4 @@
-package org.ninehells.pipe9;
+package org.ninehells.angrypipes;
 
 import android.content.Context;
 import android.graphics.Canvas;
