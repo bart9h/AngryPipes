@@ -26,7 +26,16 @@ class Board
 	public int height() { return m_height; }
 
 	public boolean right(int i, int j)  { return (m_pipes[i][j] & 1)==1; }
-	public boolean up   (int i, int j)  { return (m_pipes[i][j] & 2)==2; }
+	public boolean down (int i, int j)  { return (m_pipes[i][j] & 2)==2; }
 	public boolean left (int i, int j)  { return (m_pipes[i][j] & 4)==4; }
-	public boolean down (int i, int j)  { return (m_pipes[i][j] & 8)==8; }
+	public boolean up   (int i, int j)  { return (m_pipes[i][j] & 8)==8; }
+
+	public void rotate (int i, int j)
+	{
+		byte b = m_pipes[i][j];
+		b <<= 1;
+		if (b > 0xf)
+			b -= 0xf;
+		m_pipes[i][j] = b;
+	}
 }
