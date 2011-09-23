@@ -2,6 +2,7 @@ TARGET=bin/AngryPipes-debug.apk
 
 SRCS=\
 	src/org/ninehells/angrypipes/AngryPipes.java \
+	src/org/ninehells/angrypipes/Board.java \
 	src/org/ninehells/angrypipes/View.java \
 
 $(TARGET): $(SRCS)
