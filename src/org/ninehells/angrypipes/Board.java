@@ -32,6 +32,9 @@ class Board
 
 	public void rotate (int i, int j)
 	{
+		if (i < 0 || i >= m_width || j < 0 || j >= m_height)
+			return;
+
 		byte b = m_pipes[i][j];
 		b <<= 1;
 		if (b > 0xf)
