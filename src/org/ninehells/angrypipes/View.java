@@ -13,8 +13,8 @@ class View extends SurfaceView
 {
 	public Board board;
 
-	private int segmentSize = 12;
-	private int border = 2;
+	private int segmentSize = 15;
+	private int border = 1;
 	private int cellSize = 2*border+2*segmentSize;
 	private int iDown = -1, jDown = -1;
 
@@ -26,26 +26,43 @@ class View extends SurfaceView
 		setWillNotDraw(false);
 	}
 
+	public void drawSegment(int x, int y, int x1, int y1, Canvas canvas, Paint paint)
+	{
+		canvas.drawLine(x, y, x1, y1, paint);
+		paint.setARGB(0xff, 0xa0, 0xa0, 0xa0);
+		if (x == x1) {
+			int d = y<y1 ? -1 : 1;
+			canvas.drawLine(x-1, y, x-1, y1+d, paint);
+			canvas.drawLine(x+1, y, x+1, y1+d, paint);
+		}
+		else if (y == y1) {
+			int d = x<x1 ? -1 : 1;
+			canvas.drawLine(x, y-1, x1+d, y-1, paint);
+			canvas.drawLine(x, y+1, x1+d, y+1, paint);
+		}
+	}
+
 	public void draw(Canvas canvas)
 	{
 		Paint paint = new Paint();
 		canvas.drawRGB(0, 0, 0);
 
-		paint.setARGB(0x60, 0x60, 0x60, 0x60);
+		paint.setARGB(0xff, 0x40, 0x40, 0x40);
 		for (int j = 0; j <= board.height(); ++j)
 			canvas.drawLine(0, j*cellSize, board.width()*cellSize, j*cellSize, paint);
 		for (int i = 0; i <= board.width();  ++i)
 			canvas.drawLine(i*cellSize, 0, i*cellSize, board.height()*cellSize, paint);
 
-		paint.setARGB(0xff, 0xff, 0xff, 0xff);
 		for (int j = 0; j < board.height(); ++j)
 		for (int i = 0; i < board.width();  ++i) {
 			int x = i*cellSize+border+segmentSize;
 			int y = j*cellSize+border+segmentSize;
-			if (board.right(i,j)) canvas.drawLine(x, y, x+segmentSize, y, paint);
-			if (board.up   (i,j)) canvas.drawLine(x, y, x, y-segmentSize, paint);
-			if (board.left (i,j)) canvas.drawLine(x, y, x-segmentSize, y, paint);
-			if (board.down (i,j)) canvas.drawLine(x, y, x, y+segmentSize, paint);
+			paint.setARGB(0xff, 0xff, 0xff, 0xff);
+			canvas.drawCircle(x, y, 3, paint);
+			if (board.right(i,j)) drawSegment(x, y, x+segmentSize, y, canvas, paint);
+			if (board.up   (i,j)) drawSegment(x, y, x, y-segmentSize, canvas, paint);
+			if (board.left (i,j)) drawSegment(x, y, x-segmentSize, y, canvas, paint);
+			if (board.down (i,j)) drawSegment(x, y, x, y+segmentSize, canvas, paint);
 		}
 	}
 
