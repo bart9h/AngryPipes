@@ -147,13 +147,13 @@ class Board
 		}
 
 		/* expand the border */
-		if (i < m_width-1 && m_pipes[i+1][j] == 0)
+		if (i < m_width -1 && m_pipes[i+1][j] == 0 && !isBorder(i+1, j))
 			m_border.add((i+1) | ((j+0)<<12));
-		if (j < m_height-1 && m_pipes[i][j+1] == 0)
+		if (j < m_height-1 && m_pipes[i][j+1] == 0 && !isBorder(i, j+1))
 			m_border.add((i+0) | ((j+1)<<12));
-		if (i > 0 && m_pipes[i-1][j] == 0)
+		if (i > 0 && m_pipes[i-1][j] == 0 && !isBorder(i-1, j))
 			m_border.add((i-1) | ((j+0)<<12));
-		if (j > 0 && m_pipes[i][j-1] == 0)
+		if (j > 0 && m_pipes[i][j-1] == 0 && !isBorder(i, j-1))
 			m_border.add((i+0) | ((j-1)<<12));
 		printBorda();
 
