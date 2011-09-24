@@ -1,0 +1,17 @@
+- persistence
+- detect end of game
+- pan and zoom
+- mark rotated cells
+- rotate both ways
+- preferences
+- better graphics
+- animation
+- show running time
+- record screen
+- auto-pan
+- expert mode (can't go back on a rotated cell)
+- sound/vibration
+- app icon
+- intro
+- ads...
+- profit!
