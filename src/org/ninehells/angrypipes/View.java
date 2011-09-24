@@ -46,7 +46,6 @@ class View extends SurfaceView
 			if (board.up   (i,j)) canvas.drawLine(x, y, x, y-segmentSize, paint);
 			if (board.left (i,j)) canvas.drawLine(x, y, x-segmentSize, y, paint);
 			if (board.down (i,j)) canvas.drawLine(x, y, x, y+segmentSize, paint);
-			if (board.isBorder(i,j)) canvas.drawCircle(x, y, border, paint);
 		}
 	}
 
@@ -62,10 +61,7 @@ class View extends SurfaceView
 		}
 		else if (event.getAction() == event.ACTION_UP) {
 			if (iDown == i && jDown == j) {
-				if (growing)
-					growing = board.grow();
-				else
-					board.rotate(i, j);
+				board.rotate(i, j);
 				invalidate();
 			}
 			iDown = -1;

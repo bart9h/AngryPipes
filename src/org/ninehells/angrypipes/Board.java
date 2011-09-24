@@ -19,7 +19,6 @@ class Board
 		m_rand = new Random();
 		m_border = new ArrayList<Integer>();
 		randomize();
-		//shuffle();
 	}
 
 	public int width()  { return m_width;  }
@@ -51,7 +50,8 @@ class Board
 	private void randomize()
 	{
 		seed();
-		//while (grow()) {}
+		while (grow()) {}
+		shuffle();
 	}
 
 	private void seed()
@@ -81,26 +81,10 @@ class Board
 			m_border.add((i+1) | ((j+1)<<12));
 			m_border.add((i+0) | ((j+1)<<12));
 		}
-		printBorda();
 	}
 
-	public void printBorda()
+	private boolean grow()
 	{
-		System.out.printf("border ");
-		for(int b = 0; b < m_border.size(); ++b) {
-			int e = m_border.get(b);
-			int i = e & 0xfff;
-			int j = e >> 12;
-			System.out.printf(" %d=(%d,%d)", b, i, j);
-		}
-		System.out.printf("\n");
-	}
-
-	public boolean grow()
-	{
-		System.out.println("====== grow ======");
-		printBorda();
-
 		if (m_border.isEmpty())
 			return false;
 
@@ -109,7 +93,6 @@ class Board
 		int e = m_border.remove(borderToRemove);
 		int i = e & 0xfff;
 		int j = e >> 12;
-		System.out.printf("borderToRemove=%s, e=%06x, i=%d, j=%d\n", borderToRemove, e, i, j);
 
 		/* which directions can we go? */
 		ArrayList<Integer> dirs = new ArrayList<Integer>();
@@ -121,15 +104,9 @@ class Board
 			dirs.add(2);
 		if (j > 0 && m_pipes[i][j-1] != 0)
 			dirs.add(3);
-		System.out.printf("dirs ");
-		for(int b = 0; b < dirs.size(); ++b) {
-			System.out.printf(" %d", dirs.get(b));
-		}
-		System.out.printf("\n");
 
 		/* choose a random direction */
 		int dir = dirs.get(m_rand.nextInt(dirs.size()));
-		System.out.printf("dir=%d\n", dir);
 
 		/* connect with cell in that direction */
 		if (dir == 0) {
@@ -158,7 +135,6 @@ class Board
 			m_border.add((i-1) | ((j+0)<<12));
 		if (j > 0 && m_pipes[i][j-1] == 0 && !isBorder(i, j-1))
 			m_border.add((i+0) | ((j-1)<<12));
-		printBorda();
 
 		return true;
 	}
@@ -171,7 +147,7 @@ class Board
 			rotate(i, j);
 	}
 
-	public boolean isBorder (int I, int J)
+	private boolean isBorder (int I, int J)
 	{
 		for (int b = 0; b < m_border.size(); ++b) {
 			int e = m_border.get(b);

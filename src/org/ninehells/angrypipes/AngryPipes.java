@@ -14,7 +14,7 @@ public class AngryPipes extends Activity
 		super.onCreate(savedInstanceState);
 
 		View view = new View(this);
-		view.board = new Board(5, 5);
+		view.board = new Board(10, 10);
 
 		setContentView(view);
 	}
