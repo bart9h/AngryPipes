@@ -8,6 +8,12 @@ SRCS=\
 $(TARGET): $(SRCS)
 	ant debug
 
-install: $(TARGET)
-	adb uninstall org.ninehells.angrypipes
-	adb install $(TARGET)
+install: install-emulator
+
+install-emulator: $(TARGET)
+	adb -e uninstall org.ninehells.angrypipes
+	adb -e install $(TARGET)
+
+install-device: $(TARGET)
+	adb -d uninstall org.ninehells.angrypipes
+	adb -d install $(TARGET)
