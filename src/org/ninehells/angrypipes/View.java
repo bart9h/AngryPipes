@@ -18,6 +18,8 @@ class View extends SurfaceView
 	private int cellSize = 2*border+2*segmentSize;
 	private int iDown = -1, jDown = -1;
 
+	private boolean growing = true;
+
 	public View(Context context)
 	{
 		super(context);
@@ -44,6 +46,7 @@ class View extends SurfaceView
 			if (board.up   (i,j)) canvas.drawLine(x, y, x, y-segmentSize, paint);
 			if (board.left (i,j)) canvas.drawLine(x, y, x-segmentSize, y, paint);
 			if (board.down (i,j)) canvas.drawLine(x, y, x, y+segmentSize, paint);
+			if (board.isBorder(i,j)) canvas.drawCircle(x, y, border, paint);
 		}
 	}
 
@@ -59,7 +62,10 @@ class View extends SurfaceView
 		}
 		else if (event.getAction() == event.ACTION_UP) {
 			if (iDown == i && jDown == j) {
-				board.rotate(i, j);
+				if (growing)
+					growing = board.grow();
+				else
+					board.rotate(i, j);
 				invalidate();
 			}
 			iDown = -1;
@@ -69,3 +75,5 @@ class View extends SurfaceView
 		return true;
 	}
 }
+
+// vim600:fdm=syntax:fdn=2:
