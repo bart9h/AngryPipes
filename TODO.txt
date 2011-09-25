@@ -1,4 +1,3 @@
-- detect end of game
 - pan and zoom
 - rotate both ways
 - preferences

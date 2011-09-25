@@ -36,6 +36,11 @@ class Board
 		if (i < 0 || i >= mWidth || j < 0 || j >= mHeight)
 			return;
 
+		if (mStartI == -1) {
+			mStartI = i;
+			mStartJ = j;
+		}
+
 		if (i != mLastRotatedI  ||  j != mLastRotatedJ) {
 			if (mLastRotatedI != -1)
 				mPipes[mLastRotatedI][mLastRotatedJ] |= FIXED;
@@ -46,12 +51,28 @@ class Board
 		doRotate(i, j);
 	}
 
+	public boolean checkFill()
+	{
+		if (mStartI == -1)
+			return false;
+
+		mFilledCount = 0;
+
+		byte mask = RIGHT|DOWN|LEFT|UP|FIXED;
+		for (int j = 0; j < mHeight; ++j)
+		for (int i = 0; i < mWidth;  ++i)
+			mPipes[i][j] &= mask;
+		fill(mStartI, mStartJ);
+
+		return (mFilledCount == mWidth*mHeight);
+	}
+
 	public int width()  { return mWidth;  }
 	public int height() { return mHeight; }
-	public boolean right(int i, int j)  { return (mPipes[i][j] & RIGHT)==RIGHT; }
-	public boolean down (int i, int j)  { return (mPipes[i][j] & DOWN )==DOWN ; }
-	public boolean left (int i, int j)  { return (mPipes[i][j] & LEFT )==LEFT ; }
-	public boolean up   (int i, int j)  { return (mPipes[i][j] & UP   )==UP   ; }
+	public boolean right(int i, int j)  { return (mPipes[i][j] & RIGHT)!=0; }
+	public boolean down (int i, int j)  { return (mPipes[i][j] & DOWN )!=0 ; }
+	public boolean left (int i, int j)  { return (mPipes[i][j] & LEFT )!=0 ; }
+	public boolean up   (int i, int j)  { return (mPipes[i][j] & UP   )!=0   ; }
 	public boolean fixed(int i, int j)  {
 		return ((mPipes[i][j] & FIXED)==FIXED)
 			|| (i==mLastRotatedI && j==mLastRotatedJ);
@@ -148,6 +169,26 @@ class Board
 			doRotate(i, j);
 	}
 
+	private void fill (int i, int j)
+	{
+		if ((mPipes[i][j] & FILLED)!=0)
+			return;
+
+		mPipes[i][j] |= FILLED;
+		++mFilledCount;
+
+		int w = mWidth-1;
+		int h = mHeight-1;
+		if ((mPipes[i][j] & RIGHT)!=0  &&  i<w  &&  (mPipes[i+1][j] & LEFT )!=0)
+			fill(i+1, j);
+		if ((mPipes[i][j] & DOWN )!=0  &&  j<h  &&  (mPipes[i][j+1] & UP   )!=0)
+			fill(i, j+1);
+		if ((mPipes[i][j] & LEFT )!=0  &&  i>0  &&  (mPipes[i-1][j] & RIGHT)!=0)
+			fill(i-1, j);
+		if ((mPipes[i][j] & UP   )!=0  &&  j>0  &&  (mPipes[i][j-1] & DOWN )!=0)
+			fill(i, j-1);
+	}
+
 	private void serialize(byte[] board)
 	{
 		if (board.length != mWidth*mHeight)
@@ -195,12 +236,15 @@ class Board
 	private byte[][] mPipes;
 	private int mWidth, mHeight;
 	private int mLastRotatedI = -1, mLastRotatedJ = -1;
+	private int mStartI = -1, mStartJ = -1;
+	private int mFilledCount = 0;
 
-	private final byte RIGHT = 0x01;
-	private final byte DOWN  = 0x02;
-	private final byte LEFT  = 0x04;
-	private final byte UP    = 0x08;
-	private final byte FIXED = 0x10;
+	private final byte RIGHT  = 0x01;
+	private final byte DOWN   = 0x02;
+	private final byte LEFT   = 0x04;
+	private final byte UP     = 0x08;
+	private final byte FIXED  = 0x10;
+	private final byte FILLED = 0x20;
 }
 
 // vim600:fdm=syntax:fdn=2:nu:
