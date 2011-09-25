@@ -15,6 +15,7 @@ class Board
 		m_width = width;
 		m_height = height;
 		m_pipes = new byte[width][height];
+		m_lastRotatedI = m_lastRotatedJ = -1;
 
 		if (board == null)
 			randomize();
@@ -125,7 +126,7 @@ class Board
 		for (int j = 0; j < m_height; ++j)
 		for (int i = 0; i < m_height; ++i)
 		for (int r = rand.nextInt(4); r > 0; --r)
-			rotate(i, j);
+			doRotate(i, j);
 	}
 
 	public int width()  { return m_width;  }
@@ -135,22 +136,52 @@ class Board
 	public boolean down (int i, int j)  { return (m_pipes[i][j] & DOWN )==DOWN ; }
 	public boolean left (int i, int j)  { return (m_pipes[i][j] & LEFT )==LEFT ; }
 	public boolean up   (int i, int j)  { return (m_pipes[i][j] & UP   )==UP   ; }
+	public boolean fixed(int i, int j)  {
+		return ((m_pipes[i][j] & FIXED)==FIXED)
+			|| (i==m_lastRotatedI && j==m_lastRotatedJ);
+	}
 
 	public void rotate (int i, int j)
 	{
 		if (i < 0 || i >= m_width || j < 0 || j >= m_height)
 			return;
 
+		if (i != m_lastRotatedI  ||  j != m_lastRotatedJ) {
+			if (m_lastRotatedI != -1)
+				m_pipes[m_lastRotatedI][m_lastRotatedJ] |= FIXED;
+			m_lastRotatedI = i;
+			m_lastRotatedJ = j;
+		}
+
+		doRotate(i, j);
+	}
+
+	private void doRotate (int i, int j)
+	{
 		byte b = m_pipes[i][j];
+
+		byte loMask = (RIGHT | DOWN | LEFT | UP);
+		byte hiMask = (FIXED);
+
+		/* save the higher bits, so they won't rotate */
+		byte hi = (byte)(b & hiMask);
+		b &= loMask;
+
+		/* rotate the lower bits */
 		b <<= 1;
-		if (b > 0xf)
-			b -= 0xf;
+		if (b >  loMask)
+			b -= loMask;
+
+		/* restore the higher bits */
+		b |= hi;
+
 		m_pipes[i][j] = b;
 	}
 
 
 	private byte[][] m_pipes;
 	private int m_width, m_height;
+	private int m_lastRotatedI, m_lastRotatedJ;
 
 	private final byte RIGHT = 0x01;
 	private final byte DOWN  = 0x02;

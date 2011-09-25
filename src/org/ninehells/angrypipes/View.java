@@ -29,7 +29,7 @@ class View extends SurfaceView
 	public void drawSegment(int x, int y, int x1, int y1, Canvas canvas, Paint paint)
 	{
 		canvas.drawLine(x, y, x1, y1, paint);
-		paint.setARGB(0xff, 0xa0, 0xa0, 0xa0);
+		paint.setAlpha(0x80);
 		if (x == x1) {
 			int d = y<y1 ? -1 : 1;
 			canvas.drawLine(x-1, y, x-1, y1+d, paint);
@@ -57,7 +57,7 @@ class View extends SurfaceView
 		for (int i = 0; i < board.width();  ++i) {
 			int x = i*cellSize+border+segmentSize;
 			int y = j*cellSize+border+segmentSize;
-			paint.setARGB(0xff, 0xff, 0xff, 0xff);
+			paint.setARGB(0xff, 0xff, 0xff, board.fixed(i,j)?0xa0:0xff);
 			canvas.drawCircle(x, y, 3, paint);
 			if (board.right(i,j)) drawSegment(x, y, x+segmentSize, y, canvas, paint);
 			if (board.up   (i,j)) drawSegment(x, y, x, y-segmentSize, canvas, paint);

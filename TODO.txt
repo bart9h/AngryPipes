@@ -1,7 +1,6 @@
 - persistence
 - detect end of game
 - pan and zoom
-- mark rotated cells
 - rotate both ways
 - preferences
 - better graphics
