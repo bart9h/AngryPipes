@@ -11,8 +11,6 @@ import org.ninehells.angrypipes.Board;
 
 class View extends SurfaceView
 {
-	public Board board;
-
 	public View(Context context)
 	{
 		super(context);
@@ -96,4 +94,4 @@ class View extends SurfaceView
 	private final int m_cellSize = 2*m_border+2*m_segmentSize;
 }
 
-// vim600:fdm=syntax:fdn=2:
+// vim600:fdm=syntax:fdn=2:nu:

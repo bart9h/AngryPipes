@@ -10,14 +10,14 @@ class Board
 	public Board (int width, int height, byte[] board)
 	{
 		if (width < 2 || height < 2 || width > 4000 || height > 4000)
-			throw new IllegalArgumentException("invalid board size");
+			throw new IllegalArgumentException("Invalid board dimensions.");
 
 		m_width = width;
 		m_height = height;
 		m_pipes = new byte[width][height];
 		m_lastRotatedI = m_lastRotatedJ = -1;
 
-		if (board == null)
+		if (board.length == 0)
 			randomize();
 		else
 			serialize(board);
@@ -151,6 +151,9 @@ class Board
 
 	private void serialize(byte[] board)
 	{
+		if (board.length != m_width*m_height)
+			throw new IllegalArgumentException("Invalid board string size.");
+
 		for (int j = 0; j < m_height; ++j)
 		for (int i = 0; i < m_width;  ++i)
 			m_pipes[i][j] = board[i+j*m_width];
@@ -201,4 +204,4 @@ class Board
 	private final byte FIXED = 0x10;
 }
 
-// vim600:fdm=syntax:fdn=2:
+// vim600:fdm=syntax:fdn=2:nu:
