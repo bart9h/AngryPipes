@@ -51,8 +51,8 @@ class Board
 		/* start with two cells connected */
 		int i0 = rand.nextInt(m_width-1);
 		int j0 = rand.nextInt(m_height);
-		m_pipes[i0][j0] = 1;
-		m_pipes[i0+1][j0] = 4;
+		m_pipes[i0][j0]   = RIGHT;
+		m_pipes[i0+1][j0] = LEFT;
 
 		/* initialize the border */
 		ArrayList<Integer> border = new ArrayList<Integer>();
@@ -79,35 +79,35 @@ class Board
 			int j = e >> 12;
 
 			/* which directions can we go? */
-			ArrayList<Integer> dirs = new ArrayList<Integer>();
-			if (i < m_width-1 && m_pipes[i+1][j] != 0)
-				dirs.add(0);
+			ArrayList<Byte> dirs = new ArrayList<Byte>();
+			if (i < m_width -1 && m_pipes[i+1][j] != 0)
+				dirs.add(RIGHT);
 			if (j < m_height-1 && m_pipes[i][j+1] != 0)
-				dirs.add(1);
+				dirs.add(DOWN);
 			if (i > 0 && m_pipes[i-1][j] != 0)
-				dirs.add(2);
+				dirs.add(LEFT);
 			if (j > 0 && m_pipes[i][j-1] != 0)
-				dirs.add(3);
+				dirs.add(UP);
 
 			/* choose a random direction */
-			int dir = dirs.get(rand.nextInt(dirs.size()));
+			byte dir = dirs.get(rand.nextInt(dirs.size()));
 
 			/* connect with cell in that direction */
-			if (dir == 0) {
-				m_pipes[i][j] = 1;
-				m_pipes[i+1][j] |= 4;
+			if (dir == RIGHT) {
+				m_pipes[i][j] = RIGHT;
+				m_pipes[i+1][j] |= LEFT;
 			}
-			else if (dir == 1) {
-				m_pipes[i][j] = 2;
-				m_pipes[i][j+1] |= 8;
+			else if (dir == DOWN) {
+				m_pipes[i][j] = DOWN;
+				m_pipes[i][j+1] |= UP;
 			}
-			else if (dir == 2) {
-				m_pipes[i][j] = 4;
-				m_pipes[i-1][j] |= 1;
+			else if (dir == LEFT) {
+				m_pipes[i][j] = LEFT;
+				m_pipes[i-1][j] |= RIGHT;
 			}
-			else if (dir == 3) {
-				m_pipes[i][j] = 8;
-				m_pipes[i][j-1] |= 2;
+			else if (dir == UP) {
+				m_pipes[i][j] = UP;
+				m_pipes[i][j-1] |= DOWN;
 			}
 
 			/* expand the border */
@@ -131,10 +131,10 @@ class Board
 	public int width()  { return m_width;  }
 	public int height() { return m_height; }
 
-	public boolean right(int i, int j)  { return (m_pipes[i][j] & 1)==1; }
-	public boolean down (int i, int j)  { return (m_pipes[i][j] & 2)==2; }
-	public boolean left (int i, int j)  { return (m_pipes[i][j] & 4)==4; }
-	public boolean up   (int i, int j)  { return (m_pipes[i][j] & 8)==8; }
+	public boolean right(int i, int j)  { return (m_pipes[i][j] & RIGHT)==RIGHT; }
+	public boolean down (int i, int j)  { return (m_pipes[i][j] & DOWN )==DOWN ; }
+	public boolean left (int i, int j)  { return (m_pipes[i][j] & LEFT )==LEFT ; }
+	public boolean up   (int i, int j)  { return (m_pipes[i][j] & UP   )==UP   ; }
 
 	public void rotate (int i, int j)
 	{
@@ -151,6 +151,12 @@ class Board
 
 	private byte[][] m_pipes;
 	private int m_width, m_height;
+
+	private final byte RIGHT = 0x01;
+	private final byte DOWN  = 0x02;
+	private final byte LEFT  = 0x04;
+	private final byte UP    = 0x08;
+	private final byte FIXED = 0x10;
 
 	private boolean isBorder (ArrayList<Integer> border, int I, int J)
 	{
