@@ -43,3 +43,5 @@ public class AngryPipes extends Activity
 		state.putByteArray("board", m_board.serialize());
 	}
 }
+
+// vim600:fdm=syntax:fdn=2:

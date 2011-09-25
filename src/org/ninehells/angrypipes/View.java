@@ -13,17 +13,62 @@ class View extends SurfaceView
 {
 	public Board board;
 
-	private int segmentSize = 15;
-	private int border = 1;
-	private int cellSize = 2*border+2*segmentSize;
-	private int iDown = -1, jDown = -1;
-
-	private boolean growing = true;
-
 	public View(Context context)
 	{
 		super(context);
 		setWillNotDraw(false);
+	}
+
+	public void setBoard (Board board)
+	{
+		m_board = board;
+		invalidate();
+	}
+
+	@Override
+	public boolean onTouchEvent(MotionEvent event)
+	{
+		int i = (int)event.getX()/m_cellSize;
+		int j = (int)event.getY()/m_cellSize;
+
+		if (event.getAction() == event.ACTION_DOWN) {
+			iDown = i;
+			jDown = j;
+		}
+		else if (event.getAction() == event.ACTION_UP) {
+			if (iDown == i && jDown == j) {
+				m_board.rotate(i, j);
+				invalidate();
+			}
+			iDown = -1;
+			jDown = -1;
+		}
+
+		return true;
+	}
+
+	public void draw(Canvas canvas)
+	{
+		Paint paint = new Paint();
+		canvas.drawRGB(0, 0, 0);
+
+		paint.setARGB(0xff, 0x40, 0x40, 0x40);
+		for (int j = 0; j <= m_board.height(); ++j)
+			canvas.drawLine(0, j*m_cellSize, m_board.width()*m_cellSize, j*m_cellSize, paint);
+		for (int i = 0; i <= m_board.width();  ++i)
+			canvas.drawLine(i*m_cellSize, 0, i*m_cellSize, m_board.height()*m_cellSize, paint);
+
+		for (int j = 0; j < m_board.height(); ++j)
+		for (int i = 0; i < m_board.width();  ++i) {
+			int x = i*m_cellSize+m_border+m_segmentSize;
+			int y = j*m_cellSize+m_border+m_segmentSize;
+			paint.setARGB(0xff, 0xff, 0xff, m_board.fixed(i,j)?0xa0:0xff);
+			canvas.drawCircle(x, y, 3, paint);
+			if (m_board.right(i,j)) drawSegment(x, y, x+m_segmentSize, y, canvas, paint);
+			if (m_board.up   (i,j)) drawSegment(x, y, x, y-m_segmentSize, canvas, paint);
+			if (m_board.left (i,j)) drawSegment(x, y, x-m_segmentSize, y, canvas, paint);
+			if (m_board.down (i,j)) drawSegment(x, y, x, y+m_segmentSize, canvas, paint);
+		}
 	}
 
 	public void drawSegment(int x, int y, int x1, int y1, Canvas canvas, Paint paint)
@@ -42,51 +87,13 @@ class View extends SurfaceView
 		}
 	}
 
-	public void draw(Canvas canvas)
-	{
-		Paint paint = new Paint();
-		canvas.drawRGB(0, 0, 0);
 
-		paint.setARGB(0xff, 0x40, 0x40, 0x40);
-		for (int j = 0; j <= board.height(); ++j)
-			canvas.drawLine(0, j*cellSize, board.width()*cellSize, j*cellSize, paint);
-		for (int i = 0; i <= board.width();  ++i)
-			canvas.drawLine(i*cellSize, 0, i*cellSize, board.height()*cellSize, paint);
+	private Board m_board = null;
+	private int iDown = -1, jDown = -1;
 
-		for (int j = 0; j < board.height(); ++j)
-		for (int i = 0; i < board.width();  ++i) {
-			int x = i*cellSize+border+segmentSize;
-			int y = j*cellSize+border+segmentSize;
-			paint.setARGB(0xff, 0xff, 0xff, board.fixed(i,j)?0xa0:0xff);
-			canvas.drawCircle(x, y, 3, paint);
-			if (board.right(i,j)) drawSegment(x, y, x+segmentSize, y, canvas, paint);
-			if (board.up   (i,j)) drawSegment(x, y, x, y-segmentSize, canvas, paint);
-			if (board.left (i,j)) drawSegment(x, y, x-segmentSize, y, canvas, paint);
-			if (board.down (i,j)) drawSegment(x, y, x, y+segmentSize, canvas, paint);
-		}
-	}
-
-	@Override
-	public boolean onTouchEvent(MotionEvent event)
-	{
-		int i = (int)event.getX()/cellSize;
-		int j = (int)event.getY()/cellSize;
-
-		if (event.getAction() == event.ACTION_DOWN) {
-			iDown = i;
-			jDown = j;
-		}
-		else if (event.getAction() == event.ACTION_UP) {
-			if (iDown == i && jDown == j) {
-				board.rotate(i, j);
-				invalidate();
-			}
-			iDown = -1;
-			jDown = -1;
-		}
-
-		return true;
-	}
+	private final int m_segmentSize = 15;
+	private final int m_border = 1;
+	private final int m_cellSize = 2*m_border+2*m_segmentSize;
 }
 
 // vim600:fdm=syntax:fdn=2:

@@ -23,13 +23,6 @@ class Board
 			serialize(board);
 	}
 
-	private void serialize(byte[] board)
-	{
-		for (int j = 0; j < m_height; ++j)
-		for (int i = 0; i < m_width;  ++i)
-			m_pipes[i][j] = board[i+j*m_width];
-	}
-
 	public byte[] serialize()
 	{
 		byte[] board = new byte[m_width*m_height];
@@ -39,7 +32,34 @@ class Board
 		return board;
 	}
 
-	void randomize()
+	public void rotate (int i, int j)
+	{
+		if (i < 0 || i >= m_width || j < 0 || j >= m_height)
+			return;
+
+		if (i != m_lastRotatedI  ||  j != m_lastRotatedJ) {
+			if (m_lastRotatedI != -1)
+				m_pipes[m_lastRotatedI][m_lastRotatedJ] |= FIXED;
+			m_lastRotatedI = i;
+			m_lastRotatedJ = j;
+		}
+
+		doRotate(i, j);
+	}
+
+	public int width()  { return m_width;  }
+	public int height() { return m_height; }
+	public boolean right(int i, int j)  { return (m_pipes[i][j] & RIGHT)==RIGHT; }
+	public boolean down (int i, int j)  { return (m_pipes[i][j] & DOWN )==DOWN ; }
+	public boolean left (int i, int j)  { return (m_pipes[i][j] & LEFT )==LEFT ; }
+	public boolean up   (int i, int j)  { return (m_pipes[i][j] & UP   )==UP   ; }
+	public boolean fixed(int i, int j)  {
+		return ((m_pipes[i][j] & FIXED)==FIXED)
+			|| (i==m_lastRotatedI && j==m_lastRotatedJ);
+	}
+
+
+	private void randomize()
 	{
 		Random rand = new Random();
 
@@ -129,31 +149,11 @@ class Board
 			doRotate(i, j);
 	}
 
-	public int width()  { return m_width;  }
-	public int height() { return m_height; }
-
-	public boolean right(int i, int j)  { return (m_pipes[i][j] & RIGHT)==RIGHT; }
-	public boolean down (int i, int j)  { return (m_pipes[i][j] & DOWN )==DOWN ; }
-	public boolean left (int i, int j)  { return (m_pipes[i][j] & LEFT )==LEFT ; }
-	public boolean up   (int i, int j)  { return (m_pipes[i][j] & UP   )==UP   ; }
-	public boolean fixed(int i, int j)  {
-		return ((m_pipes[i][j] & FIXED)==FIXED)
-			|| (i==m_lastRotatedI && j==m_lastRotatedJ);
-	}
-
-	public void rotate (int i, int j)
+	private void serialize(byte[] board)
 	{
-		if (i < 0 || i >= m_width || j < 0 || j >= m_height)
-			return;
-
-		if (i != m_lastRotatedI  ||  j != m_lastRotatedJ) {
-			if (m_lastRotatedI != -1)
-				m_pipes[m_lastRotatedI][m_lastRotatedJ] |= FIXED;
-			m_lastRotatedI = i;
-			m_lastRotatedJ = j;
-		}
-
-		doRotate(i, j);
+		for (int j = 0; j < m_height; ++j)
+		for (int i = 0; i < m_width;  ++i)
+			m_pipes[i][j] = board[i+j*m_width];
 	}
 
 	private void doRotate (int i, int j)
@@ -178,17 +178,6 @@ class Board
 		m_pipes[i][j] = b;
 	}
 
-
-	private byte[][] m_pipes;
-	private int m_width, m_height;
-	private int m_lastRotatedI, m_lastRotatedJ;
-
-	private final byte RIGHT = 0x01;
-	private final byte DOWN  = 0x02;
-	private final byte LEFT  = 0x04;
-	private final byte UP    = 0x08;
-	private final byte FIXED = 0x10;
-
 	private boolean isBorder (ArrayList<Integer> border, int I, int J)
 	{
 		for (int b = 0; b < border.size(); ++b) {
@@ -200,6 +189,16 @@ class Board
 		}
 		return false;
 	}
+
+	private byte[][] m_pipes;
+	private int m_width, m_height;
+	private int m_lastRotatedI, m_lastRotatedJ;
+
+	private final byte RIGHT = 0x01;
+	private final byte DOWN  = 0x02;
+	private final byte LEFT  = 0x04;
+	private final byte UP    = 0x08;
+	private final byte FIXED = 0x10;
 }
 
 // vim600:fdm=syntax:fdn=2:
