@@ -14,15 +14,15 @@ public class AngryPipes extends Activity
 	{
 		super.onCreate(state);
 
-		m_prefs = getPreferences(MODE_PRIVATE);
-		m_board = new Board(
-				m_prefs.getInt("width",  10),
-				m_prefs.getInt("height", 10),
-				m_prefs.getString("board", "").getBytes()
+		mPreferences = getPreferences(MODE_PRIVATE);
+		mBoard = new Board(
+				mPreferences.getInt("width",  10),
+				mPreferences.getInt("height", 10),
+				mPreferences.getString("board", "").getBytes()
 		);
 
 		View view = new View(this);
-		view.setBoard(m_board);
+		view.setBoard(mBoard);
 		setContentView(view);
 	}
 
@@ -31,15 +31,15 @@ public class AngryPipes extends Activity
 	{
 		super.onPause();
 
-		SharedPreferences.Editor ed = m_prefs.edit();
-		ed.putInt("width",  m_board.width());
-		ed.putInt("height", m_board.height());
-		ed.putString("board", new String(m_board.serialize()));
+		SharedPreferences.Editor ed = mPreferences.edit();
+		ed.putInt("width",  mBoard.width());
+		ed.putInt("height", mBoard.height());
+		ed.putString("board", new String(mBoard.serialize()));
 		ed.commit();
 	}
 
-	private Board m_board;
-	private SharedPreferences m_prefs;
+	private Board mBoard;
+	private SharedPreferences mPreferences;
 }
 
 // vim600:fdm=syntax:fdn=2:nu:

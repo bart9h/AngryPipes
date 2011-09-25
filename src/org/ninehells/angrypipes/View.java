@@ -19,15 +19,15 @@ class View extends SurfaceView
 
 	public void setBoard (Board board)
 	{
-		m_board = board;
+		mBoard = board;
 		invalidate();
 	}
 
 	@Override
 	public boolean onTouchEvent(MotionEvent event)
 	{
-		int i = (int)event.getX()/m_cellSize;
-		int j = (int)event.getY()/m_cellSize;
+		int i = (int)event.getX()/mCellSize;
+		int j = (int)event.getY()/mCellSize;
 
 		if (event.getAction() == event.ACTION_DOWN) {
 			iDown = i;
@@ -35,7 +35,7 @@ class View extends SurfaceView
 		}
 		else if (event.getAction() == event.ACTION_UP) {
 			if (iDown == i && jDown == j) {
-				m_board.rotate(i, j);
+				mBoard.rotate(i, j);
 				invalidate();
 			}
 			iDown = -1;
@@ -51,21 +51,21 @@ class View extends SurfaceView
 		canvas.drawRGB(0, 0, 0);
 
 		paint.setARGB(0xff, 0x40, 0x40, 0x40);
-		for (int j = 0; j <= m_board.height(); ++j)
-			canvas.drawLine(0, j*m_cellSize, m_board.width()*m_cellSize, j*m_cellSize, paint);
-		for (int i = 0; i <= m_board.width();  ++i)
-			canvas.drawLine(i*m_cellSize, 0, i*m_cellSize, m_board.height()*m_cellSize, paint);
+		for (int j = 0; j <= mBoard.height(); ++j)
+			canvas.drawLine(0, j*mCellSize, mBoard.width()*mCellSize, j*mCellSize, paint);
+		for (int i = 0; i <= mBoard.width();  ++i)
+			canvas.drawLine(i*mCellSize, 0, i*mCellSize, mBoard.height()*mCellSize, paint);
 
-		for (int j = 0; j < m_board.height(); ++j)
-		for (int i = 0; i < m_board.width();  ++i) {
-			int x = i*m_cellSize+m_border+m_segmentSize;
-			int y = j*m_cellSize+m_border+m_segmentSize;
-			paint.setARGB(0xff, 0xff, 0xff, m_board.fixed(i,j)?0xa0:0xff);
+		for (int j = 0; j < mBoard.height(); ++j)
+		for (int i = 0; i < mBoard.width();  ++i) {
+			int x = i*mCellSize+mBorder+mSegmentSize;
+			int y = j*mCellSize+mBorder+mSegmentSize;
+			paint.setARGB(0xff, 0xff, 0xff, mBoard.fixed(i,j)?0xa0:0xff);
 			canvas.drawCircle(x, y, 3, paint);
-			if (m_board.right(i,j)) drawSegment(x, y, x+m_segmentSize, y, canvas, paint);
-			if (m_board.up   (i,j)) drawSegment(x, y, x, y-m_segmentSize, canvas, paint);
-			if (m_board.left (i,j)) drawSegment(x, y, x-m_segmentSize, y, canvas, paint);
-			if (m_board.down (i,j)) drawSegment(x, y, x, y+m_segmentSize, canvas, paint);
+			if (mBoard.right(i,j)) drawSegment(x, y, x+mSegmentSize, y, canvas, paint);
+			if (mBoard.up   (i,j)) drawSegment(x, y, x, y-mSegmentSize, canvas, paint);
+			if (mBoard.left (i,j)) drawSegment(x, y, x-mSegmentSize, y, canvas, paint);
+			if (mBoard.down (i,j)) drawSegment(x, y, x, y+mSegmentSize, canvas, paint);
 		}
 	}
 
@@ -86,12 +86,12 @@ class View extends SurfaceView
 	}
 
 
-	private Board m_board = null;
+	private Board mBoard = null;
 	private int iDown = -1, jDown = -1;
 
-	private final int m_segmentSize = 15;
-	private final int m_border = 1;
-	private final int m_cellSize = 2*m_border+2*m_segmentSize;
+	private final int mSegmentSize = 15;
+	private final int mBorder = 1;
+	private final int mCellSize = 2*mBorder+2*mSegmentSize;
 }
 
 // vim600:fdm=syntax:fdn=2:nu:

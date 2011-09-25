@@ -12,10 +12,9 @@ class Board
 		if (width < 2 || height < 2 || width > 4000 || height > 4000)
 			throw new IllegalArgumentException("Invalid board dimensions.");
 
-		m_width = width;
-		m_height = height;
-		m_pipes = new byte[width][height];
-		m_lastRotatedI = m_lastRotatedJ = -1;
+		mWidth = width;
+		mHeight = height;
+		mPipes = new byte[width][height];
 
 		if (board.length == 0)
 			randomize();
@@ -25,37 +24,37 @@ class Board
 
 	public byte[] serialize()
 	{
-		byte[] board = new byte[m_width*m_height];
-		for (int j = 0; j < m_height; ++j)
-		for (int i = 0; i < m_width;  ++i)
-			board[i+j*m_width] = m_pipes[i][j];
+		byte[] board = new byte[mWidth*mHeight];
+		for (int j = 0; j < mHeight; ++j)
+		for (int i = 0; i < mWidth;  ++i)
+			board[i+j*mWidth] = mPipes[i][j];
 		return board;
 	}
 
 	public void rotate (int i, int j)
 	{
-		if (i < 0 || i >= m_width || j < 0 || j >= m_height)
+		if (i < 0 || i >= mWidth || j < 0 || j >= mHeight)
 			return;
 
-		if (i != m_lastRotatedI  ||  j != m_lastRotatedJ) {
-			if (m_lastRotatedI != -1)
-				m_pipes[m_lastRotatedI][m_lastRotatedJ] |= FIXED;
-			m_lastRotatedI = i;
-			m_lastRotatedJ = j;
+		if (i != mLastRotatedI  ||  j != mLastRotatedJ) {
+			if (mLastRotatedI != -1)
+				mPipes[mLastRotatedI][mLastRotatedJ] |= FIXED;
+			mLastRotatedI = i;
+			mLastRotatedJ = j;
 		}
 
 		doRotate(i, j);
 	}
 
-	public int width()  { return m_width;  }
-	public int height() { return m_height; }
-	public boolean right(int i, int j)  { return (m_pipes[i][j] & RIGHT)==RIGHT; }
-	public boolean down (int i, int j)  { return (m_pipes[i][j] & DOWN )==DOWN ; }
-	public boolean left (int i, int j)  { return (m_pipes[i][j] & LEFT )==LEFT ; }
-	public boolean up   (int i, int j)  { return (m_pipes[i][j] & UP   )==UP   ; }
+	public int width()  { return mWidth;  }
+	public int height() { return mHeight; }
+	public boolean right(int i, int j)  { return (mPipes[i][j] & RIGHT)==RIGHT; }
+	public boolean down (int i, int j)  { return (mPipes[i][j] & DOWN )==DOWN ; }
+	public boolean left (int i, int j)  { return (mPipes[i][j] & LEFT )==LEFT ; }
+	public boolean up   (int i, int j)  { return (mPipes[i][j] & UP   )==UP   ; }
 	public boolean fixed(int i, int j)  {
-		return ((m_pipes[i][j] & FIXED)==FIXED)
-			|| (i==m_lastRotatedI && j==m_lastRotatedJ);
+		return ((mPipes[i][j] & FIXED)==FIXED)
+			|| (i==mLastRotatedI && j==mLastRotatedJ);
 	}
 
 
@@ -64,16 +63,16 @@ class Board
 		Random rand = new Random();
 
 		/* fill board with zeros */
-		for (int j = 0; j < m_height; ++j)
-		for (int i = 0; i < m_width;  ++i)
-			m_pipes[i][j] = 0;
+		for (int j = 0; j < mHeight; ++j)
+		for (int i = 0; i < mWidth;  ++i)
+			mPipes[i][j] = 0;
 
 
 		/* start with two cells connected */
-		int i0 = rand.nextInt(m_width-1);
-		int j0 = rand.nextInt(m_height);
-		m_pipes[i0][j0]   = RIGHT;
-		m_pipes[i0+1][j0] = LEFT;
+		int i0 = rand.nextInt(mWidth-1);
+		int j0 = rand.nextInt(mHeight);
+		mPipes[i0][j0]   = RIGHT;
+		mPipes[i0+1][j0] = LEFT;
 
 		/* initialize the border */
 		ArrayList<Integer> border = new ArrayList<Integer>();
@@ -83,9 +82,9 @@ class Board
 			border.add((i0+0) | ((j0-1)<<12));
 			border.add((i0+1) | ((j0-1)<<12));
 		}
-		if (i0 < m_width-2)
+		if (i0 < mWidth-2)
 			border.add((i0+2) | ((j0+0)<<12));
-		if (j0 < m_height-1) {
+		if (j0 < mHeight-1) {
 			border.add((i0+1) | ((j0+1)<<12));
 			border.add((i0+0) | ((j0+1)<<12));
 		}
@@ -101,13 +100,13 @@ class Board
 
 			/* which directions can we go? */
 			ArrayList<Byte> dirs = new ArrayList<Byte>();
-			if (i < m_width -1 && m_pipes[i+1][j] != 0)
+			if (i < mWidth -1 && mPipes[i+1][j] != 0)
 				dirs.add(RIGHT);
-			if (j < m_height-1 && m_pipes[i][j+1] != 0)
+			if (j < mHeight-1 && mPipes[i][j+1] != 0)
 				dirs.add(DOWN);
-			if (i > 0 && m_pipes[i-1][j] != 0)
+			if (i > 0 && mPipes[i-1][j] != 0)
 				dirs.add(LEFT);
-			if (j > 0 && m_pipes[i][j-1] != 0)
+			if (j > 0 && mPipes[i][j-1] != 0)
 				dirs.add(UP);
 
 			/* choose a random direction */
@@ -115,53 +114,53 @@ class Board
 
 			/* connect with cell in that direction */
 			if (dir == RIGHT) {
-				m_pipes[i][j] = RIGHT;
-				m_pipes[i+1][j] |= LEFT;
+				mPipes[i][j] = RIGHT;
+				mPipes[i+1][j] |= LEFT;
 			}
 			else if (dir == DOWN) {
-				m_pipes[i][j] = DOWN;
-				m_pipes[i][j+1] |= UP;
+				mPipes[i][j] = DOWN;
+				mPipes[i][j+1] |= UP;
 			}
 			else if (dir == LEFT) {
-				m_pipes[i][j] = LEFT;
-				m_pipes[i-1][j] |= RIGHT;
+				mPipes[i][j] = LEFT;
+				mPipes[i-1][j] |= RIGHT;
 			}
 			else if (dir == UP) {
-				m_pipes[i][j] = UP;
-				m_pipes[i][j-1] |= DOWN;
+				mPipes[i][j] = UP;
+				mPipes[i][j-1] |= DOWN;
 			}
 
 			/* expand the border */
-			if (i < m_width -1 && m_pipes[i+1][j] == 0 && !isBorder(border, i+1, j))
+			if (i < mWidth -1 && mPipes[i+1][j] == 0 && !isBorder(border, i+1, j))
 				border.add((i+1) | ((j+0)<<12));
-			if (j < m_height-1 && m_pipes[i][j+1] == 0 && !isBorder(border, i, j+1))
+			if (j < mHeight-1 && mPipes[i][j+1] == 0 && !isBorder(border, i, j+1))
 				border.add((i+0) | ((j+1)<<12));
-			if (i > 0 && m_pipes[i-1][j] == 0 && !isBorder(border, i-1, j))
+			if (i > 0 && mPipes[i-1][j] == 0 && !isBorder(border, i-1, j))
 				border.add((i-1) | ((j+0)<<12));
-			if (j > 0 && m_pipes[i][j-1] == 0 && !isBorder(border, i, j-1))
+			if (j > 0 && mPipes[i][j-1] == 0 && !isBorder(border, i, j-1))
 				border.add((i+0) | ((j-1)<<12));
 		}
 
 		/* shuffle */
-		for (int j = 0; j < m_height; ++j)
-		for (int i = 0; i < m_height; ++i)
+		for (int j = 0; j < mHeight; ++j)
+		for (int i = 0; i < mHeight; ++i)
 		for (int r = rand.nextInt(4); r > 0; --r)
 			doRotate(i, j);
 	}
 
 	private void serialize(byte[] board)
 	{
-		if (board.length != m_width*m_height)
+		if (board.length != mWidth*mHeight)
 			throw new IllegalArgumentException("Invalid board string size.");
 
-		for (int j = 0; j < m_height; ++j)
-		for (int i = 0; i < m_width;  ++i)
-			m_pipes[i][j] = board[i+j*m_width];
+		for (int j = 0; j < mHeight; ++j)
+		for (int i = 0; i < mWidth;  ++i)
+			mPipes[i][j] = board[i+j*mWidth];
 	}
 
 	private void doRotate (int i, int j)
 	{
-		byte b = m_pipes[i][j];
+		byte b = mPipes[i][j];
 
 		byte loMask = (RIGHT | DOWN | LEFT | UP);
 		byte hiMask = (FIXED);
@@ -178,7 +177,7 @@ class Board
 		/* restore the higher bits */
 		b |= hi;
 
-		m_pipes[i][j] = b;
+		mPipes[i][j] = b;
 	}
 
 	private boolean isBorder (ArrayList<Integer> border, int I, int J)
@@ -193,9 +192,9 @@ class Board
 		return false;
 	}
 
-	private byte[][] m_pipes;
-	private int m_width, m_height;
-	private int m_lastRotatedI, m_lastRotatedJ;
+	private byte[][] mPipes;
+	private int mWidth, mHeight;
+	private int mLastRotatedI = -1, mLastRotatedJ = -1;
 
 	private final byte RIGHT = 0x01;
 	private final byte DOWN  = 0x02;
