@@ -7,7 +7,7 @@ import java.io.Console;
 
 class Board
 {
-	public Board(int width, int height)
+	public Board (int width, int height, byte[] board)
 	{
 		if (width < 2 || height < 2 || width > 4000 || height > 4000)
 			throw new IllegalArgumentException("invalid board size");
@@ -16,6 +16,30 @@ class Board
 		m_height = height;
 		m_pipes = new byte[width][height];
 
+		if (board == null)
+			randomize();
+		else
+			serialize(board);
+	}
+
+	private void serialize(byte[] board)
+	{
+		for (int j = 0; j < m_height; ++j)
+		for (int i = 0; i < m_width;  ++i)
+			m_pipes[i][j] = board[i+j*m_width];
+	}
+
+	public byte[] serialize()
+	{
+		byte[] board = new byte[m_width*m_height];
+		for (int j = 0; j < m_height; ++j)
+		for (int i = 0; i < m_width;  ++i)
+			board[i+j*m_width] = m_pipes[i][j];
+		return board;
+	}
+
+	void randomize()
+	{
 		Random rand = new Random();
 
 		/* fill board with zeros */
