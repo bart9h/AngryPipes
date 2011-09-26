@@ -35,8 +35,10 @@ class View extends SurfaceView
 		}
 		else if (event.getAction() == event.ACTION_UP) {
 			if (iDown == i && jDown == j) {
-				mBoard.rotate(i, j);
-				mFilled = mBoard.checkFill();
+				if (mBoard.isSolved())
+					mBoard.randomize();
+				else
+					mBoard.rotate(i, j);
 				invalidate();
 			}
 			iDown = -1;
@@ -61,7 +63,7 @@ class View extends SurfaceView
 		for (int i = 0; i < mBoard.width();  ++i) {
 			int x = i*mCellSize+mBorder+mSegmentSize;
 			int y = j*mCellSize+mBorder+mSegmentSize;
-			if (mFilled)
+			if (mBoard.isSolved())
 				paint.setARGB(0xff, 0x00, 0xff, 0x00);
 			else
 				paint.setARGB(0xff, 0xff, 0xff, mBoard.fixed(i,j)?0xa0:0xff);
@@ -92,7 +94,6 @@ class View extends SurfaceView
 
 	private Board mBoard = null;
 	private int iDown = -1, jDown = -1;
-	private boolean mFilled = false;
 
 	private final int mSegmentSize = 15;
 	private final int mBorder = 1;
