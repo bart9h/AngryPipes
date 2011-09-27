@@ -67,6 +67,10 @@ class Board
 
 	public void randomize()
 	{
+		mLastRotatedI = -1;
+		mLastRotatedJ = -1;
+		mSolvedFlagIsDirty = true;
+
 		Random rand = new Random();
 
 		/* fill board with zeros */
