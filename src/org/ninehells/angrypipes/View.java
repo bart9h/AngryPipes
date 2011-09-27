@@ -95,7 +95,7 @@ class View extends SurfaceView
 	private Board mBoard = null;
 	private int iDown = -1, jDown = -1;
 
-	private final int mSegmentSize = 15;
+	private final int mSegmentSize = 21;
 	private final int mBorder = 1;
 	private final int mCellSize = 2*mBorder+2*mSegmentSize;
 }

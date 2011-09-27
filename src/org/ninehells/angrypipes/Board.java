@@ -150,7 +150,7 @@ class Board
 
 		/* shuffle */
 		for (int j = 0; j < mHeight; ++j)
-		for (int i = 0; i < mHeight; ++i)
+		for (int i = 0; i < mWidth;  ++i)
 		for (int r = rand.nextInt(4); r > 0; --r)
 			doRotate(i, j);
 	}
