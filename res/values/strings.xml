@@ -1,4 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">AngryPipes</string>
+	<string name="app_name">
+		AngryPipes
+	</string>
+	<string name="intro">
+		The pipes are angry.\n\n
+		Someone bad has scrambled them,\n
+		and now they\'re all disconnected.\n\n
+		Connect them again to make them happy!\n\n\n
+	</string>
+	<string name="play">
+		PLAY
+	</string>
+	<string name="settings">
+		Settings
+	</string>
+	<string name="about">
+		About
+	</string>
 </resources>

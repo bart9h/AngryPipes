@@ -1,13 +1,15 @@
 package org.ninehells.angrypipes;
 
 import android.app.Activity;
-import android.content.SharedPreferences;
+import android.content.Intent;
 import android.os.Bundle;
-import android.widget.HorizontalScrollView;
-import android.widget.ScrollView;
+import android.view.Gravity;
+import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.Button;
+import android.widget.TextView;
 
-import org.ninehells.angrypipes.Board;
-import org.ninehells.angrypipes.View;
+import org.ninehells.angrypipes.Game;
 
 public class AngryPipes extends Activity
 {
@@ -16,37 +18,32 @@ public class AngryPipes extends Activity
 	{
 		super.onCreate(state);
 
-		mPreferences = getPreferences(MODE_PRIVATE);
-		mBoard = new Board(
-				mPreferences.getInt("width",  100),
-				mPreferences.getInt("height", 100),
-				mPreferences.getString("board", "").getBytes()
-		);
+		TextView text = new TextView(this);
+		text.setText(R.string.intro);
 
-		View view = new View(this);
-		view.setBoard(mBoard);
+		Button play = new Button(this);
+		play.setText(R.string.play);
+		play.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				startActivity(new Intent(AngryPipes.this, Game.class));
+			}
+		});
 
-		ScrollView verticalScroll = new ScrollView(this);
-		HorizontalScrollView horizontalScroll = new HorizontalScrollView(this);
-		horizontalScroll.addView(view);
-		verticalScroll.addView(horizontalScroll);
-		setContentView(verticalScroll);
+		Button settings = new Button(this);
+		settings.setText(R.string.settings);
+
+		Button about = new Button(this);
+		about.setText(R.string.about);
+
+		LinearLayout group = new LinearLayout(this);
+		group.setOrientation(LinearLayout.VERTICAL);
+		group.setGravity(Gravity.CENTER);
+		group.addView(text);
+		group.addView(play);
+		group.addView(settings);
+		group.addView(about);
+		setContentView(group);
 	}
-
-	@Override
-	public void onPause()
-	{
-		super.onPause();
-
-		SharedPreferences.Editor ed = mPreferences.edit();
-		ed.putInt("width",  mBoard.width());
-		ed.putInt("height", mBoard.height());
-		ed.putString("board", new String(mBoard.serialize()));
-		ed.commit();
-	}
-
-	private Board mBoard;
-	private SharedPreferences mPreferences;
 }
 
 // vim600:fdm=syntax:fdn=2:nu:
