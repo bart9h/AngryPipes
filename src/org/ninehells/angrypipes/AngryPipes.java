@@ -3,6 +3,8 @@ package org.ninehells.angrypipes;
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.widget.HorizontalScrollView;
+import android.widget.ScrollView;
 
 import org.ninehells.angrypipes.Board;
 import org.ninehells.angrypipes.View;
@@ -16,14 +18,19 @@ public class AngryPipes extends Activity
 
 		mPreferences = getPreferences(MODE_PRIVATE);
 		mBoard = new Board(
-				mPreferences.getInt("width",  7),
-				mPreferences.getInt("height", 11),
+				mPreferences.getInt("width",  15),
+				mPreferences.getInt("height", 20),
 				mPreferences.getString("board", "").getBytes()
 		);
 
 		View view = new View(this);
 		view.setBoard(mBoard);
-		setContentView(view);
+
+		ScrollView verticalScroll = new ScrollView(this);
+		HorizontalScrollView horizontalScroll = new HorizontalScrollView(this);
+		horizontalScroll.addView(view);
+		verticalScroll.addView(horizontalScroll);
+		setContentView(verticalScroll);
 	}
 
 	@Override

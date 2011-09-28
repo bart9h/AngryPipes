@@ -24,6 +24,15 @@ class View extends SurfaceView
 	}
 
 	@Override
+	public void onMeasure (int w, int h)
+	{
+		if (mBoard == null)
+			setMeasuredDimension(1, 1);
+		else
+			setMeasuredDimension(mBoard.width()*mCellSize, mBoard.height()*mCellSize);
+	}
+
+	@Override
 	public boolean onTouchEvent(MotionEvent event)
 	{
 		int i = (int)event.getX()/mCellSize;

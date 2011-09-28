@@ -1,4 +1,4 @@
-- pan and zoom
+- zoom
 - rotate both ways
 - preferences
 - better graphics
