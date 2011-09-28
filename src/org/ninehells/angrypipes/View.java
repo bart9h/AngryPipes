@@ -3,6 +3,7 @@ package org.ninehells.angrypipes;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.SurfaceView;
@@ -62,14 +63,20 @@ class View extends SurfaceView
 		Paint paint = new Paint();
 		canvas.drawRGB(0, 0, 0);
 
+		Rect r = canvas.getClipBounds();
+		int i0 = r.left  /mCellSize;
+		int j0 = r.top   /mCellSize;
+		int i1 = Math.min(r.right /mCellSize, mBoard.width() -1);
+		int j1 = Math.min(r.bottom/mCellSize, mBoard.height()-1);
+
 		paint.setARGB(0xff, 0x40, 0x40, 0x40);
-		for (int j = 0; j <= mBoard.height(); ++j)
+		for (int j = j0; j <= j1; ++j)
 			canvas.drawLine(0, j*mCellSize, mBoard.width()*mCellSize, j*mCellSize, paint);
-		for (int i = 0; i <= mBoard.width();  ++i)
+		for (int i = i0; i <= i1;  ++i)
 			canvas.drawLine(i*mCellSize, 0, i*mCellSize, mBoard.height()*mCellSize, paint);
 
-		for (int j = 0; j < mBoard.height(); ++j)
-		for (int i = 0; i < mBoard.width();  ++i) {
+		for (int j = j0; j <= j1; ++j)
+		for (int i = i0; i <= i1;  ++i) {
 			int x = i*mCellSize+mBorder+mSegmentSize;
 			int y = j*mCellSize+mBorder+mSegmentSize;
 			if (mBoard.isSolved())

@@ -18,8 +18,8 @@ public class AngryPipes extends Activity
 
 		mPreferences = getPreferences(MODE_PRIVATE);
 		mBoard = new Board(
-				mPreferences.getInt("width",  15),
-				mPreferences.getInt("height", 20),
+				mPreferences.getInt("width",  100),
+				mPreferences.getInt("height", 100),
 				mPreferences.getString("board", "").getBytes()
 		);
 
