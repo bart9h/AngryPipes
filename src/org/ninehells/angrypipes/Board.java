@@ -2,19 +2,20 @@ package org.ninehells.angrypipes;
 
 import java.util.ArrayList;
 import java.util.Random;
-
 import java.io.Console;
+
+import org.ninehells.angrypipes.Config;
 
 class Board
 {
-	public Board (int width, int height, byte[] board)
+	public Board (Config config, byte[] board)
 	{
-		if (width < 2 || height < 2 || width > 4000 || height > 4000)
-			throw new IllegalArgumentException("Invalid board dimensions.");
+		mConfig = config;
+		int w=mConfig.width, h=mConfig.height;
+		mPipes = new byte[w][h];
 
-		mWidth = width;
-		mHeight = height;
-		mPipes = new byte[width][height];
+		if (w < 2  ||  h < 2  ||  w > 4000  ||  h > 4000)
+			throw new IllegalArgumentException("Invalid board dimensions.");
 
 		if (board.length == 0)
 			randomize();
@@ -24,16 +25,17 @@ class Board
 
 	public byte[] serialize()
 	{
-		byte[] board = new byte[mWidth*mHeight];
-		for (int j = 0; j < mHeight; ++j)
-		for (int i = 0; i < mWidth;  ++i)
-			board[i+j*mWidth] = mPipes[i][j];
+		int w=mConfig.width, h=mConfig.height;
+		byte[] board = new byte[w*h];
+		for (int j = 0;  j < h;  ++j)
+		for (int i = 0;  i < w;  ++i)
+			board[i+j*w] = mPipes[i][j];
 		return board;
 	}
 
 	public void rotate (int i, int j)
 	{
-		if (i < 0 || i >= mWidth || j < 0 || j >= mHeight)
+		if (i < 0  ||  i >= mConfig.width  ||  j < 0  ||  j >= mConfig.height)
 			return;
 
 		if (i != mLastRotatedI  ||  j != mLastRotatedJ) {
@@ -48,18 +50,20 @@ class Board
 
 	public boolean isSolved()
 	{
+		int w=mConfig.width, h=mConfig.height;
+
 		if (mSolvedFlagIsDirty) {
 
 			mFilledCount = 0;
 
 			byte mask = RIGHT|DOWN|LEFT|UP|FIXED;
-			for (int j = 0; j < mHeight; ++j)
-				for (int i = 0; i < mWidth;  ++i)
-					mPipes[i][j] &= mask;
-			fill(mWidth>>1, mHeight>>1);
+			for (int j = 0;  j < h;  ++j)
+			for (int i = 0;  i < w;  ++i)
+				mPipes[i][j] &= mask;
+			fill(w>>1, h>>1);
 
 			mSolvedFlagIsDirty = false;
-			mSolvedFlag = (mFilledCount == mWidth*mHeight);
+			mSolvedFlag = (mFilledCount == w*h);
 		}
 
 		return mSolvedFlag;
@@ -67,6 +71,8 @@ class Board
 
 	public void randomize()
 	{
+		int w=mConfig.width, h=mConfig.height;
+
 		mLastRotatedI = -1;
 		mLastRotatedJ = -1;
 		mSolvedFlagIsDirty = true;
@@ -74,14 +80,14 @@ class Board
 		Random rand = new Random();
 
 		/* fill board with zeros */
-		for (int j = 0; j < mHeight; ++j)
-		for (int i = 0; i < mWidth;  ++i)
+		for (int j = 0;  j < h;  ++j)
+		for (int i = 0;  i < w;  ++i)
 			mPipes[i][j] = 0;
 
 
 		/* start with two cells connected */
-		int i0 = rand.nextInt(mWidth-1);
-		int j0 = rand.nextInt(mHeight);
+		int i0 = rand.nextInt(w-1);
+		int j0 = rand.nextInt(h);
 		mPipes[i0][j0]   = RIGHT;
 		mPipes[i0+1][j0] = LEFT;
 
@@ -93,9 +99,9 @@ class Board
 			border.add((i0+0) | ((j0-1)<<12));
 			border.add((i0+1) | ((j0-1)<<12));
 		}
-		if (i0 < mWidth-2)
+		if (i0 < w-2)
 			border.add((i0+2) | ((j0+0)<<12));
-		if (j0 < mHeight-1) {
+		if (j0 < h-1) {
 			border.add((i0+1) | ((j0+1)<<12));
 			border.add((i0+0) | ((j0+1)<<12));
 		}
@@ -111,9 +117,9 @@ class Board
 
 			/* which directions can we go? */
 			ArrayList<Byte> dirs = new ArrayList<Byte>();
-			if (i < mWidth -1 && mPipes[i+1][j] != 0)
+			if (i < w -1  &&  mPipes[i+1][j] != 0)
 				dirs.add(RIGHT);
-			if (j < mHeight-1 && mPipes[i][j+1] != 0)
+			if (j < h-1  &&  mPipes[i][j+1] != 0)
 				dirs.add(DOWN);
 			if (i > 0 && mPipes[i-1][j] != 0)
 				dirs.add(LEFT);
@@ -142,9 +148,9 @@ class Board
 			}
 
 			/* expand the border */
-			if (i < mWidth -1 && mPipes[i+1][j] == 0 && !isBorder(border, i+1, j))
+			if (i < w -1  &&  mPipes[i+1][j] == 0  &&  !isBorder(border, i+1, j))
 				border.add((i+1) | ((j+0)<<12));
-			if (j < mHeight-1 && mPipes[i][j+1] == 0 && !isBorder(border, i, j+1))
+			if (j < h-1  &&  mPipes[i][j+1] == 0  &&  !isBorder(border, i, j+1))
 				border.add((i+0) | ((j+1)<<12));
 			if (i > 0 && mPipes[i-1][j] == 0 && !isBorder(border, i-1, j))
 				border.add((i-1) | ((j+0)<<12));
@@ -153,14 +159,14 @@ class Board
 		}
 
 		/* shuffle */
-		for (int j = 0; j < mHeight; ++j)
-		for (int i = 0; i < mWidth;  ++i)
-		for (int r = rand.nextInt(4); r > 0; --r)
+		for (int j = 0;  j < h;  ++j)
+		for (int i = 0;  i < w;  ++i)
+		for (int r = rand.nextInt(4);  r > 0;  --r)
 			doRotate(i, j);
 	}
 
-	public int width()  { return mWidth;  }
-	public int height() { return mHeight; }
+	public int width()  { return mConfig.width;  }
+	public int height() { return mConfig.height; }
 	public boolean right(int i, int j)  { return (mPipes[i][j] & RIGHT)!=0; }
 	public boolean down (int i, int j)  { return (mPipes[i][j] & DOWN )!=0 ; }
 	public boolean left (int i, int j)  { return (mPipes[i][j] & LEFT )!=0 ; }
@@ -179,8 +185,8 @@ class Board
 		mPipes[i][j] |= FILLED;
 		++mFilledCount;
 
-		int w = mWidth-1;
-		int h = mHeight-1;
+		int w = mConfig.width -1;
+		int h = mConfig.height-1;
 		if ((mPipes[i][j] & RIGHT)!=0  &&  i<w  &&  (mPipes[i+1][j] & LEFT )!=0)
 			fill(i+1, j);
 		if ((mPipes[i][j] & DOWN )!=0  &&  j<h  &&  (mPipes[i][j+1] & UP   )!=0)
@@ -193,12 +199,14 @@ class Board
 
 	private void serialize(byte[] board)
 	{
-		if (board.length != mWidth*mHeight)
+		int w=mConfig.width, h=mConfig.height;
+
+		if (board.length != w*h)
 			throw new IllegalArgumentException("Invalid board string size.");
 
-		for (int j = 0; j < mHeight; ++j)
-		for (int i = 0; i < mWidth;  ++i)
-			mPipes[i][j] = board[i+j*mWidth];
+		for (int j = 0;  j < h;  ++j)
+		for (int i = 0;  i < w;  ++i)
+			mPipes[i][j] = board[i+j*w];
 	}
 
 	private void doRotate (int i, int j)
@@ -226,18 +234,18 @@ class Board
 
 	private boolean isBorder (ArrayList<Integer> border, int I, int J)
 	{
-		for (int b = 0; b < border.size(); ++b) {
+		for (int b = 0;  b < border.size();  ++b) {
 			int e = border.get(b);
 			int i = e & 0xfff;
 			int j = e >> 12;
-			if (i==I && j==J)
+			if (i == I  &&  j == J)
 				return true;
 		}
 		return false;
 	}
 
 	private byte[][] mPipes;
-	private int mWidth, mHeight;
+	private Config mConfig;
 	private int mLastRotatedI = -1, mLastRotatedJ = -1;
 	private int mFilledCount = 0;
 	private boolean mSolvedFlag = false;

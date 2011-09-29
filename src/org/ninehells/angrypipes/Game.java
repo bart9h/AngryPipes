@@ -17,11 +17,12 @@ public class Game extends Activity
 		super.onCreate(state);
 
 		SharedPreferences pref = getSharedPreferences(getString(R.string.app_name), MODE_PRIVATE);
-		mBoard = new Board(
-				pref.getInt("width",  20),
-				pref.getInt("height", 30),
-				pref.getString("board", "").getBytes()
-		);
+		String boardString = pref.getString("board", "");
+		Config cfg = new Config(this);
+		cfg.width  = pref.getInt("width",  cfg.width);
+		cfg.height = pref.getInt("height", cfg.height);
+
+		mBoard = new Board(cfg, boardString.getBytes());
 
 		View view = new View(this, mBoard);
 
