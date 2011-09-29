@@ -7,8 +7,11 @@
 	<integer name="small_width">7</integer>
 	<integer name="small_height">7</integer>
 
-	<integer name="medium_width">30</integer>
-	<integer name="medium_height">30</integer>
+	<integer name="medium_width">20</integer>
+	<integer name="medium_height">20</integer>
+
+	<integer name="big_width">50</integer>
+	<integer name="big_height">50</integer>
 
 	<integer name="max_width">100</integer>
 	<integer name="max_height">100</integer>

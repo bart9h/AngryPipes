@@ -40,15 +40,33 @@ public class Settings extends Activity
 		final RadioButton small   = new RadioButton(this);
 		final RadioButton medium  = new RadioButton(this);
 		final RadioButton big     = new RadioButton(this);
-		minimal.setText(R.string.minimal);
-		small  .setText(R.string.small);
-		medium .setText(R.string.medium);
-		big    .setText(R.string.big);
+		final RadioButton max     = new RadioButton(this);
+		minimal.setText(R.string.size_minimal);
+		small  .setText(R.string.size_small);
+		medium .setText(R.string.size_medium);
+		big    .setText(R.string.size_big);
+		max    .setText(R.string.size_max);
 		RadioGroup size = new RadioGroup(this);
 		size.addView(minimal);
 		size.addView(small);
 		size.addView(medium);
 		size.addView(big);
+		size.addView(max);
+		if (mConfig.width  == res.getInteger(R.integer.min_width) &&
+				mConfig.height == res.getInteger(R.integer.min_height))
+			size.check(minimal.getId());
+		else if (mConfig.width  == res.getInteger(R.integer.small_width) &&
+				mConfig.height == res.getInteger(R.integer.small_height))
+			size.check(small.getId());
+		else if (mConfig.width  == res.getInteger(R.integer.medium_width) &&
+				mConfig.height == res.getInteger(R.integer.medium_height))
+			size.check(medium.getId());
+		else if (mConfig.width  == res.getInteger(R.integer.big_width) &&
+				mConfig.height == res.getInteger(R.integer.big_height))
+			size.check(big.getId());
+		else if (mConfig.width  == res.getInteger(R.integer.max_width) &&
+				mConfig.height == res.getInteger(R.integer.max_height))
+			size.check(max.getId());
 		size.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
 			public void onCheckedChanged(RadioGroup group, int checkedId) {
 				if (checkedId == minimal.getId()) {
@@ -64,6 +82,10 @@ public class Settings extends Activity
 					mConfig.height = res.getInteger(R.integer.medium_height);
 				}
 				else if (checkedId == big.getId()) {
+					mConfig.width  = res.getInteger(R.integer.big_width);
+					mConfig.height = res.getInteger(R.integer.big_height);
+				}
+				else if (checkedId == max.getId()) {
 					mConfig.width  = res.getInteger(R.integer.max_width);
 					mConfig.height = res.getInteger(R.integer.max_height);
 				}

@@ -19,17 +19,20 @@
 		About
 	</string>
 
-	<string name="minimal">
+	<string name="size_minimal">
 		minimal
 	</string>
-	<string name="small">
+	<string name="size_small">
 		small
 	</string>
-	<string name="medium">
+	<string name="size_medium">
 		medium
 	</string>
-	<string name="big">
+	<string name="size_big">
 		big
+	</string>
+	<string name="size_max">
+		insane
 	</string>
 
 </resources>
