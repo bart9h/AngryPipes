@@ -121,9 +121,9 @@ class Board
 				dirs.add(RIGHT);
 			if (j < h-1  &&  mPipes[i][j+1] != 0)
 				dirs.add(DOWN);
-			if (i > 0 && mPipes[i-1][j] != 0)
+			if (i > 0  &&  mPipes[i-1][j] != 0)
 				dirs.add(LEFT);
-			if (j > 0 && mPipes[i][j-1] != 0)
+			if (j > 0  &&  mPipes[i][j-1] != 0)
 				dirs.add(UP);
 
 			/* choose a random direction */
@@ -152,9 +152,9 @@ class Board
 				border.add((i+1) | ((j+0)<<12));
 			if (j < h-1  &&  mPipes[i][j+1] == 0  &&  !isBorder(border, i, j+1))
 				border.add((i+0) | ((j+1)<<12));
-			if (i > 0 && mPipes[i-1][j] == 0 && !isBorder(border, i-1, j))
+			if (i > 0  &&  mPipes[i-1][j] == 0  &&  !isBorder(border, i-1, j))
 				border.add((i-1) | ((j+0)<<12));
-			if (j > 0 && mPipes[i][j-1] == 0 && !isBorder(border, i, j-1))
+			if (j > 0  &&  mPipes[i][j-1] == 0  &&  !isBorder(border, i, j-1))
 				border.add((i+0) | ((j-1)<<12));
 		}
 
@@ -173,7 +173,7 @@ class Board
 	public boolean up   (int i, int j)  { return (mPipes[i][j] & UP   )!=0   ; }
 	public boolean fixed(int i, int j)  {
 		return ((mPipes[i][j] & FIXED)==FIXED)
-			|| (i==mLastRotatedI && j==mLastRotatedJ);
+			|| (i == mLastRotatedI  &&  j == mLastRotatedJ);
 	}
 
 

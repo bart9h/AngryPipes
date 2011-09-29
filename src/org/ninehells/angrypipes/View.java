@@ -30,7 +30,7 @@ class View extends SurfaceView
 	}
 
 	@Override
-	public boolean onTouchEvent(MotionEvent event)
+	public boolean onTouchEvent (MotionEvent event)
 	{
 		int i = (int)event.getX()/mCellSize;
 		int j = (int)event.getY()/mCellSize;
@@ -54,7 +54,7 @@ class View extends SurfaceView
 		return true;
 	}
 
-	public void draw(Canvas canvas)
+	public void draw (Canvas canvas)
 	{
 		Paint paint = new Paint();
 		canvas.drawRGB(0, 0, 0);
@@ -87,7 +87,7 @@ class View extends SurfaceView
 		}
 	}
 
-	public void drawSegment(int x, int y, int x1, int y1, Canvas canvas, Paint paint)
+	private void drawSegment (int x, int y, int x1, int y1, Canvas canvas, Paint paint)
 	{
 		canvas.drawLine(x, y, x1, y1, paint);
 		paint.setAlpha(0x80);

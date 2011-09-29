@@ -12,7 +12,7 @@ import org.ninehells.angrypipes.View;
 public class Game extends Activity
 {
 	@Override
-	public void onCreate(Bundle state)
+	public void onCreate (Bundle state)
 	{
 		super.onCreate(state);
 

@@ -14,7 +14,7 @@ import org.ninehells.angrypipes.Game;
 public class AngryPipes extends Activity
 {
 	@Override
-	public void onCreate(Bundle state)
+	public void onCreate (Bundle state)
 	{
 		super.onCreate(state);
 
