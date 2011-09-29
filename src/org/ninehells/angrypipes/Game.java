@@ -21,6 +21,7 @@ public class Game extends Activity
 		Config cfg = new Config(this);
 		cfg.width  = pref.getInt("width",  cfg.width);
 		cfg.height = pref.getInt("height", cfg.height);
+		cfg.torus_mode = pref.getBoolean("torus_mode", cfg.torus_mode);
 
 		mBoard = new Board(cfg, boardString.getBytes());
 
@@ -40,8 +41,10 @@ public class Game extends Activity
 
 		SharedPreferences pref = getSharedPreferences(getString(R.string.app_name), MODE_PRIVATE);
 		SharedPreferences.Editor ed = pref.edit();
-		ed.putInt("width",  mBoard.width());
-		ed.putInt("height", mBoard.height());
+		Config cfg = mBoard.config();
+		ed.putInt("width",  cfg.width);
+		ed.putInt("height", cfg.height);
+		ed.putBoolean("torus_mode", cfg.torus_mode);
 		ed.putString("board", new String(mBoard.serialize()));
 		ed.commit();
 	}

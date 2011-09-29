@@ -6,7 +6,6 @@
 - record screen
 - auto-pan
 - expert mode (can't go back on a rotated cell)
-- torus mode (no borders)
 - no 4-way pieces mode
 - sound/vibration
 - app icon

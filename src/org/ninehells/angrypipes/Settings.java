@@ -8,6 +8,8 @@ import android.content.res.Resources;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -30,10 +32,12 @@ public class Settings extends Activity
 		if (state != null) {
 			mConfig.width  = state.getInt("width",   mConfig.width);
 			mConfig.height = state.getInt("height",  mConfig.height);
+			mConfig.torus_mode  = state.getBoolean("torus_mode", mConfig.torus_mode);
 		}
 		else {
 			mConfig.width  = pref.getInt("width",   mConfig.width);
 			mConfig.height = pref.getInt("height",  mConfig.height);
+			mConfig.torus_mode  = pref.getBoolean("torus_mode", mConfig.torus_mode);
 		}
 
 		final RadioButton minimal = new RadioButton(this);
@@ -92,7 +96,13 @@ public class Settings extends Activity
 			}
 		});
 
-		//width.setMinValue(R.integer.min_width);
+		CheckBox torus = new CheckBox(this);
+		torus.setText(R.string.torus_mode);
+		torus.setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener() {
+			public void onCheckedChanged(CompoundButton box, boolean isChecked) {
+				mConfig.torus_mode = isChecked;
+			}
+		});
 
 		Button play = new Button(this);
 		play.setText(R.string.play);
@@ -106,6 +116,7 @@ public class Settings extends Activity
 		layout.setOrientation(LinearLayout.VERTICAL);
 		layout.setGravity(Gravity.CENTER);
 		layout.addView(size);
+		layout.addView(torus);
 		layout.addView(play);
 		setContentView(layout);
 	}
@@ -116,6 +127,7 @@ public class Settings extends Activity
 		SharedPreferences.Editor ed = pref.edit();
 		ed.putInt("width",  mConfig.width);
 		ed.putInt("height", mConfig.height);
+		ed.putBoolean("torus_mode", mConfig.torus_mode);
 		/*if*/ ed.putString("board", "");
 		ed.commit();
 
@@ -129,6 +141,7 @@ public class Settings extends Activity
 
 		state.putInt("width",  mConfig.width);
 		state.putInt("height", mConfig.height);
+		state.putBoolean("torus_mode", mConfig.torus_mode);
 	}
 
 	private Config mConfig;

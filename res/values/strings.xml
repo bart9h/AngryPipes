@@ -34,5 +34,8 @@
 	<string name="size_max">
 		insane
 	</string>
+	<string name="torus_mode">
+		torus mode (no border)
+	</string>
 
 </resources>
