@@ -16,11 +16,11 @@ public class Game extends Activity
 	{
 		super.onCreate(state);
 
-		mPreferences = getPreferences(MODE_PRIVATE);
+		SharedPreferences pref = getSharedPreferences(getString(R.string.app_name), MODE_PRIVATE);
 		mBoard = new Board(
-				mPreferences.getInt("width",  20),
-				mPreferences.getInt("height", 30),
-				mPreferences.getString("board", "").getBytes()
+				pref.getInt("width",  20),
+				pref.getInt("height", 30),
+				pref.getString("board", "").getBytes()
 		);
 
 		View view = new View(this, mBoard);
@@ -37,7 +37,8 @@ public class Game extends Activity
 	{
 		super.onPause();
 
-		SharedPreferences.Editor ed = mPreferences.edit();
+		SharedPreferences pref = getSharedPreferences(getString(R.string.app_name), MODE_PRIVATE);
+		SharedPreferences.Editor ed = pref.edit();
 		ed.putInt("width",  mBoard.width());
 		ed.putInt("height", mBoard.height());
 		ed.putString("board", new String(mBoard.serialize()));
@@ -45,7 +46,6 @@ public class Game extends Activity
 	}
 
 	private Board mBoard;
-	private SharedPreferences mPreferences;
 }
 
 // vim600:fdm=syntax:fdn=2:nu:
