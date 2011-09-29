@@ -18,4 +18,6 @@
 
 	<bool name="torus_mode">false</bool>
 
+	<bool name="no_cross_mode">false</bool>
+
 </resources>

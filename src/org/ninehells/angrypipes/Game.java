@@ -16,12 +16,13 @@ public class Game extends Activity
 	{
 		super.onCreate(state);
 
-		SharedPreferences pref = getSharedPreferences(getString(R.string.app_name), MODE_PRIVATE);
-		String boardString = pref.getString("board", "");
+		SharedPreferences prefs = getSharedPreferences(getString(R.string.app_name), MODE_PRIVATE);
+		String boardString = prefs.getString("board", "");
 		Config cfg = new Config(this);
-		cfg.width  = pref.getInt("width",  cfg.width);
-		cfg.height = pref.getInt("height", cfg.height);
-		cfg.torus_mode = pref.getBoolean("torus_mode", cfg.torus_mode);
+		cfg.width         = prefs.getInt    ("width",         cfg.width);
+		cfg.height        = prefs.getInt    ("height",        cfg.height);
+		cfg.torus_mode    = prefs.getBoolean("torus_mode",    cfg.torus_mode);
+		cfg.no_cross_mode = prefs.getBoolean("no_cross_mode", cfg.no_cross_mode);
 
 		mBoard = new Board(cfg, boardString.getBytes());
 
@@ -39,12 +40,13 @@ public class Game extends Activity
 	{
 		super.onPause();
 
-		SharedPreferences pref = getSharedPreferences(getString(R.string.app_name), MODE_PRIVATE);
-		SharedPreferences.Editor ed = pref.edit();
+		SharedPreferences prefs = getSharedPreferences(getString(R.string.app_name), MODE_PRIVATE);
+		SharedPreferences.Editor ed = prefs.edit();
 		Config cfg = mBoard.config();
-		ed.putInt("width",  cfg.width);
-		ed.putInt("height", cfg.height);
-		ed.putBoolean("torus_mode", cfg.torus_mode);
+		ed.putInt    ("width",         cfg.width);
+		ed.putInt    ("height",        cfg.height);
+		ed.putBoolean("torus_mode",    cfg.torus_mode);
+		ed.putBoolean("no_cross_mode", cfg.no_cross_mode);
 		ed.putString("board", new String(mBoard.serialize()));
 		ed.commit();
 	}

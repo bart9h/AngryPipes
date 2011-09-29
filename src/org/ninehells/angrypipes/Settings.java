@@ -28,16 +28,18 @@ public class Settings extends Activity
 		final Resources res = getResources();
 		mConfig = new Config(this);
 
-		SharedPreferences pref = getSharedPreferences(getString(R.string.app_name), MODE_PRIVATE);
+		SharedPreferences prefs = getSharedPreferences(getString(R.string.app_name), MODE_PRIVATE);
 		if (state != null) {
-			mConfig.width  = state.getInt("width",   mConfig.width);
-			mConfig.height = state.getInt("height",  mConfig.height);
-			mConfig.torus_mode  = state.getBoolean("torus_mode", mConfig.torus_mode);
+			mConfig.width         = state.getInt    ("width",         mConfig.width);
+			mConfig.height        = state.getInt    ("height",        mConfig.height);
+			mConfig.torus_mode    = state.getBoolean("torus_mode",    mConfig.torus_mode);
+			mConfig.no_cross_mode = state.getBoolean("no_cross_mode", mConfig.torus_mode);
 		}
 		else {
-			mConfig.width  = pref.getInt("width",   mConfig.width);
-			mConfig.height = pref.getInt("height",  mConfig.height);
-			mConfig.torus_mode  = pref.getBoolean("torus_mode", mConfig.torus_mode);
+			mConfig.width         = prefs.getInt    ("width",         mConfig.width);
+			mConfig.height        = prefs.getInt    ("height",        mConfig.height);
+			mConfig.torus_mode    = prefs.getBoolean("torus_mode",    mConfig.torus_mode);
+			mConfig.no_cross_mode = prefs.getBoolean("no_cross_mode", mConfig.torus_mode);
 		}
 
 		final RadioButton minimal = new RadioButton(this);
@@ -104,6 +106,14 @@ public class Settings extends Activity
 			}
 		});
 
+		CheckBox nocross = new CheckBox(this);
+		nocross.setText(R.string.no_cross_mode);
+		nocross.setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener() {
+			public void onCheckedChanged(CompoundButton box, boolean isChecked) {
+				mConfig.no_cross_mode = isChecked;
+			}
+		});
+
 		Button play = new Button(this);
 		play.setText(R.string.play);
 		play.setOnClickListener(new View.OnClickListener() {
@@ -117,17 +127,19 @@ public class Settings extends Activity
 		layout.setGravity(Gravity.CENTER);
 		layout.addView(size);
 		layout.addView(torus);
+		layout.addView(nocross);
 		layout.addView(play);
 		setContentView(layout);
 	}
 
 	private void saveAndRun()
 	{
-		SharedPreferences pref = getSharedPreferences("AngryPipes", MODE_PRIVATE);
-		SharedPreferences.Editor ed = pref.edit();
-		ed.putInt("width",  mConfig.width);
-		ed.putInt("height", mConfig.height);
-		ed.putBoolean("torus_mode", mConfig.torus_mode);
+		SharedPreferences prefs = getSharedPreferences("AngryPipes", MODE_PRIVATE);
+		SharedPreferences.Editor ed = prefs.edit();
+		ed.putInt    ("width",         mConfig.width);
+		ed.putInt    ("height",        mConfig.height);
+		ed.putBoolean("torus_mode",    mConfig.torus_mode);
+		ed.putBoolean("no_cross_mode", mConfig.no_cross_mode);
 		/*if*/ ed.putString("board", "");
 		ed.commit();
 
@@ -139,9 +151,10 @@ public class Settings extends Activity
 	{
 		super.onSaveInstanceState(state);
 
-		state.putInt("width",  mConfig.width);
-		state.putInt("height", mConfig.height);
-		state.putBoolean("torus_mode", mConfig.torus_mode);
+		state.putInt    ("width",         mConfig.width);
+		state.putInt    ("height",        mConfig.height);
+		state.putBoolean("torus_mode",    mConfig.torus_mode);
+		state.putBoolean("no_cross_mode", mConfig.no_cross_mode);
 	}
 
 	private Config mConfig;

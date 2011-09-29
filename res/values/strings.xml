@@ -37,5 +37,8 @@
 	<string name="torus_mode">
 		torus mode (no border)
 	</string>
+	<string name="no_cross_mode">
+		no cross pieces (harder)
+	</string>
 
 </resources>

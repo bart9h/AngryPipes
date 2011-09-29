@@ -107,14 +107,16 @@ class Board
 
 			/* which directions can we connect? */
 			ArrayList<Byte> dirs = new ArrayList<Byte>();
-			if (pipe(i+1,j) > 0)
-				dirs.add(RIGHT);
-			if (pipe(i,j+1) > 0)
-				dirs.add(DOWN);
-			if (pipe(i-1,j) > 0)
-				dirs.add(LEFT);
-			if (pipe(i,j-1) > 0)
-				dirs.add(UP);
+			boolean nc = mConfig.no_cross_mode;
+			int r=pipe(i+1,j), d=pipe(i,j+1), l=pipe(i-1,j), u=pipe(i,j-1);
+			if (r>0 && !(nc && (r&ALLDIRS)==(RIGHT|DOWN|UP  )))  dirs.add(RIGHT);
+			if (d>0 && !(nc && (d&ALLDIRS)==(RIGHT|DOWN|LEFT)))  dirs.add(DOWN);
+			if (l>0 && !(nc && (l&ALLDIRS)==(DOWN |LEFT|UP  )))  dirs.add(LEFT);
+			if (u>0 && !(nc && (u&ALLDIRS)==(RIGHT|LEFT|UP  )))  dirs.add(UP);
+
+			/* if the only possible dirs are T's, ignore */
+			if (dirs.size() == 0)
+				continue;
 
 			/* choose a random direction */
 			byte dir = dirs.get(rand.nextInt(dirs.size()));
@@ -284,6 +286,7 @@ class Board
 	private final byte UP     = 0x08;
 	private final byte FIXED  = 0x10;
 	private final byte FILLED = 0x20;
+	private final byte ALLDIRS = (RIGHT|DOWN|LEFT|UP);
 }
 
 // vim600:fdm=syntax:fdn=2:nu:
