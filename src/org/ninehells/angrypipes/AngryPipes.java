@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import org.ninehells.angrypipes.Game;
+import org.ninehells.angrypipes.Settings;
 
 public class AngryPipes extends Activity
 {
@@ -31,6 +32,11 @@ public class AngryPipes extends Activity
 
 		Button settings = new Button(this);
 		settings.setText(R.string.settings);
+		settings.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				startActivity(new Intent(AngryPipes.this, Settings.class));
+			}
+		});
 
 		Button about = new Button(this);
 		about.setText(R.string.about);

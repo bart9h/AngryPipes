@@ -6,6 +6,7 @@ SRCS=\
 	src/org/ninehells/angrypipes/Board.java \
 	src/org/ninehells/angrypipes/Config.java \
 	src/org/ninehells/angrypipes/Game.java \
+	src/org/ninehells/angrypipes/Settings.java \
 	src/org/ninehells/angrypipes/View.java \
 
 $(TARGET): $(SRCS)

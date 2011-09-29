@@ -1,6 +1,5 @@
 - zoom
 - rotate both ways
-- preferences
 - better graphics
 - animation
 - show running time
