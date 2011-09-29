@@ -23,8 +23,7 @@ public class Game extends Activity
 				mPreferences.getString("board", "").getBytes()
 		);
 
-		View view = new View(this);
-		view.setBoard(mBoard);
+		View view = new View(this, mBoard);
 
 		ScrollView verticalScroll = new ScrollView(this);
 		HorizontalScrollView horizontalScroll = new HorizontalScrollView(this);

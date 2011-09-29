@@ -12,25 +12,21 @@ import org.ninehells.angrypipes.Board;
 
 class View extends SurfaceView
 {
-	public View(Context context)
+	public View (Context context, Board board)
 	{
 		super(context);
-		setWillNotDraw(false);
-	}
 
-	public void setBoard (Board board)
-	{
 		mBoard = board;
-		invalidate();
+		setWillNotDraw(false);
 	}
 
 	@Override
 	public void onMeasure (int w, int h)
 	{
-		if (mBoard == null)
-			setMeasuredDimension(1, 1);
-		else
-			setMeasuredDimension(mBoard.width()*mCellSize, mBoard.height()*mCellSize);
+		setMeasuredDimension(
+				mCellSize*mBoard.width(),
+				mCellSize*mBoard.height()
+		);
 	}
 
 	@Override
