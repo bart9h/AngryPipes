@@ -3,9 +3,8 @@ package org.ninehells.angrypipes;
 import android.app.Activity;
 import android.os.Bundle;
 import android.content.SharedPreferences;
-import android.widget.HorizontalScrollView;
-import android.widget.ScrollView;
 
+import us.gorges.viewaclue.TwoDScrollView;
 import org.ninehells.angrypipes.Board;
 import org.ninehells.angrypipes.View;
 
@@ -28,11 +27,9 @@ public class Game extends Activity
 
 		View view = new View(this, mBoard);
 
-		ScrollView verticalScroll = new ScrollView(this);
-		HorizontalScrollView horizontalScroll = new HorizontalScrollView(this);
-		horizontalScroll.addView(view);
-		verticalScroll.addView(horizontalScroll);
-		setContentView(verticalScroll);
+		TwoDScrollView scroll = new TwoDScrollView(this);
+		scroll.addView(view);
+		setContentView(scroll);
 	}
 
 	@Override
