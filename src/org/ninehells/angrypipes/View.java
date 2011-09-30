@@ -23,17 +23,23 @@ class View extends SurfaceView
 	@Override
 	public void onMeasure (int w, int h)
 	{
+		int torus = mBoard.config().torus_mode ? 1 : 0;
 		setMeasuredDimension(
-				mCellSize*mBoard.width(),
-				mCellSize*mBoard.height()
+				mCellSize*(2*torus + mBoard.config().width),
+				mCellSize*(2*torus + mBoard.config().height)
 		);
 	}
 
 	@Override
 	public boolean onTouchEvent (MotionEvent event)
 	{
-		int i = (int)event.getX()/mCellSize;
-		int j = (int)event.getY()/mCellSize;
+		int torus = mBoard.config().torus_mode ? 1 : 0;
+		int i = -torus+ (int)event.getX()/mCellSize;
+		int j = -torus+ (int)event.getY()/mCellSize;
+		if (mBoard.config().torus_mode) {
+			i = (i + mBoard.config().width ) % mBoard.config().width;
+			j = (j + mBoard.config().height) % mBoard.config().height;
+		}
 
 		if (event.getAction() == event.ACTION_DOWN) {
 			iDown = i;
@@ -58,15 +64,19 @@ class View extends SurfaceView
 	{
 		int w = mBoard.config().width;
 		int h = mBoard.config().height;
+		int torus = mBoard.config().torus_mode ? 1 : 0;
 
 		Paint paint = new Paint();
 		canvas.drawRGB(0, 0, 0);
 
 		Rect r = canvas.getClipBounds();
-		int i0 = r.left  /mCellSize;
-		int j0 = r.top   /mCellSize;
-		int i1 = Math.min(r.right /mCellSize, w-1);
-		int j1 = Math.min(r.bottom/mCellSize, h-1);
+		int i0 = -torus+ r.left/mCellSize;
+		int j0 = -torus+ r.top /mCellSize;
+		int i1 = +torus+ Math.min(r.right /mCellSize, w-1);
+		int j1 = +torus+ Math.min(r.bottom/mCellSize, h-1);
+
+		w += 2*torus;
+		h += 2*torus;
 
 		paint.setARGB(0xff, 0x30, 0x30, 0x30);
 		for (int j = j0; j <= j1; ++j)
@@ -76,8 +86,8 @@ class View extends SurfaceView
 
 		for (int j = j0; j <= j1; ++j)
 		for (int i = i0; i <= i1; ++i) {
-			int x = i*mCellSize+mBorder+mSegmentSize;
-			int y = j*mCellSize+mBorder+mSegmentSize;
+			float x = (i+torus)*mCellSize+mBorder+mSegmentSize;
+			float y = (j+torus)*mCellSize+mBorder+mSegmentSize;
 			if (mBoard.isSolved())
 				paint.setARGB(0xff, 0x00, 0xff, 0x00);
 			else
@@ -87,10 +97,14 @@ class View extends SurfaceView
 			if (mBoard.up   (i,j)) drawSegment(x, y, x, y-mSegmentSize, canvas, paint);
 			if (mBoard.left (i,j)) drawSegment(x, y, x-mSegmentSize, y, canvas, paint);
 			if (mBoard.down (i,j)) drawSegment(x, y, x, y+mSegmentSize, canvas, paint);
+			if (i<0 || j<0 || i>=mBoard.config().width || j>=mBoard.config().height) {
+				paint.setARGB(0x40, 0x80, 0x80, 0x80);
+				canvas.drawRect(x-mSegmentSize, y-mSegmentSize, x+mSegmentSize, y+mSegmentSize, paint);
+			}
 		}
 	}
 
-	private void drawSegment (int x, int y, int x1, int y1, Canvas canvas, Paint paint)
+	private void drawSegment (float x, float y, float x1, float y1, Canvas canvas, Paint paint)
 	{
 		canvas.drawLine(x, y, x1, y1, paint);
 		paint.setAlpha(0x80);
