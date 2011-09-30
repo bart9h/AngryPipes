@@ -35,7 +35,10 @@ class Board
 
 	public void rotate (int i, int j)
 	{
-		if (i < 0  ||  i >= mConfig.width  ||  j < 0  ||  j >= mConfig.height)
+		if (i<0 || i>=mConfig.width || j<0 || j>=mConfig.height)
+			return;
+
+		if (mConfig.challenge_mode && (mPipes[i][j]&FIXED)!=0)
 			return;
 
 		if (mLastRotated==null || (i!=mLastRotated.i || j!=mLastRotated.j)) {
@@ -293,7 +296,8 @@ class Board
 	private final byte ALLDIRS = (RIGHT|DOWN|LEFT|UP);
 }
 
-class Position {
+class Position
+{
 	int i, j;
 }
 

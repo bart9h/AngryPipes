@@ -40,5 +40,8 @@
 	<string name="no_cross_mode">
 		no cross pieces (harder)
 	</string>
+	<string name="challenge_mode">
+		challenge mode (1 move per pipe)
+	</string>
 
 </resources>

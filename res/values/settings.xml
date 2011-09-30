@@ -17,7 +17,7 @@
 	<integer name="max_height">100</integer>
 
 	<bool name="torus_mode">false</bool>
-
 	<bool name="no_cross_mode">false</bool>
+	<bool name="challenge_mode">false</bool>
 
 </resources>

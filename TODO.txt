@@ -1,13 +1,17 @@
 - zoom
-- rotate both ways
-- better graphics
-- animation
 - show running time
+- rotate both ways
 - record screen
+- long press to unlock/lock
+- gameplay settings
+- dont auto-rotate (just move the cursor)
+- auto-lock
 - auto-pan
-- expert mode (can't go back on a rotated cell)
-- sound/vibration
+- undo
 - app icon
+- better graphics (bitmap?)
+- animation
+- sound/vibration
 - intro
 - ads...
 - profit!

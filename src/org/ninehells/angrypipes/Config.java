@@ -9,13 +9,15 @@ public class Config
 	int      height;
 	boolean  torus_mode;
 	boolean  no_cross_mode;
+	boolean  challenge_mode;
 
 	Config (Context context)
 	{
-		Resources res = context.getResources();
-		width         = res.getInteger(R.integer.medium_width);
-		height        = res.getInteger(R.integer.medium_height);
-		torus_mode    = res.getBoolean(R.bool   .torus_mode);
-		no_cross_mode = res.getBoolean(R.bool   .no_cross_mode);
+		Resources res  = context.getResources();
+		width          = res.getInteger(R.integer.medium_width);
+		height         = res.getInteger(R.integer.medium_height);
+		torus_mode     = res.getBoolean(R.bool   .torus_mode);
+		no_cross_mode  = res.getBoolean(R.bool   .no_cross_mode);
+		challenge_mode = res.getBoolean(R.bool   .challenge_mode);
 	}
 }
