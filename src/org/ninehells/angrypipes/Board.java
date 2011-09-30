@@ -38,11 +38,13 @@ class Board
 		if (i < 0  ||  i >= mConfig.width  ||  j < 0  ||  j >= mConfig.height)
 			return;
 
-		if (i != mLastRotatedI  ||  j != mLastRotatedJ) {
-			if (mLastRotatedI != -1)
-				mPipes[mLastRotatedI][mLastRotatedJ] |= FIXED;
-			mLastRotatedI = i;
-			mLastRotatedJ = j;
+		if (mLastRotated==null || (i!=mLastRotated.i || j!=mLastRotated.j)) {
+			if (mLastRotated==null)
+				mLastRotated = new Position();
+			else
+				mPipes[mLastRotated.i][mLastRotated.j] |= FIXED;
+			mLastRotated.i = i;
+			mLastRotated.j = j;
 		}
 
 		doRotate(i, j);
@@ -69,8 +71,7 @@ class Board
 
 	public void randomize()
 	{
-		mLastRotatedI = -1;
-		mLastRotatedJ = -1;
+		mLastRotated = null;
 		mSolvedFlagIsDirty = true;
 
 		Random rand = new Random();
@@ -158,9 +159,14 @@ class Board
 	public boolean down (int i, int j)  { return (pipe(i,j) & DOWN )!=0; }
 	public boolean left (int i, int j)  { return (pipe(i,j) & LEFT )!=0; }
 	public boolean up   (int i, int j)  { return (pipe(i,j) & UP   )!=0; }
-	public boolean fixed(int i, int j)  {
-		return ((pipe(i,j) & FIXED)==FIXED)
-			|| (i == mLastRotatedI  &&  j == mLastRotatedJ);
+	public boolean fixed(int i, int j)
+	{
+		if (mConfig.torus_mode) {
+			i = (i+W)%W;
+			j = (j+H)%H;
+		}
+		return ((mPipes[i][j] & FIXED)==FIXED)
+			|| (mLastRotated!=null && i==mLastRotated.i && j==mLastRotated.j);
 	}
 
 
@@ -272,7 +278,7 @@ class Board
 
 	private byte[][] mPipes;
 	private Config mConfig;
-	private int mLastRotatedI = -1, mLastRotatedJ = -1;
+	private Position mLastRotated;
 	private int mFilledCount = 0;
 	private boolean mSolvedFlag = false;
 	private boolean mSolvedFlagIsDirty = true;
@@ -285,6 +291,10 @@ class Board
 	private final byte FIXED  = 0x10;
 	private final byte FILLED = 0x20;
 	private final byte ALLDIRS = (RIGHT|DOWN|LEFT|UP);
+}
+
+class Position {
+	int i, j;
 }
 
 // vim600:fdm=syntax:fdn=2:nu:
