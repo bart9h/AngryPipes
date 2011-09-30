@@ -17,12 +17,7 @@ public class Game extends Activity
 
 		SharedPreferences prefs = getSharedPreferences(getString(R.string.app_name), MODE_PRIVATE);
 		String boardString = prefs.getString("board", "");
-		Config cfg = new Config(this);
-		cfg.width          = prefs.getInt    ("width",          cfg.width);
-		cfg.height         = prefs.getInt    ("height",         cfg.height);
-		cfg.torus_mode     = prefs.getBoolean("torus_mode",     cfg.torus_mode);
-		cfg.no_cross_mode  = prefs.getBoolean("no_cross_mode",  cfg.no_cross_mode);
-		cfg.challenge_mode = prefs.getBoolean("challenge_mode", cfg.challenge_mode);
+		Config cfg = new Config(this, state);
 
 		mBoard = new Board(cfg, boardString.getBytes());
 
@@ -38,16 +33,7 @@ public class Game extends Activity
 	{
 		super.onPause();
 
-		SharedPreferences prefs = getSharedPreferences(getString(R.string.app_name), MODE_PRIVATE);
-		SharedPreferences.Editor ed = prefs.edit();
-		Config cfg = mBoard.config();
-		ed.putInt    ("width",          cfg.width);
-		ed.putInt    ("height",         cfg.height);
-		ed.putBoolean("torus_mode",     cfg.torus_mode);
-		ed.putBoolean("no_cross_mode",  cfg.no_cross_mode);
-		ed.putBoolean("challenge_mode", cfg.challenge_mode);
-		ed.putString("board", new String(mBoard.serialize()));
-		ed.commit();
+		mBoard.config().save(this, new String(mBoard.serialize()));
 	}
 
 	private Board mBoard;

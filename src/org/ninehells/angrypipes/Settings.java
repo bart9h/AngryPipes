@@ -3,7 +3,6 @@ package org.ninehells.angrypipes;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.view.Gravity;
 import android.view.View;
@@ -26,23 +25,7 @@ public class Settings extends Activity
 		super.onCreate(state);
 
 		final Resources res = getResources();
-		mConfig = new Config(this);
-
-		SharedPreferences prefs = getSharedPreferences(getString(R.string.app_name), MODE_PRIVATE);
-		if (state != null) {
-			mConfig.width          = state.getInt    ("width",          mConfig.width);
-			mConfig.height         = state.getInt    ("height",         mConfig.height);
-			mConfig.torus_mode     = state.getBoolean("torus_mode",     mConfig.torus_mode);
-			mConfig.no_cross_mode  = state.getBoolean("no_cross_mode",  mConfig.no_cross_mode);
-			mConfig.challenge_mode = state.getBoolean("challenge_mode", mConfig.challenge_mode);
-		}
-		else {
-			mConfig.width          = prefs.getInt    ("width",          mConfig.width);
-			mConfig.height         = prefs.getInt    ("height",         mConfig.height);
-			mConfig.torus_mode     = prefs.getBoolean("torus_mode",     mConfig.torus_mode);
-			mConfig.no_cross_mode  = prefs.getBoolean("no_cross_mode",  mConfig.no_cross_mode);
-			mConfig.challenge_mode = prefs.getBoolean("challenge_mode", mConfig.challenge_mode);
-		}
+		mConfig = new Config(this, state);
 
 		final RadioButton minimal = new RadioButton(this);
 		final RadioButton small   = new RadioButton(this);
@@ -148,15 +131,7 @@ public class Settings extends Activity
 
 	private void saveAndRun()
 	{
-		SharedPreferences prefs = getSharedPreferences("AngryPipes", MODE_PRIVATE);
-		SharedPreferences.Editor ed = prefs.edit();
-		ed.putInt    ("width",          mConfig.width);
-		ed.putInt    ("height",         mConfig.height);
-		ed.putBoolean("torus_mode",     mConfig.torus_mode);
-		ed.putBoolean("no_cross_mode",  mConfig.no_cross_mode);
-		ed.putBoolean("challenge_mode", mConfig.challenge_mode);
-		/*if*/ ed.putString("board", "");
-		ed.commit();
+		mConfig.save(this, "");
 
 		startActivity(new Intent(Settings.this, Game.class));
 	}
@@ -166,11 +141,7 @@ public class Settings extends Activity
 	{
 		super.onSaveInstanceState(state);
 
-		state.putInt    ("width",          mConfig.width);
-		state.putInt    ("height",         mConfig.height);
-		state.putBoolean("torus_mode",     mConfig.torus_mode);
-		state.putBoolean("no_cross_mode",  mConfig.no_cross_mode);
-		state.putBoolean("challenge_mode", mConfig.challenge_mode);
+		mConfig.save(state, null);
 	}
 
 	private Config mConfig;
