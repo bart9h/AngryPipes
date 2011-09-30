@@ -33,7 +33,7 @@ public class Game extends Activity
 	{
 		super.onPause();
 
-		mBoard.config().save(this, new String(mBoard.serialize()));
+		mBoard.config().save(this, mBoard.isSolved() ? "" : new String(mBoard.serialize()));
 	}
 
 	private Board mBoard;

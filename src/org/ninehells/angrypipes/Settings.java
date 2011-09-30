@@ -111,7 +111,7 @@ public class Settings extends Activity
 		});
 
 		Button play = new Button(this);
-		play.setText(R.string.play);
+		play.setText(R.string.new_game);
 		play.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				saveAndRun();

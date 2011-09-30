@@ -9,11 +9,14 @@
 		and now they\'re all disconnected.\n\n
 		Connect them again to make them happy!\n\n\n
 	</string>
-	<string name="play">
-		PLAY
+	<string name="new_game">
+		Start new game
+	</string>
+	<string name="resume_game">
+		Resume current game
 	</string>
 	<string name="settings">
-		Settings
+		Game settings
 	</string>
 	<string name="about">
 		About

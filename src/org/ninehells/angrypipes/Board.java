@@ -33,13 +33,13 @@ class Board
 		return board;
 	}
 
-	public void rotate (int i, int j)
+	public boolean rotate (int i, int j)
 	{
 		if (i<0 || i>=mConfig.width || j<0 || j>=mConfig.height)
-			return;
+			return false;
 
 		if (mConfig.challenge_mode && (mPipes[i][j]&FIXED)!=0)
-			return;
+			return false;
 
 		if (mLastRotated==null || (i!=mLastRotated.i || j!=mLastRotated.j)) {
 			if (mLastRotated==null)
@@ -51,6 +51,7 @@ class Board
 		}
 
 		doRotate(i, j);
+		return true;
 	}
 
 	public boolean isSolved()

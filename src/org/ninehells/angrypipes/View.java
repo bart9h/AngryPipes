@@ -47,11 +47,8 @@ class View extends SurfaceView
 		}
 		else if (event.getAction() == event.ACTION_UP) {
 			if (iDown == i && jDown == j) {
-				if (mBoard.isSolved())
-					mBoard.randomize();
-				else
-					mBoard.rotate(i, j);
-				invalidate();
+				if (mBoard.rotate(i, j))
+					invalidate();
 			}
 			iDown = -1;
 			jDown = -1;

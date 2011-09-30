@@ -2,6 +2,7 @@ package org.ninehells.angrypipes;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
@@ -22,9 +23,24 @@ public class AngryPipes extends Activity
 		TextView text = new TextView(this);
 		text.setText(R.string.intro);
 
-		Button play = new Button(this);
-		play.setText(R.string.play);
-		play.setOnClickListener(new View.OnClickListener() {
+		mNewGameButton = new Button(this);
+		mNewGameButton.setText(R.string.new_game);
+		mNewGameButton.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				SharedPreferences prefs = getSharedPreferences(getString(R.string.app_name), MODE_PRIVATE);
+				boolean hasGame = (prefs.getString("board", "") != "");
+				if (hasGame) {
+					//TODO confirmation
+					Config cfg = new Config(AngryPipes.this, null);
+					cfg.save(AngryPipes.this, "");
+				}
+				startActivity(new Intent(AngryPipes.this, Game.class));
+			}
+		});
+
+		mResumeGameButton = new Button(this);
+		mResumeGameButton.setText(R.string.resume_game);
+		mResumeGameButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				startActivity(new Intent(AngryPipes.this, Game.class));
 			}
@@ -45,11 +61,25 @@ public class AngryPipes extends Activity
 		group.setOrientation(LinearLayout.VERTICAL);
 		group.setGravity(Gravity.CENTER);
 		group.addView(text);
-		group.addView(play);
+		group.addView(mResumeGameButton);
+		group.addView(mNewGameButton);
 		group.addView(settings);
 		group.addView(about);
 		setContentView(group);
 	}
+
+	@Override
+	public void onResume()
+	{
+		super.onResume();
+
+		SharedPreferences prefs = getSharedPreferences(getString(R.string.app_name), MODE_PRIVATE);
+		boolean hasGame = (prefs.getString("board", "") != "");
+		mResumeGameButton.setEnabled(hasGame);
+	}
+
+	Button mNewGameButton;
+	Button mResumeGameButton;
 }
 
 // vim600:fdm=syntax:fdn=2:nu:
