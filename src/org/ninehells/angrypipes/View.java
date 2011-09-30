@@ -56,29 +56,32 @@ class View extends SurfaceView
 
 	public void draw (Canvas canvas)
 	{
+		int w = mBoard.config().width;
+		int h = mBoard.config().height;
+
 		Paint paint = new Paint();
 		canvas.drawRGB(0, 0, 0);
 
 		Rect r = canvas.getClipBounds();
 		int i0 = r.left  /mCellSize;
 		int j0 = r.top   /mCellSize;
-		int i1 = Math.min(r.right /mCellSize, mBoard.width() -1);
-		int j1 = Math.min(r.bottom/mCellSize, mBoard.height()-1);
+		int i1 = Math.min(r.right /mCellSize, w-1);
+		int j1 = Math.min(r.bottom/mCellSize, h-1);
 
-		paint.setARGB(0xff, 0x40, 0x40, 0x40);
+		paint.setARGB(0xff, 0x30, 0x30, 0x30);
 		for (int j = j0; j <= j1; ++j)
-			canvas.drawLine(0, j*mCellSize, mBoard.width()*mCellSize, j*mCellSize, paint);
+			canvas.drawLine(0, j*mCellSize, w*mCellSize, j*mCellSize, paint);
 		for (int i = i0; i <= i1;  ++i)
-			canvas.drawLine(i*mCellSize, 0, i*mCellSize, mBoard.height()*mCellSize, paint);
+			canvas.drawLine(i*mCellSize, 0, i*mCellSize, h*mCellSize, paint);
 
 		for (int j = j0; j <= j1; ++j)
-		for (int i = i0; i <= i1;  ++i) {
+		for (int i = i0; i <= i1; ++i) {
 			int x = i*mCellSize+mBorder+mSegmentSize;
 			int y = j*mCellSize+mBorder+mSegmentSize;
 			if (mBoard.isSolved())
 				paint.setARGB(0xff, 0x00, 0xff, 0x00);
 			else
-				paint.setARGB(0xff, 0xff, 0xff, mBoard.fixed(i,j)?0xa0:0xff);
+				paint.setARGB(0xff, 0xff, 0xff, mBoard.fixed(i,j)?0x40:0xff);
 			canvas.drawCircle(x, y, 3, paint);
 			if (mBoard.right(i,j)) drawSegment(x, y, x+mSegmentSize, y, canvas, paint);
 			if (mBoard.up   (i,j)) drawSegment(x, y, x, y-mSegmentSize, canvas, paint);

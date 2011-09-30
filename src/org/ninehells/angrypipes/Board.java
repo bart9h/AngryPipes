@@ -154,14 +154,12 @@ class Board
 	}
 
 	public Config config() { return mConfig; }
-	public int width()  { return mConfig.width;  }
-	public int height() { return mConfig.height; }
-	public boolean right(int i, int j)  { return (mPipes[i][j] & RIGHT)!=0; }
-	public boolean down (int i, int j)  { return (mPipes[i][j] & DOWN )!=0; }
-	public boolean left (int i, int j)  { return (mPipes[i][j] & LEFT )!=0; }
-	public boolean up   (int i, int j)  { return (mPipes[i][j] & UP   )!=0; }
+	public boolean right(int i, int j)  { return (pipe(i,j) & RIGHT)!=0; }
+	public boolean down (int i, int j)  { return (pipe(i,j) & DOWN )!=0; }
+	public boolean left (int i, int j)  { return (pipe(i,j) & LEFT )!=0; }
+	public boolean up   (int i, int j)  { return (pipe(i,j) & UP   )!=0; }
 	public boolean fixed(int i, int j)  {
-		return ((mPipes[i][j] & FIXED)==FIXED)
+		return ((pipe(i,j) & FIXED)==FIXED)
 			|| (i == mLastRotatedI  &&  j == mLastRotatedJ);
 	}
 

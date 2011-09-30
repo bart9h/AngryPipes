@@ -58,19 +58,19 @@ public class Settings extends Activity
 		size.addView(medium);
 		size.addView(big);
 		size.addView(max);
-		if (mConfig.width  == res.getInteger(R.integer.min_width) &&
+		if (mConfig.width == res.getInteger(R.integer.min_width) &&
 				mConfig.height == res.getInteger(R.integer.min_height))
 			size.check(minimal.getId());
 		else if (mConfig.width  == res.getInteger(R.integer.small_width) &&
 				mConfig.height == res.getInteger(R.integer.small_height))
 			size.check(small.getId());
-		else if (mConfig.width  == res.getInteger(R.integer.medium_width) &&
+		else if (mConfig.width == res.getInteger(R.integer.medium_width) &&
 				mConfig.height == res.getInteger(R.integer.medium_height))
 			size.check(medium.getId());
-		else if (mConfig.width  == res.getInteger(R.integer.big_width) &&
+		else if (mConfig.width == res.getInteger(R.integer.big_width) &&
 				mConfig.height == res.getInteger(R.integer.big_height))
 			size.check(big.getId());
-		else if (mConfig.width  == res.getInteger(R.integer.max_width) &&
+		else if (mConfig.width == res.getInteger(R.integer.max_width) &&
 				mConfig.height == res.getInteger(R.integer.max_height))
 			size.check(max.getId());
 		size.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
