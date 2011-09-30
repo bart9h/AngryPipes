@@ -9,9 +9,7 @@ clean:
 install: install-emulator
 
 install-emulator: $(TARGET)
-	adb -e uninstall org.ninehells.angrypipes
-	adb -e install $(TARGET)
+	adb -e install -r $(TARGET)
 
 install-device: $(TARGET)
-	adb -d uninstall org.ninehells.angrypipes
-	adb -d install $(TARGET)
+	adb -d install -r $(TARGET)
