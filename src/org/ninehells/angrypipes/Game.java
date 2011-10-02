@@ -6,7 +6,7 @@ import android.content.SharedPreferences;
 
 import us.gorges.viewaclue.TwoDScrollView;
 import org.ninehells.angrypipes.Board;
-import org.ninehells.angrypipes.View;
+import org.ninehells.angrypipes.ViewBoard;
 
 public class Game extends Activity
 {
@@ -21,7 +21,7 @@ public class Game extends Activity
 
 		mBoard = new Board(cfg, boardString.getBytes());
 
-		View view = new View(this, mBoard);
+		ViewBoard view = new ViewBoard(this, mBoard);
 
 		TwoDScrollView scroll = new TwoDScrollView(this);
 		scroll.addView(view);

@@ -10,9 +10,9 @@ import android.view.SurfaceView;
 
 import org.ninehells.angrypipes.Board;
 
-class View extends SurfaceView
+class ViewBoard extends SurfaceView
 {
-	public View (Context context, Board board)
+	public ViewBoard (Context context, Board board)
 	{
 		super(context);
 
