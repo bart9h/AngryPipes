@@ -24,6 +24,11 @@ class Board
 			serialize(board);
 	}
 
+	void undo()
+	{
+		//TODO
+	}
+
 	public byte[] serialize()
 	{
 		byte[] board = new byte[W*H];

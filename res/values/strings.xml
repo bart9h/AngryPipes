@@ -22,6 +22,10 @@
 		About
 	</string>
 
+	<string name="undo">
+		undo
+	</string>
+
 	<string name="size_minimal">
 		minimal
 	</string>

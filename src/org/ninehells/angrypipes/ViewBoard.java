@@ -20,6 +20,16 @@ class ViewBoard extends SurfaceView
 		setWillNotDraw(false);
 	}
 
+	void zoomIn()
+	{
+		//TODO
+	}
+
+	void zoomOut()
+	{
+		//TODO
+	}
+
 	@Override
 	public void onMeasure (int w, int h)
 	{
