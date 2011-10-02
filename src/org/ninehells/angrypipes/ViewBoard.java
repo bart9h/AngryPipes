@@ -35,8 +35,8 @@ class ViewBoard extends SurfaceView
 	{
 		int torus = mBoard.config().torus_mode ? 1 : 0;
 		setMeasuredDimension(
-				mCellSize*(2*torus + mBoard.config().width),
-				mCellSize*(2*torus + mBoard.config().height)
+				2 + mCellSize*(2*torus + mBoard.config().width),
+				2 + mCellSize*(2*torus + mBoard.config().height)
 		);
 	}
 
@@ -57,8 +57,17 @@ class ViewBoard extends SurfaceView
 		}
 		else if (event.getAction() == event.ACTION_UP) {
 			if (iDown == i && jDown == j) {
-				if (mBoard.rotate(i, j))
-					invalidate();
+				int oldCursorI = -1;
+				int oldCursorJ = -1;
+				if (mBoard.cursor() != null) {
+					oldCursorI = mBoard.cursor().i;
+					oldCursorJ = mBoard.cursor().j;
+				}
+
+				mBoard.setCursor(i, j);
+				if (mAutoRotate || (oldCursorI == mBoard.cursor().i && oldCursorJ == mBoard.cursor().j))
+					mBoard.rotate();
+				invalidate();
 			}
 			iDown = -1;
 			jDown = -1;
@@ -93,20 +102,28 @@ class ViewBoard extends SurfaceView
 
 		for (int j = j0; j <= j1; ++j)
 		for (int i = i0; i <= i1; ++i) {
-			float x = (i+torus)*mCellSize+mBorder+mSegmentSize;
-			float y = (j+torus)*mCellSize+mBorder+mSegmentSize;
+			float x0 = (i+torus)*mCellSize+mBorder;
+			float y0 = (j+torus)*mCellSize+mBorder;
+			float xc = x0+mSegmentSize,  yc = y0+mSegmentSize;
+			float x1 = xc+mSegmentSize,  y1 = yc+mSegmentSize;
 			if (mBoard.isSolved())
 				paint.setARGB(0xff, 0x00, 0xff, 0x00);
 			else
 				paint.setARGB(0xff, 0xff, 0xff, mBoard.fixed(i,j)?0x40:0xff);
-			canvas.drawCircle(x, y, 3, paint);
-			if (mBoard.right(i,j)) drawSegment(x, y, x+mSegmentSize, y, canvas, paint);
-			if (mBoard.up   (i,j)) drawSegment(x, y, x, y-mSegmentSize, canvas, paint);
-			if (mBoard.left (i,j)) drawSegment(x, y, x-mSegmentSize, y, canvas, paint);
-			if (mBoard.down (i,j)) drawSegment(x, y, x, y+mSegmentSize, canvas, paint);
+			canvas.drawCircle(xc, yc, 3, paint);
+			if (mBoard.right(i,j)) drawSegment(xc, yc, x1, yc, canvas, paint);
+			if (mBoard.up   (i,j)) drawSegment(xc, yc, xc, y0, canvas, paint);
+			if (mBoard.left (i,j)) drawSegment(xc, yc, x0, yc, canvas, paint);
+			if (mBoard.down (i,j)) drawSegment(xc, yc, xc, y1, canvas, paint);
 			if (i<0 || j<0 || i>=mBoard.config().width || j>=mBoard.config().height) {
 				paint.setARGB(0x40, 0x80, 0x80, 0x80);
-				canvas.drawRect(x-mSegmentSize, y-mSegmentSize, x+mSegmentSize, y+mSegmentSize, paint);
+				canvas.drawRect(x0, y0, x1, y1, paint);
+			}
+			if (mBoard.cursor()!=null && i==mBoard.cursor().i && j==mBoard.cursor().j) {
+				paint.setStyle(Paint.Style.STROKE);
+				paint.setARGB(0xff, 0xff, 0x00, 0x00);
+				canvas.drawRect(x0+1, y0+1, x1-1, y1-1, paint);
+				paint.setStyle(Paint.Style.FILL);
 			}
 		}
 	}
@@ -130,6 +147,7 @@ class ViewBoard extends SurfaceView
 
 	private Board mBoard = null;
 	private int iDown = -1, jDown = -1;
+	private boolean mAutoRotate = true;
 
 	private final int mSegmentSize = 21;
 	private final int mBorder = 1;

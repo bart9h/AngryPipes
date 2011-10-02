@@ -24,11 +24,6 @@ class Board
 			serialize(board);
 	}
 
-	void undo()
-	{
-		//TODO
-	}
-
 	public byte[] serialize()
 	{
 		byte[] board = new byte[W*H];
@@ -38,25 +33,37 @@ class Board
 		return board;
 	}
 
-	public boolean rotate (int i, int j)
+	Position cursor() { return mCursor; }
+	void resetCursor() { mCursor = null; }
+	void setCursor (int i, int j)
 	{
-		if (i<0 || i>=mConfig.width || j<0 || j>=mConfig.height)
-			return false;
-
-		if (mConfig.challenge_mode && (mPipes[i][j]&FIXED)!=0)
-			return false;
-
-		if (mLastRotated==null || (i!=mLastRotated.i || j!=mLastRotated.j)) {
-			if (mLastRotated==null)
-				mLastRotated = new Position();
-			else
-				mPipes[mLastRotated.i][mLastRotated.j] |= FIXED;
-			mLastRotated.i = i;
-			mLastRotated.j = j;
+		if (i<0 || i>=mConfig.width || j<0 || j>=mConfig.height) {
+			resetCursor();
 		}
+		else {
+			if (mCursor == null)
+				mCursor = new Position();
+			mCursor.i = i;
+			mCursor.j = j;
+		}
+	}
 
-		doRotate(i, j);
-		return true;
+	public boolean rotate()
+	{
+		if (mCursor == null)
+			return false;
+		else if (mConfig.challenge_mode && (mPipes[mCursor.i][mCursor.j]&FIXED)!=0)
+			return false;
+		else {
+			mPipes[mCursor.i][mCursor.j] |= FIXED;
+			doRotate(mCursor.i, mCursor.j);
+			return true;
+		}
+	}
+
+	void undo()
+	{
+		//TODO
 	}
 
 	public boolean isSolved()
@@ -78,9 +85,8 @@ class Board
 		return mSolvedFlag;
 	}
 
-	public void randomize()
+	private void randomize()
 	{
-		mLastRotated = null;
 		mSolvedFlagIsDirty = true;
 
 		Random rand = new Random();
@@ -168,16 +174,7 @@ class Board
 	public boolean down (int i, int j)  { return (pipe(i,j) & DOWN )!=0; }
 	public boolean left (int i, int j)  { return (pipe(i,j) & LEFT )!=0; }
 	public boolean up   (int i, int j)  { return (pipe(i,j) & UP   )!=0; }
-	public boolean fixed(int i, int j)
-	{
-		if (mConfig.torus_mode) {
-			i = (i+W)%W;
-			j = (j+H)%H;
-		}
-		return ((mPipes[i][j] & FIXED)==FIXED)
-			|| (mLastRotated!=null && i==mLastRotated.i && j==mLastRotated.j);
-	}
-
+	public boolean fixed(int i, int j)  { return (pipe(i,j) & FIXED)!=0; }
 
 	private int pipe (int i, int j)
 	{
@@ -287,7 +284,7 @@ class Board
 
 	private byte[][] mPipes;
 	private Config mConfig;
-	private Position mLastRotated;
+	private Position mCursor;
 	private int mFilledCount = 0;
 	private boolean mSolvedFlag = false;
 	private boolean mSolvedFlagIsDirty = true;
