@@ -1,4 +1,3 @@
-- zoom
 - show running time
 - rotate both ways
 - record screen

@@ -1,7 +1,9 @@
 package org.ninehells.angrypipes;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.AttributeSet;
@@ -18,35 +20,49 @@ class ViewBoard extends SurfaceView
 		super(context);
 
 		mBoard = board;
+
+		Resources res  = context.getResources();
+		mZoomLevels = res.getIntArray(R.array.zoom_levels);
+		mZoomLevel = res.getInteger(R.integer.zoom_level);
+
 		setWillNotDraw(false);
 	}
 
 	void zoomIn()
 	{
-		//TODO
+		if (mZoomLevel+1 < mZoomLevels.length) {
+			++mZoomLevel;
+			requestLayout();
+		}
 	}
 
 	void zoomOut()
 	{
-		//TODO
+		//TODO: don't if board already fits
+		if (mZoomLevel > 0) {
+			--mZoomLevel;
+			requestLayout();
+		}
 	}
 
 	@Override
 	public void onMeasure (int w, int h)
 	{
 		int torus = mBoard.config().torus_mode ? 1 : 0;
+		double scale = (mZoomLevels[mZoomLevel]*1.0)/100.0;
 		setMeasuredDimension(
-				2 + mCellSize*(2*torus + mBoard.config().width),
-				2 + mCellSize*(2*torus + mBoard.config().height)
+				(int)(scale*(2 + mCellSize*(2*torus + mBoard.config().width))),
+				(int)(scale*(2 + mCellSize*(2*torus + mBoard.config().height)))
 		);
 	}
 
 	@Override
 	public boolean onTouchEvent (MotionEvent event)
 	{
+		double scale = (mZoomLevels[mZoomLevel]*1.0)/100.0;
 		int torus = mBoard.config().torus_mode ? 1 : 0;
-		int i = -torus+ (int)event.getX()/mCellSize;
-		int j = -torus+ (int)event.getY()/mCellSize;
+		int i = -torus+ (int)(event.getX()/(scale*mCellSize));
+		int j = -torus+ (int)(event.getY()/(scale*mCellSize));
 		if (mBoard.config().torus_mode) {
 			i = (i + mBoard.config().width ) % mBoard.config().width;
 			j = (j + mBoard.config().height) % mBoard.config().height;
@@ -70,6 +86,10 @@ class ViewBoard extends SurfaceView
 
 	public void draw (Canvas canvas)
 	{
+		canvas.save();
+		double scale = (mZoomLevels[mZoomLevel]*1.0)/100.0;
+		canvas.scale((float)scale, (float)scale);
+
 		int w = mBoard.config().width;
 		int h = mBoard.config().height;
 		int torus = mBoard.config().torus_mode ? 1 : 0;
@@ -118,6 +138,8 @@ class ViewBoard extends SurfaceView
 				paint.setStyle(Paint.Style.FILL);
 			}
 		}
+
+		canvas.restore();
 	}
 
 	private void drawSegment (float x, float y, float x1, float y1, Canvas canvas, Paint paint)
@@ -141,6 +163,9 @@ class ViewBoard extends SurfaceView
 	private Position mDownPos = new Position();
 	private Position mCursor  = new Position();
 	private boolean mAutoRotate = true;
+
+	private int[] mZoomLevels;
+	private int mZoomLevel;
 
 	private final int mSegmentSize = 21;
 	private final int mBorder = 1;
