@@ -5,6 +5,7 @@ import java.util.Random;
 import java.io.Console;
 
 import org.ninehells.angrypipes.Config;
+import org.ninehells.angrypipes.Position;
 
 class Board
 {
@@ -33,30 +34,17 @@ class Board
 		return board;
 	}
 
-	Position cursor() { return mCursor; }
-	void resetCursor() { mCursor = null; }
-	void setCursor (int i, int j)
+	public boolean rotate (Position pos)
 	{
-		if (i<0 || i>=mConfig.width || j<0 || j>=mConfig.height) {
-			resetCursor();
-		}
-		else {
-			if (mCursor == null)
-				mCursor = new Position();
-			mCursor.i = i;
-			mCursor.j = j;
-		}
-	}
-
-	public boolean rotate()
-	{
-		if (mCursor == null)
-			return false;
-		else if (mConfig.challenge_mode && (mPipes[mCursor.i][mCursor.j]&FIXED)!=0)
+		if (mConfig.challenge_mode && fixed(pos.i, pos.j))
 			return false;
 		else {
-			mPipes[mCursor.i][mCursor.j] |= FIXED;
-			doRotate(mCursor.i, mCursor.j);
+			if (!pos.equals(mLastRotated)) {
+				if (mLastRotated.valid)
+					mPipes[mLastRotated.i][mLastRotated.j] |= FIXED;
+				mLastRotated.set(pos);
+			}
+			doRotate(pos.i, pos.j);
 			return true;
 		}
 	}
@@ -284,7 +272,7 @@ class Board
 
 	private byte[][] mPipes;
 	private Config mConfig;
-	private Position mCursor;
+	private Position mLastRotated = new Position();
 	private int mFilledCount = 0;
 	private boolean mSolvedFlag = false;
 	private boolean mSolvedFlagIsDirty = true;
@@ -297,11 +285,6 @@ class Board
 	private final byte FIXED  = 0x10;
 	private final byte FILLED = 0x20;
 	private final byte ALLDIRS = (RIGHT|DOWN|LEFT|UP);
-}
-
-class Position
-{
-	int i, j;
 }
 
 // vim600:fdm=syntax:fdn=2:nu:

@@ -9,6 +9,7 @@ import android.view.MotionEvent;
 import android.view.SurfaceView;
 
 import org.ninehells.angrypipes.Board;
+import org.ninehells.angrypipes.Position;
 
 class ViewBoard extends SurfaceView
 {
@@ -52,25 +53,16 @@ class ViewBoard extends SurfaceView
 		}
 
 		if (event.getAction() == event.ACTION_DOWN) {
-			iDown = i;
-			jDown = j;
+			mDownPos.set(i, j);
 		}
 		else if (event.getAction() == event.ACTION_UP) {
-			if (iDown == i && jDown == j) {
-				int oldCursorI = -1;
-				int oldCursorJ = -1;
-				if (mBoard.cursor() != null) {
-					oldCursorI = mBoard.cursor().i;
-					oldCursorJ = mBoard.cursor().j;
-				}
-
-				mBoard.setCursor(i, j);
-				if (mAutoRotate || (oldCursorI == mBoard.cursor().i && oldCursorJ == mBoard.cursor().j))
-					mBoard.rotate();
+			if (mDownPos.equals(i, j)) {
+				if (mAutoRotate || mCursor.equals(mDownPos))
+					mBoard.rotate(mDownPos);
+				mCursor.set(mDownPos);
 				invalidate();
 			}
-			iDown = -1;
-			jDown = -1;
+			mDownPos.reset();
 		}
 
 		return true;
@@ -119,7 +111,7 @@ class ViewBoard extends SurfaceView
 				paint.setARGB(0x40, 0x80, 0x80, 0x80);
 				canvas.drawRect(x0, y0, x1, y1, paint);
 			}
-			if (mBoard.cursor()!=null && i==mBoard.cursor().i && j==mBoard.cursor().j) {
+			if (mCursor.valid && mCursor.equals(i, j)) {
 				paint.setStyle(Paint.Style.STROKE);
 				paint.setARGB(0xff, 0xff, 0x00, 0x00);
 				canvas.drawRect(x0+1, y0+1, x1-1, y1-1, paint);
@@ -146,7 +138,8 @@ class ViewBoard extends SurfaceView
 
 
 	private Board mBoard = null;
-	private int iDown = -1, jDown = -1;
+	private Position mDownPos = new Position();
+	private Position mCursor  = new Position();
 	private boolean mAutoRotate = true;
 
 	private final int mSegmentSize = 21;
