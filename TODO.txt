@@ -1,11 +1,16 @@
 - rotate both ways
+- only draw torus border if don't fit screen
+- don't zoom out if board already fits the screen
+- scroll overshoot indication
 - record screen
 - gameplay settings (auto-rotate, auto-lock, auto-pan, longpress timeout, sound, vibration)
+- auto-pan
 - undo
 - app icon
 - better graphics (bitmap?)
 - animation
-- sound/vibration
+- sound
+- vibration
 - intro
 - ads...
 - profit!
