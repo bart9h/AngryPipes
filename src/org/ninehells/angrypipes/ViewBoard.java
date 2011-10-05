@@ -115,23 +115,31 @@ class ViewBoard extends SurfaceView
 
 		for (int j = j0; j <= j1; ++j)
 		for (int i = i0; i <= i1; ++i) {
-			float x0 = (i+torus)*mCellSize+mBorder;
-			float y0 = (j+torus)*mCellSize+mBorder;
+			float x0 = (i+torus)*mCellSize+mBorder,  y0 = (j+torus)*mCellSize+mBorder;
 			float xc = x0+mSegmentSize,  yc = y0+mSegmentSize;
 			float x1 = xc+mSegmentSize,  y1 = yc+mSegmentSize;
+
+			/* set pipe color */
 			if (mBoard.isSolved())
 				paint.setARGB(0xff, 0x00, 0xff, 0x00);
 			else
 				paint.setARGB(0xff, 0xff, 0xff, mBoard.fixed(i,j)?0x40:0xff);
-			canvas.drawCircle(xc, yc, 3, paint);
-			if (mBoard.right(i,j)) drawSegment(xc, yc, x1, yc, canvas, paint);
-			if (mBoard.up   (i,j)) drawSegment(xc, yc, xc, y0, canvas, paint);
-			if (mBoard.left (i,j)) drawSegment(xc, yc, x0, yc, canvas, paint);
-			if (mBoard.down (i,j)) drawSegment(xc, yc, xc, y1, canvas, paint);
+
+			/* draw pipe */
+			boolean simple = (scale < .5);
+			if (!simple) canvas.drawCircle(xc, yc, 3, paint);
+			if (mBoard.right(i,j)) drawSegment(xc, yc, x1, yc, simple, canvas, paint);
+			if (mBoard.up   (i,j)) drawSegment(xc, yc, xc, y0, simple, canvas, paint);
+			if (mBoard.left (i,j)) drawSegment(xc, yc, x0, yc, simple, canvas, paint);
+			if (mBoard.down (i,j)) drawSegment(xc, yc, xc, y1, simple, canvas, paint);
+
+			/* torus border */
 			if (i<0 || j<0 || i>=mBoard.config().width || j>=mBoard.config().height) {
 				paint.setARGB(0x40, 0x80, 0x80, 0x80);
 				canvas.drawRect(x0, y0, x1, y1, paint);
 			}
+
+			/* cursor */
 			if (mCursor.valid && mCursor.equals(i, j)) {
 				paint.setStyle(Paint.Style.STROKE);
 				paint.setARGB(0xff, 0xff, 0x00, 0x00);
@@ -143,9 +151,12 @@ class ViewBoard extends SurfaceView
 		canvas.restore();
 	}
 
-	private void drawSegment (float x, float y, float x1, float y1, Canvas canvas, Paint paint)
+	private void drawSegment (float x, float y, float x1, float y1, boolean simple, Canvas canvas, Paint paint)
 	{
 		canvas.drawLine(x, y, x1, y1, paint);
+		if (simple)
+			return;
+
 		paint.setAlpha(0x80);
 		if (x == x1) {
 			int d = y<y1 ? -1 : 1;
