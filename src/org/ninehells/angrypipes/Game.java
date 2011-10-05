@@ -85,12 +85,10 @@ public class Game extends Activity
 	private Handler mTimerHandler = new Handler();
 	private Runnable mTimerTask = new Runnable() {
 		public void run() {
-			if (mBoard.gameOver()) {
-				mConfig.seconds_elapsed = -1;
-				return;
-			}
 
-			++mConfig.seconds_elapsed;
+			if (!mBoard.gameOver())
+				++mConfig.seconds_elapsed;
+
 			int seconds = (int)(mConfig.seconds_elapsed);
 			int minutes = (int)(seconds/60);  seconds -= 60*minutes;
 			int hours   = (int)(minutes/60);  minutes -= 60*hours;
@@ -100,9 +98,16 @@ public class Game extends Activity
 			if (days  > 0) s += String.format("%dd ", days);
 			if (hours > 0) s += String.format("%dh ", hours);
 			s += String.format("%d:%02d", minutes, seconds);
+			if (!mConfig.challenge_mode && mConfig.mistake_count>0)
+				s += String.format(", %d misses", mConfig.mistake_count);
 			mTimeLabel.setText(s);
 
-			mTimerHandler.postDelayed(this, 1000);
+			if (mBoard.gameOver()) {
+				mConfig.seconds_elapsed = -1;
+				mConfig.mistake_count = 0;
+			}
+			else
+				mTimerHandler.postDelayed(this, 1000);
 		}
 	};
 }

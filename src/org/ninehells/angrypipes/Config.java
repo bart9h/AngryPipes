@@ -13,6 +13,7 @@ class Config
 	boolean  no_cross_mode;
 	boolean  challenge_mode;
 	int seconds_elapsed;
+	int mistake_count;
 
 	Config (Context context, Bundle state)
 	{
@@ -23,6 +24,7 @@ class Config
 		no_cross_mode   = res.getBoolean(R.bool   .no_cross_mode);
 		challenge_mode  = res.getBoolean(R.bool   .challenge_mode);
 		seconds_elapsed = -1;
+		mistake_count = 0;
 
 		if (state != null) {
 			width           = state.getInt    ("width",           width);
@@ -31,6 +33,7 @@ class Config
 			no_cross_mode   = state.getBoolean("no_cross_mode",   no_cross_mode);
 			challenge_mode  = state.getBoolean("challenge_mode",  challenge_mode);
 			seconds_elapsed = state.getInt    ("seconds_elapsed", seconds_elapsed);
+			mistake_count   = state.getInt    ("mistake_count",   mistake_count);
 		}
 		else {
 			SharedPreferences prefs = context.getSharedPreferences(res.getString(R.string.app_name), Context.MODE_PRIVATE);
@@ -40,6 +43,7 @@ class Config
 			no_cross_mode   = prefs.getBoolean("no_cross_mode",   no_cross_mode);
 			challenge_mode  = prefs.getBoolean("challenge_mode",  challenge_mode);
 			seconds_elapsed = prefs.getInt    ("seconds_elapsed", seconds_elapsed);
+			mistake_count   = prefs.getInt    ("mistake_count",   mistake_count);
 		}
 
 	}
@@ -55,6 +59,7 @@ class Config
 		ed.putBoolean("no_cross_mode",  no_cross_mode);
 		ed.putBoolean("challenge_mode", challenge_mode);
 		ed.putInt    ("seconds_elapsed", seconds_elapsed);
+		ed.putInt    ("mistake_count",   mistake_count);
 		if (board != null)
 			ed.putString("board", board);
 		ed.commit();
@@ -68,6 +73,7 @@ class Config
 		state.putBoolean("no_cross_mode",  no_cross_mode);
 		state.putBoolean("challenge_mode", challenge_mode);
 		state.putInt    ("seconds_elapsed", seconds_elapsed);
+		state.putInt    ("mistake_count",   mistake_count);
 		if (board != null)
 			state.putString("board", board);
 	}

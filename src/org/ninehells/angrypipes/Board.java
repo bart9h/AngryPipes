@@ -43,6 +43,8 @@ class Board
 				if (mLastRotated.valid)
 					mPipes[mLastRotated.i][mLastRotated.j] |= FIXED;
 				mLastRotated.set(pos);
+				if (fixed(pos.i, pos.j))
+					++mConfig.mistake_count;
 			}
 			doRotate(pos.i, pos.j);
 			return true;
