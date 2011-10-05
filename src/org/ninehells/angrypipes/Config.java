@@ -5,7 +5,7 @@ import android.content.res.Resources;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
-public class Config
+class Config
 {
 	int      width;
 	int      height;

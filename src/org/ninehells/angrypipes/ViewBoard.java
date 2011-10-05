@@ -15,7 +15,7 @@ import org.ninehells.angrypipes.Position;
 
 class ViewBoard extends SurfaceView
 {
-	public ViewBoard (Context context, Board board)
+	ViewBoard (Context context, Board board)
 	{
 		super(context);
 
@@ -84,6 +84,7 @@ class ViewBoard extends SurfaceView
 		return true;
 	}
 
+	@Override
 	public void draw (Canvas canvas)
 	{
 		canvas.save();

@@ -9,7 +9,7 @@ import org.ninehells.angrypipes.Position;
 
 class Board
 {
-	public Board (Config config, byte[] board)
+	Board (Config config, byte[] board)
 	{
 		mConfig = config;
 		W = mConfig.width;
@@ -25,7 +25,7 @@ class Board
 			serialize(board);
 	}
 
-	public byte[] serialize()
+	byte[] serialize()
 	{
 		byte[] board = new byte[W*H];
 		for (int j = 0;  j < H;  ++j)
@@ -34,7 +34,7 @@ class Board
 		return board;
 	}
 
-	public boolean rotate (Position pos)
+	boolean rotate (Position pos)
 	{
 		if (mConfig.challenge_mode && fixed(pos.i, pos.j))
 			return false;
@@ -54,7 +54,7 @@ class Board
 		//TODO
 	}
 
-	public boolean isSolved()
+	boolean isSolved()
 	{
 		if (mSolvedFlagIsDirty) {
 
@@ -160,13 +160,13 @@ class Board
 			doRotate(i, j);
 	}
 
-	public Config config() { return mConfig; }
-	public boolean gameOver() { return mGameOver; }
-	public boolean right(int i, int j)  { return (pipe(i,j) & RIGHT)!=0; }
-	public boolean down (int i, int j)  { return (pipe(i,j) & DOWN )!=0; }
-	public boolean left (int i, int j)  { return (pipe(i,j) & LEFT )!=0; }
-	public boolean up   (int i, int j)  { return (pipe(i,j) & UP   )!=0; }
-	public boolean fixed(int i, int j)  { return (pipe(i,j) & FIXED)!=0; }
+	Config config() { return mConfig; }
+	boolean gameOver() { return mGameOver; }
+	boolean right(int i, int j)  { return (pipe(i,j) & RIGHT)!=0; }
+	boolean down (int i, int j)  { return (pipe(i,j) & DOWN )!=0; }
+	boolean left (int i, int j)  { return (pipe(i,j) & LEFT )!=0; }
+	boolean up   (int i, int j)  { return (pipe(i,j) & UP   )!=0; }
+	boolean fixed(int i, int j)  { return (pipe(i,j) & FIXED)!=0; }
 
 	private int pipe (int i, int j)
 	{
