@@ -99,7 +99,9 @@ public class Game extends Activity
 			if (hours > 0) s += String.format("%dh ", hours);
 			s += String.format("%d:%02d", minutes, seconds);
 			if (!mConfig.challenge_mode && mConfig.mistake_count>0)
-				s += String.format(", %d misses", mConfig.mistake_count);
+				s += String.format(", %d %s",
+						mConfig.mistake_count,
+						mConfig.mistake_count>1 ? "misses" : "miss");
 			mTimeLabel.setText(s);
 
 			if (mBoard.gameOver()) {
