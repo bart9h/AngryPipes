@@ -27,9 +27,7 @@ public class AngryPipes extends Activity
 		mNewGameButton.setText(R.string.new_game);
 		mNewGameButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				SharedPreferences prefs = getSharedPreferences(getString(R.string.app_name), MODE_PRIVATE);
-				boolean hasGame = (prefs.getString("board", "") != "");
-				if (hasGame) {
+				if (hasGame()) {
 					//TODO confirmation
 					Config cfg = new Config(AngryPipes.this, null);
 					cfg.save(AngryPipes.this, "");
@@ -73,9 +71,13 @@ public class AngryPipes extends Activity
 	{
 		super.onResume();
 
+		mResumeGameButton.setEnabled(hasGame());
+	}
+
+	private boolean hasGame()
+	{
 		SharedPreferences prefs = getSharedPreferences(getString(R.string.app_name), MODE_PRIVATE);
-		boolean hasGame = (prefs.getString("board", "") != "");
-		mResumeGameButton.setEnabled(hasGame);
+		return (prefs.getString("board", "") != "");
 	}
 
 	Button mNewGameButton;

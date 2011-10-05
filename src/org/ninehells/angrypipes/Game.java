@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.content.SharedPreferences;
+import android.util.Base64;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -26,7 +27,7 @@ public class Game extends Activity
 		String boardString = prefs.getString("board", "");
 		mConfig = new Config(this, state);
 
-		mBoard = new Board(mConfig, boardString.getBytes());
+		mBoard = new Board(mConfig, Base64.decode(boardString, 0));
 		mBoardView = new ViewBoard(this, mBoard);
 
 		TwoDScrollView scrollView = new TwoDScrollView(this);
@@ -73,7 +74,7 @@ public class Game extends Activity
 	{
 		super.onPause();
 
-		mBoard.config().save(this, mBoard.gameOver() ? "" : new String(mBoard.serialize()));
+		mBoard.config().save(this, mBoard.gameOver() ? "" : Base64.encodeToString(mBoard.serialize(), 0));
 		mTimerHandler.removeCallbacks(mTimerTask);
 	}
 
