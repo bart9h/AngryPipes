@@ -74,6 +74,7 @@ public class Game extends Activity
 		super.onPause();
 
 		mBoard.config().save(this, mBoard.isSolved() ? "" : new String(mBoard.serialize()));
+		mTimerHandler.removeCallbacks(mTimerTask);
 	}
 
 	private Board mBoard;
