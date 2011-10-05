@@ -73,18 +73,25 @@ public class Game extends Activity
 	{
 		super.onPause();
 
-		mBoard.config().save(this, mBoard.isSolved() ? "" : new String(mBoard.serialize()));
+		mBoard.config().save(this, (mSolved || mBoard.isSolved()) ? "" : new String(mBoard.serialize()));
 		mTimerHandler.removeCallbacks(mTimerTask);
 	}
 
 	private Board mBoard;
 	private ViewBoard mBoardView;
 	private TextView mTimeLabel;
+	private boolean mSolved = false;
 
 	private Config mConfig;
 	private Handler mTimerHandler = new Handler();
 	private Runnable mTimerTask = new Runnable() {
 		public void run() {
+			if (mBoard.isSolved()) {
+				mSolved = true;
+				mConfig.seconds_elapsed = -1;
+				return;
+			}
+
 			++mConfig.seconds_elapsed;
 			int seconds = (int)(mConfig.seconds_elapsed);
 			int minutes = (int)(seconds/60);  seconds -= 60*minutes;
