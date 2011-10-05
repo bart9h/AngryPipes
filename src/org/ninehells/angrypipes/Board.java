@@ -70,6 +70,9 @@ class Board
 			mSolvedFlag = (mFilledCount == W*H);
 		}
 
+		if (mSolvedFlag)
+			mGameOver = true;
+
 		return mSolvedFlag;
 	}
 
@@ -158,6 +161,7 @@ class Board
 	}
 
 	public Config config() { return mConfig; }
+	public boolean gameOver() { return mGameOver; }
 	public boolean right(int i, int j)  { return (pipe(i,j) & RIGHT)!=0; }
 	public boolean down (int i, int j)  { return (pipe(i,j) & DOWN )!=0; }
 	public boolean left (int i, int j)  { return (pipe(i,j) & LEFT )!=0; }
@@ -276,6 +280,7 @@ class Board
 	private int mFilledCount = 0;
 	private boolean mSolvedFlag = false;
 	private boolean mSolvedFlagIsDirty = true;
+	private boolean mGameOver = false;
 	private int W, H;
 
 	private final byte RIGHT  = 0x01;
