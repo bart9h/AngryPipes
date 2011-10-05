@@ -24,9 +24,9 @@ public class Game extends Activity
 
 		SharedPreferences prefs = getSharedPreferences(getString(R.string.app_name), MODE_PRIVATE);
 		String boardString = prefs.getString("board", "");
-		Config cfg = new Config(this, state);
+		mConfig = new Config(this, state);
 
-		mBoard = new Board(cfg, boardString.getBytes());
+		mBoard = new Board(mConfig, boardString.getBytes());
 		mBoardView = new ViewBoard(this, mBoard);
 
 		TwoDScrollView scrollView = new TwoDScrollView(this);
@@ -81,12 +81,12 @@ public class Game extends Activity
 	private ViewBoard mBoardView;
 	private TextView mTimeLabel;
 
-	private int mSecondsElapsed = -1;
+	private Config mConfig;
 	private Handler mTimerHandler = new Handler();
 	private Runnable mTimerTask = new Runnable() {
 		public void run() {
-			++mSecondsElapsed;
-			int seconds = (int)(mSecondsElapsed);
+			++mConfig.seconds_elapsed;
+			int seconds = (int)(mConfig.seconds_elapsed);
 			int minutes = (int)(seconds/60);  seconds -= 60*minutes;
 			int hours   = (int)(minutes/60);  minutes -= 60*hours;
 			int days    = (int)(hours  /24);  hours   -= 24*days;
