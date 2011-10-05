@@ -81,11 +81,12 @@ public class Game extends Activity
 	private ViewBoard mBoardView;
 	private TextView mTimeLabel;
 
-	private long mTimerStart = SystemClock.elapsedRealtime() - 1000;
+	private int mSecondsElapsed = -1;
 	private Handler mTimerHandler = new Handler();
 	private Runnable mTimerTask = new Runnable() {
 		public void run() {
-			int seconds = (int)((SystemClock.elapsedRealtime() - mTimerStart)/1000);
+			++mSecondsElapsed;
+			int seconds = (int)(mSecondsElapsed);
 			int minutes = (int)(seconds/60);  seconds -= 60*minutes;
 			int hours   = (int)(minutes/60);  minutes -= 60*hours;
 			int days    = (int)(hours  /24);  hours   -= 24*days;
