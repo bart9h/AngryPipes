@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.SurfaceView;
@@ -68,11 +69,20 @@ class ViewBoard extends SurfaceView
 			j = (j + mBoard.config().height) % mBoard.config().height;
 		}
 
+		mMovePos.set(i, j);
+
+		int longPressTimeoutMillis = 400;
 		if (event.getAction() == event.ACTION_DOWN) {
 			mDownPos.set(i, j);
+			mTimerHandler.postDelayed(mTimerTask, longPressTimeoutMillis);
 		}
 		else if (event.getAction() == event.ACTION_UP) {
-			if (mDownPos.equals(i, j)) {
+			mTimerHandler.removeCallbacks(mTimerTask);
+			if (mDownPos.valid && event.getEventTime() - event.getDownTime() >= longPressTimeoutMillis) {
+				if (mBoard.toggleFix(mDownPos))
+					invalidate();
+			}
+			else if (mDownPos.equals(i, j)) {
 				if (mAutoRotate || mCursor.equals(mDownPos))
 					mBoard.rotate(mDownPos);
 				mCursor.set(mDownPos);
@@ -172,8 +182,9 @@ class ViewBoard extends SurfaceView
 
 
 	private Board mBoard = null;
-	private Position mDownPos = new Position();
 	private Position mCursor  = new Position();
+	private Position mDownPos = new Position();
+	private Position mMovePos = new Position();
 	private boolean mAutoRotate = true;
 
 	private int[] mZoomLevels;
@@ -182,6 +193,17 @@ class ViewBoard extends SurfaceView
 	private final int mSegmentSize = 21;
 	private final int mBorder = 1;
 	private final int mCellSize = 2*mBorder+2*mSegmentSize;
+
+	private Handler mTimerHandler = new Handler();
+	private Runnable mTimerTask = new Runnable() {
+		public void run() {
+			if (mMovePos.equals(mDownPos)) {
+				if (mBoard.toggleFix(mDownPos))
+					invalidate();
+			}
+			mDownPos.reset();
+		}
+	};
 }
 
 // vim600:fdm=syntax:fdn=2:nu:

@@ -1,10 +1,6 @@
 - rotate both ways
 - record screen
-- long press to unlock/lock
-- gameplay settings
-- dont auto-rotate (just move the cursor)
-- auto-lock
-- auto-pan
+- gameplay settings (auto-rotate, auto-lock, auto-pan, longpress timeout, sound, vibration)
 - undo
 - app icon
 - better graphics (bitmap?)

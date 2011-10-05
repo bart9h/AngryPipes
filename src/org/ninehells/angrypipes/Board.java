@@ -170,6 +170,19 @@ class Board
 	boolean up   (int i, int j)  { return (pipe(i,j) & UP   )!=0; }
 	boolean fixed(int i, int j)  { return (pipe(i,j) & FIXED)!=0; }
 
+	boolean toggleFix (Position pos)
+	{
+		if (fixed(pos.i, pos.j)) {
+			if (mConfig.challenge_mode)
+				return false;
+			mPipes[pos.i][pos.j] &= ALLDIRS;
+		}
+		else {
+			mPipes[pos.i][pos.j] |= FIXED;
+		}
+		return true;
+	}
+
 	private int pipe (int i, int j)
 	{
 		return mConfig.torus_mode
