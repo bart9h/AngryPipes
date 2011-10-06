@@ -3,6 +3,11 @@ TARGET=bin/AngryPipes-debug.apk
 $(TARGET): clean
 	ant debug
 
+release: clean
+	ant release
+	jarsigner -verbose -keystore my-release-key.keystore bin/AngryPipes-unsigned.apk bart9h
+	zipalign -v 4 bin/AngryPipes-unsigned.apk AngryPipes.apk
+
 clean:
 	rm -rf bin/ gen/
 
