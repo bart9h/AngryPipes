@@ -58,6 +58,12 @@ class ViewBoard extends SurfaceView
 	}
 
 	@Override
+	public void computeScroll()
+	{
+		mComputeScroll = true;
+	}
+
+	@Override
 	public boolean onTouchEvent (MotionEvent event)
 	{
 		double scale = (mZoomLevels[mZoomLevel]*1.0)/100.0;
@@ -73,13 +79,14 @@ class ViewBoard extends SurfaceView
 
 		int longPressTimeoutMillis = 400;
 		if (event.getAction() == event.ACTION_DOWN) {
+			mComputeScroll = false;
 			mDownPos.set(i, j);
 			mTimerHandler.postDelayed(mTimerTask, longPressTimeoutMillis);
 		}
 		else if (event.getAction() == event.ACTION_UP) {
 			mTimerHandler.removeCallbacks(mTimerTask);
 			if (mDownPos.valid && event.getEventTime() - event.getDownTime() >= longPressTimeoutMillis) {
-				if (mBoard.toggleFix(mDownPos))
+				if (!mComputeScroll && mBoard.toggleFix(mDownPos))
 					invalidate();
 			}
 			else if (mDownPos.equals(i, j)) {
@@ -194,11 +201,12 @@ class ViewBoard extends SurfaceView
 	private final int mBorder = 1;
 	private final int mCellSize = 2*mBorder+2*mSegmentSize;
 
+	private boolean mComputeScroll = false;
 	private Handler mTimerHandler = new Handler();
 	private Runnable mTimerTask = new Runnable() {
 		public void run() {
 			if (mMovePos.equals(mDownPos)) {
-				if (mBoard.toggleFix(mDownPos))
+				if (!mComputeScroll && mBoard.toggleFix(mDownPos))
 					invalidate();
 			}
 			mDownPos.reset();
