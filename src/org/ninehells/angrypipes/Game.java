@@ -39,6 +39,7 @@ public class Game extends Activity
 
 		Button undoButton = new Button(this);
 		undoButton.setText(R.string.undo);
+		undoButton.setEnabled(false);
 		undoButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				mBoard.undo();
