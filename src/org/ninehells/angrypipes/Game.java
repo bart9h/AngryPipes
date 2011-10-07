@@ -26,6 +26,10 @@ public class Game extends Activity
 		SharedPreferences prefs = getSharedPreferences(getString(R.string.app_name), MODE_PRIVATE);
 		String boardString = prefs.getString("board", "");
 		mConfig = new Config(this, state);
+		if (boardString == "") {
+			mConfig.seconds_elapsed = -1;
+			mConfig.mistake_count = 0;
+		}
 
 		mBoard = new Board(mConfig, Base64.decode(boardString, 0));
 		mBoardView = new ViewBoard(this, mBoard);
