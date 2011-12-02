@@ -46,7 +46,7 @@ class Board
 			if (!pos.equals(mLastRotated)) {
 				if (mLastRotated.valid) {
 					mPipes[mLastRotated.i][mLastRotated.j] |= MOVED;
-					if (mConfig.auto_lock)
+					if (mConfig.auto_lock || mConfig.challenge_mode)
 						mPipes[mLastRotated.i][mLastRotated.j] |= LOCKED;
 				}
 				mLastRotated.set(pos);
