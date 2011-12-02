@@ -18,6 +18,7 @@
 
 	<bool name="torus_mode">false</bool>
 	<bool name="no_cross_mode">false</bool>
+	<bool name="auto_lock">false</bool>
 	<bool name="challenge_mode">false</bool>
 
 	<integer-array name="zoom_levels">

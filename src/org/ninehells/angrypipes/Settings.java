@@ -104,6 +104,15 @@ public class Settings extends Activity
 			}
 		});
 
+		CheckBox autolock = new CheckBox(this);
+		autolock.setText(R.string.auto_lock);
+		autolock.setChecked(mConfig.auto_lock);
+		autolock.setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener() {
+			public void onCheckedChanged(CompoundButton box, boolean isChecked) {
+				mConfig.auto_lock = isChecked;
+			}
+		});
+
 		CheckBox challenge = new CheckBox(this);
 		challenge.setText(R.string.challenge_mode);
 		challenge.setChecked(mConfig.challenge_mode);
@@ -127,6 +136,7 @@ public class Settings extends Activity
 		layout.addView(size);
 		layout.addView(torus);
 		layout.addView(nocross);
+		layout.addView(autolock);
 		layout.addView(challenge);
 		layout.addView(play);
 		setContentView(layout);

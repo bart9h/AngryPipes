@@ -40,14 +40,17 @@ class Board
 
 	boolean rotate (Position pos)
 	{//
-		if (mConfig.challenge_mode && fixed(pos.i, pos.j))
+		if (locked(pos.i, pos.j))
 			return false;
 		else {
 			if (!pos.equals(mLastRotated)) {
-				if (mLastRotated.valid)
-					mPipes[mLastRotated.i][mLastRotated.j] |= FIXED;
+				if (mLastRotated.valid) {
+					mPipes[mLastRotated.i][mLastRotated.j] |= MOVED;
+					if (mConfig.auto_lock)
+						mPipes[mLastRotated.i][mLastRotated.j] |= LOCKED;
+				}
 				mLastRotated.set(pos);
-				if (fixed(pos.i, pos.j))
+				if (moved(pos.i, pos.j))
 					++mConfig.mistake_count;
 			}
 			doRotate(pos.i, pos.j);
@@ -64,13 +67,16 @@ class Board
 	{//
 		if (mSolvedFlagIsDirty) {
 
+			if (!mLastRotated.valid)
+				return false;
+
 			mFilledCount = 0;
 
-			byte mask = RIGHT|DOWN|LEFT|UP|FIXED;
+			byte mask = (byte)(0xff ^ FILLED);
 			for (int j = 0;  j < H;  ++j)
 			for (int i = 0;  i < W;  ++i)
 				mPipes[i][j] &= mask;
-			fill(W>>1, H>>1);
+			fill(mLastRotated.i, mLastRotated.j);
 
 			mSolvedFlagIsDirty = false;
 			mSolvedFlag = (mFilledCount == W*H);
@@ -168,21 +174,22 @@ class Board
 
 	Config config() { return mConfig; }
 	boolean gameOver() { return mGameOver; }
-	boolean right(int i, int j)  { return (pipe(i,j) & RIGHT)!=0; }
-	boolean down (int i, int j)  { return (pipe(i,j) & DOWN )!=0; }
-	boolean left (int i, int j)  { return (pipe(i,j) & LEFT )!=0; }
-	boolean up   (int i, int j)  { return (pipe(i,j) & UP   )!=0; }
-	boolean fixed(int i, int j)  { return (pipe(i,j) & FIXED)!=0; }
+	boolean right (int i, int j)  { return (pipe(i,j) & RIGHT )!=0; }
+	boolean down  (int i, int j)  { return (pipe(i,j) & DOWN  )!=0; }
+	boolean left  (int i, int j)  { return (pipe(i,j) & LEFT  )!=0; }
+	boolean up    (int i, int j)  { return (pipe(i,j) & UP    )!=0; }
+	boolean moved (int i, int j)  { return (pipe(i,j) & MOVED )!=0; }
+	boolean locked(int i, int j)  { return (pipe(i,j) & LOCKED)!=0; }
 
-	boolean toggleFix (Position pos)
+	boolean toggleLock (Position pos)
 	{//
-		if (fixed(pos.i, pos.j)) {
+		if (locked(pos.i, pos.j)) {
 			if (mConfig.challenge_mode)
 				return false;
-			mPipes[pos.i][pos.j] &= ALLDIRS;
+			mPipes[pos.i][pos.j] &= (byte)(0xff ^ LOCKED);
 		}
 		else {
-			mPipes[pos.i][pos.j] |= FIXED;
+			mPipes[pos.i][pos.j] |= LOCKED;
 		}
 		return true;
 	}//
@@ -243,22 +250,15 @@ class Board
 	{//
 		byte b = mPipes[i][j];
 
-		byte loMask = (RIGHT | DOWN | LEFT | UP);
-		byte hiMask = (FIXED);
+		mPipes[i][j] = (byte)
+		(
+			(((b & UP   ) == UP   ) ? RIGHT : 0) |
+			(((b & RIGHT) == RIGHT) ? DOWN  : 0) |
+			(((b & DOWN ) == DOWN ) ? LEFT  : 0) |
+			(((b & LEFT ) == LEFT ) ? UP    : 0) |
+			(b & MOVED) | (b & LOCKED) | (b & FILLED)
+		);
 
-		/* save the higher bits, so they won't rotate */
-		byte hi = (byte)(b & hiMask);
-		b &= loMask;
-
-		/* rotate the lower bits */
-		b <<= 1;
-		if (b >  loMask)
-			b -= loMask;
-
-		/* restore the higher bits */
-		b |= hi;
-
-		mPipes[i][j] = b;
 		mSolvedFlagIsDirty = true;
 	}//
 
@@ -306,8 +306,9 @@ class Board
 	private final byte DOWN   = 0x02;
 	private final byte LEFT   = 0x04;
 	private final byte UP     = 0x08;
-	private final byte FIXED  = 0x10;
-	private final byte FILLED = 0x20;
+	private final byte MOVED  = 0x10;
+	private final byte LOCKED = 0x20;
+	private final byte FILLED = 0x40;
 	private final byte ALLDIRS = (RIGHT|DOWN|LEFT|UP);
 }
 

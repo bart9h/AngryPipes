@@ -90,7 +90,7 @@ class ViewBoard extends SurfaceView
 		else if (event.getAction() == event.ACTION_UP) {
 			mTimerHandler.removeCallbacks(mTimerTask);
 			if (mDownPos.valid && event.getEventTime() - event.getDownTime() >= longPressTimeoutMillis) {
-				if (!mComputeScroll && mBoard.toggleFix(mDownPos))
+				if (!mComputeScroll && mBoard.toggleLock(mDownPos))
 					invalidate();
 			}
 			else if (mDownPos.equals(i, j)) {
@@ -144,11 +144,12 @@ class ViewBoard extends SurfaceView
 			if (mBoard.isSolved())
 				paint.setARGB(0xff, 0x00, 0xff, 0x00);
 			else
-				paint.setARGB(0xff, 0xff, 0xff, mBoard.fixed(i,j)?0x40:0xff);
+				paint.setARGB(0xff, 0xff, 0xff, mBoard.moved(i,j)?0x40:0xff);
 
 			/* draw pipe */
 			boolean simple = (scale < .5);
 			if (!simple) canvas.drawCircle(xc, yc, 3, paint);
+			if (mBoard.locked(i,j)) drawLock(xc, yc, simple, canvas, paint);
 			if (mBoard.right(i,j)) drawSegment(xc, yc, x1, yc, simple, canvas, paint);
 			if (mBoard.up   (i,j)) drawSegment(xc, yc, xc, y0, simple, canvas, paint);
 			if (mBoard.left (i,j)) drawSegment(xc, yc, x0, yc, simple, canvas, paint);
@@ -191,6 +192,14 @@ class ViewBoard extends SurfaceView
 		}
 	}//
 
+	private void drawLock (float x, float y, boolean simple, Canvas canvas, Paint paint)
+	{//
+		paint.setAlpha(0x60);
+		canvas.drawLine(x-5, y-5, x+5, y-5, paint);
+		canvas.drawLine(x+5, y-5, x+5, y+5, paint);
+		canvas.drawLine(x+5, y+5, x-5, y+5, paint);
+		canvas.drawLine(x-5, y+5, x-5, y-5, paint);
+	}//
 
 	private Board mBoard = null;
 	private Position mCursor  = new Position();
@@ -211,7 +220,7 @@ class ViewBoard extends SurfaceView
 	{//
 		public void run() {
 			if (mMovePos.equals(mDownPos)) {
-				if (!mComputeScroll && mBoard.toggleFix(mDownPos))
+				if (!mComputeScroll && mBoard.toggleLock(mDownPos))
 					invalidate();
 			}
 			mDownPos.reset();

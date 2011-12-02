@@ -50,5 +50,8 @@
 	<string name="challenge_mode">
 		challenge mode (1 move per pipe)
 	</string>
+	<string name="auto_lock">
+		auto-lock
+	</string>
 
 </resources>
