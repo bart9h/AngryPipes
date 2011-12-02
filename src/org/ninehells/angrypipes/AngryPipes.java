@@ -1,5 +1,7 @@
 package org.ninehells.angrypipes;
 
+//{//  import
+
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -13,11 +15,13 @@ import android.widget.TextView;
 import org.ninehells.angrypipes.Game;
 import org.ninehells.angrypipes.Settings;
 
+//}//
+
 public class AngryPipes extends Activity
 {
 	@Override
 	public void onCreate (Bundle state)
-	{
+	{//
 		super.onCreate(state);
 
 		TextView text = new TextView(this);
@@ -64,24 +68,24 @@ public class AngryPipes extends Activity
 		group.addView(settings);
 		group.addView(about);
 		setContentView(group);
-	}
+	}//
 
 	@Override
 	public void onResume()
-	{
+	{//
 		super.onResume();
 
 		mResumeGameButton.setEnabled(hasGame());
-	}
+	}//
 
 	private boolean hasGame()
-	{
+	{//
 		SharedPreferences prefs = getSharedPreferences(getString(R.string.app_name), MODE_PRIVATE);
 		return (prefs.getString("board", "") != "");
-	}
+	}//
 
 	Button mNewGameButton;
 	Button mResumeGameButton;
 }
 
-// vim600:fdm=syntax:fdn=2:nu:
+// vim600:fdm=marker:fmr={//,}//:fdn=2:nu:

@@ -1,9 +1,13 @@
 package org.ninehells.angrypipes;
 
+//{//  import
+
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+
+//}//
 
 class Config
 {
@@ -16,7 +20,7 @@ class Config
 	int mistake_count;
 
 	Config (Context context, Bundle state)
-	{
+	{//
 		Resources res   = context.getResources();
 		width           = res.getInteger(R.integer.medium_width);
 		height          = res.getInteger(R.integer.medium_height);
@@ -46,10 +50,10 @@ class Config
 			mistake_count   = prefs.getInt    ("mistake_count",   mistake_count);
 		}
 
-	}
+	}//
 
 	void save (Context context, String board)
-	{
+	{//
 		Resources res  = context.getResources();
 		SharedPreferences prefs = context.getSharedPreferences(res.getString(R.string.app_name), Context.MODE_PRIVATE);
 		SharedPreferences.Editor ed = prefs.edit();
@@ -63,10 +67,10 @@ class Config
 		if (board != null)
 			ed.putString("board", board);
 		ed.commit();
-	}
+	}//
 
 	void save (Bundle state, String board)
-	{
+	{//
 		state.putInt    ("width",          width);
 		state.putInt    ("height",         height);
 		state.putBoolean("torus_mode",     torus_mode);
@@ -76,5 +80,7 @@ class Config
 		state.putInt    ("mistake_count",   mistake_count);
 		if (board != null)
 			state.putString("board", board);
-	}
+	}//
 }
+
+// vim600:fdm=marker:fmr={//,}//:fdn=2:nu:

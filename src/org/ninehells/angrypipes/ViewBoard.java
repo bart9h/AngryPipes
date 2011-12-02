@@ -1,5 +1,7 @@
 package org.ninehells.angrypipes;
 
+//{//  import
+
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
@@ -14,10 +16,12 @@ import android.view.SurfaceView;
 import org.ninehells.angrypipes.Board;
 import org.ninehells.angrypipes.Position;
 
+//}//
+
 class ViewBoard extends SurfaceView
 {
 	ViewBoard (Context context, Board board)
-	{
+	{//
 		super(context);
 
 		mBoard = board;
@@ -27,10 +31,10 @@ class ViewBoard extends SurfaceView
 		mZoomLevel = res.getInteger(R.integer.zoom_level);
 
 		setWillNotDraw(false);
-	}
+	}//
 
 	void zoomIn()
-	{
+	{//
 		if (mZoomLevel+1 < mZoomLevels.length) {
 			++mZoomLevel;
 			requestLayout();
@@ -44,28 +48,28 @@ class ViewBoard extends SurfaceView
 			--mZoomLevel;
 			requestLayout();
 		}
-	}
+	}//
 
 	@Override
 	public void onMeasure (int w, int h)
-	{
+	{//
 		int torus = mBoard.config().torus_mode ? 1 : 0;
 		double scale = (mZoomLevels[mZoomLevel]*1.0)/100.0;
 		setMeasuredDimension(
 				(int)(scale*(2 + mCellSize*(2*torus + mBoard.config().width))),
 				(int)(scale*(2 + mCellSize*(2*torus + mBoard.config().height)))
 		);
-	}
+	}//
 
 	@Override
 	public void computeScroll()
-	{
+	{//
 		mComputeScroll = true;
-	}
+	}//
 
 	@Override
 	public boolean onTouchEvent (MotionEvent event)
-	{
+	{//
 		double scale = (mZoomLevels[mZoomLevel]*1.0)/100.0;
 		int torus = mBoard.config().torus_mode ? 1 : 0;
 		int i = -torus+ (int)(event.getX()/(scale*mCellSize));
@@ -99,11 +103,11 @@ class ViewBoard extends SurfaceView
 		}
 
 		return true;
-	}
+	}//
 
 	@Override
 	public void draw (Canvas canvas)
-	{
+	{//
 		canvas.save();
 		double scale = (mZoomLevels[mZoomLevel]*1.0)/100.0;
 		canvas.scale((float)scale, (float)scale);
@@ -166,10 +170,10 @@ class ViewBoard extends SurfaceView
 		}
 
 		canvas.restore();
-	}
+	}//
 
 	private void drawSegment (float x, float y, float x1, float y1, boolean simple, Canvas canvas, Paint paint)
-	{
+	{//
 		canvas.drawLine(x, y, x1, y1, paint);
 		if (simple)
 			return;
@@ -185,7 +189,7 @@ class ViewBoard extends SurfaceView
 			canvas.drawLine(x, y-1, x1+d, y-1, paint);
 			canvas.drawLine(x, y+1, x1+d, y+1, paint);
 		}
-	}
+	}//
 
 
 	private Board mBoard = null;
@@ -203,7 +207,8 @@ class ViewBoard extends SurfaceView
 
 	private boolean mComputeScroll = false;
 	private Handler mTimerHandler = new Handler();
-	private Runnable mTimerTask = new Runnable() {
+	private Runnable mTimerTask = new Runnable()
+	{//
 		public void run() {
 			if (mMovePos.equals(mDownPos)) {
 				if (!mComputeScroll && mBoard.toggleFix(mDownPos))
@@ -211,7 +216,8 @@ class ViewBoard extends SurfaceView
 			}
 			mDownPos.reset();
 		}
-	};
+	}//
+	;
 }
 
-// vim600:fdm=syntax:fdn=2:nu:
+// vim600:fdm=marker:fmr={//,}//:fdn=2:nu:

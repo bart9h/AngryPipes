@@ -39,3 +39,5 @@ class Position
 		return (valid && i==a && j==b);
 	}
 }
+
+// vim600:fdm=marker:nu:

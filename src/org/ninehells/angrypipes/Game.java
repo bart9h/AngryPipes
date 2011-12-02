@@ -1,5 +1,7 @@
 package org.ninehells.angrypipes;
 
+//{//  import
+
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
@@ -16,11 +18,13 @@ import us.gorges.viewaclue.TwoDScrollView;
 import org.ninehells.angrypipes.Board;
 import org.ninehells.angrypipes.ViewBoard;
 
+//}//
+
 public class Game extends Activity
 {
 	@Override
 	public void onCreate (Bundle state)
-	{
+	{//
 		super.onCreate(state);
 
 		SharedPreferences prefs = getSharedPreferences(getString(R.string.app_name), MODE_PRIVATE);
@@ -72,16 +76,16 @@ public class Game extends Activity
 		setContentView(layout);
 
 		mTimerHandler.postDelayed(mTimerTask, 1000);
-	}
+	}//
 
 	@Override
 	public void onPause()
-	{
+	{//
 		super.onPause();
 
 		mBoard.config().save(this, mBoard.gameOver() ? "" : Base64.encodeToString(mBoard.serialize(), 0));
 		mTimerHandler.removeCallbacks(mTimerTask);
-	}
+	}//
 
 	private Board mBoard;
 	private ViewBoard mBoardView;
@@ -89,7 +93,8 @@ public class Game extends Activity
 
 	private Config mConfig;
 	private Handler mTimerHandler = new Handler();
-	private Runnable mTimerTask = new Runnable() {
+	private Runnable mTimerTask = new Runnable()
+	{//
 		public void run() {
 
 			if (!mBoard.gameOver())
@@ -117,7 +122,8 @@ public class Game extends Activity
 			else
 				mTimerHandler.postDelayed(this, 1000);
 		}
-	};
+	}//
+	;
 }
 
-// vim600:fdm=syntax:fdn=2:nu:
+// vim600:fdm=marker:fmr={//,}//:fdn=2:nu:

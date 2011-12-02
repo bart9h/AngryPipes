@@ -1,5 +1,7 @@
 package org.ninehells.angrypipes;
 
+//{//  import
+
 import java.util.ArrayList;
 import java.util.Random;
 import java.io.Console;
@@ -7,10 +9,12 @@ import java.io.Console;
 import org.ninehells.angrypipes.Config;
 import org.ninehells.angrypipes.Position;
 
+//}//
+
 class Board
 {
 	Board (Config config, byte[] board)
-	{
+	{//
 		mConfig = config;
 		W = mConfig.width;
 		H = mConfig.height;
@@ -23,19 +27,19 @@ class Board
 			randomize();
 		else
 			serialize(board);
-	}
+	}//
 
 	byte[] serialize()
-	{
+	{//
 		byte[] board = new byte[W*H];
 		for (int j = 0;  j < H;  ++j)
 		for (int i = 0;  i < W;  ++i)
 			board[i+j*W] = mPipes[i][j];
 		return board;
-	}
+	}//
 
 	boolean rotate (Position pos)
-	{
+	{//
 		if (mConfig.challenge_mode && fixed(pos.i, pos.j))
 			return false;
 		else {
@@ -49,7 +53,7 @@ class Board
 			doRotate(pos.i, pos.j);
 			return true;
 		}
-	}
+	}//
 
 	void undo()
 	{
@@ -57,7 +61,7 @@ class Board
 	}
 
 	boolean isSolved()
-	{
+	{//
 		if (mSolvedFlagIsDirty) {
 
 			mFilledCount = 0;
@@ -76,10 +80,10 @@ class Board
 			mGameOver = true;
 
 		return mSolvedFlag;
-	}
+	}//
 
 	private void randomize()
-	{
+	{//
 		mSolvedFlagIsDirty = true;
 
 		Random rand = new Random();
@@ -160,7 +164,7 @@ class Board
 		for (int i = 0;  i < W;  ++i)
 		for (int r = rand.nextInt(4);  r > 0;  --r)
 			doRotate(i, j);
-	}
+	}//
 
 	Config config() { return mConfig; }
 	boolean gameOver() { return mGameOver; }
@@ -171,7 +175,7 @@ class Board
 	boolean fixed(int i, int j)  { return (pipe(i,j) & FIXED)!=0; }
 
 	boolean toggleFix (Position pos)
-	{
+	{//
 		if (fixed(pos.i, pos.j)) {
 			if (mConfig.challenge_mode)
 				return false;
@@ -181,17 +185,17 @@ class Board
 			mPipes[pos.i][pos.j] |= FIXED;
 		}
 		return true;
-	}
+	}//
 
 	private int pipe (int i, int j)
-	{
+	{//
 		return mConfig.torus_mode
 			? mPipes [(i+W)%W] [(j+H)%H]
 			: (i>=0 && j>=0 && i<W && j<H) ? mPipes[i][j] : -1;
-	}
+	}//
 
 	private void fill (int i, int j)
-	{
+	{//
 		if (mConfig.torus_mode) {
 			i = (i+W)%W;
 			j = (j+H)%H;
@@ -223,20 +227,20 @@ class Board
 			if (p > 0  &&  (p & DOWN) != 0)
 				fill(i, j-1);
 		}
-	}
+	}//
 
 	private void serialize(byte[] board)
-	{
+	{//
 		if (board.length != W*H)
 			throw new IllegalArgumentException("Invalid board string size.");
 
 		for (int j = 0;  j < H;  ++j)
 		for (int i = 0;  i < W;  ++i)
 			mPipes[i][j] = board[i+j*W];
-	}
+	}//
 
 	private void doRotate (int i, int j)
-	{
+	{//
 		byte b = mPipes[i][j];
 
 		byte loMask = (RIGHT | DOWN | LEFT | UP);
@@ -256,10 +260,10 @@ class Board
 
 		mPipes[i][j] = b;
 		mSolvedFlagIsDirty = true;
-	}
+	}//
 
 	private boolean isBorder (ArrayList<Integer> border, int I, int J)
-	{
+	{//
 		if (mConfig.torus_mode) {
 			I = (I+W)%W;
 			J = (J+H)%H;
@@ -273,10 +277,10 @@ class Board
 				return true;
 		}
 		return false;
-	}
+	}//
 
 	private void addBorder (ArrayList<Integer> border, int i, int j)
-	{
+	{//
 		if (isBorder(border, i, j))
 			return;
 
@@ -287,7 +291,7 @@ class Board
 
 		if (i>=0 && j>=0 && i<W && j<H && mPipes[i][j]==0)
 			border.add(i|j<<12);
-	}
+	}//
 
 	private byte[][] mPipes;
 	private Config mConfig;
@@ -307,4 +311,4 @@ class Board
 	private final byte ALLDIRS = (RIGHT|DOWN|LEFT|UP);
 }
 
-// vim600:fdm=syntax:fdn=2:nu:
+// vim600:fdm=marker:fmr={//,}//:fdn=2:nu:

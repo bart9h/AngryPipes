@@ -1,5 +1,7 @@
 package org.ninehells.angrypipes;
 
+//{//  import
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,15 +15,16 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
-
 import org.ninehells.angrypipes.Config;
 import org.ninehells.angrypipes.Game;
+
+//}//
 
 public class Settings extends Activity
 {
 	@Override
 	public void onCreate (Bundle state)
-	{
+	{//
 		super.onCreate(state);
 
 		final Resources res = getResources();
@@ -127,24 +130,24 @@ public class Settings extends Activity
 		layout.addView(challenge);
 		layout.addView(play);
 		setContentView(layout);
-	}
+	}//
 
 	private void saveAndRun()
-	{
+	{//
 		mConfig.save(this, "");
 
 		startActivity(new Intent(Settings.this, Game.class));
-	}
+	}//
 
 	@Override
 	public void onSaveInstanceState (Bundle state)
-	{
+	{//
 		super.onSaveInstanceState(state);
 
 		mConfig.save(state, null);
-	}
+	}//
 
 	private Config mConfig;
 }
 
-// vim600:fdm=syntax:fdn=2:nu:
+// vim600:fdm=marker:fmr={//,}//:fdn=2:nu:
