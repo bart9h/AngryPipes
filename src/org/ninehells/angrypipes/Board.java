@@ -67,7 +67,7 @@ class Board
 	{//
 		if (mSolvedFlagIsDirty) {
 
-			if (!mLastRotated.valid)
+			if (!mCursor.valid)
 				return false;
 
 			mFilledCount = 0;
@@ -76,7 +76,7 @@ class Board
 			for (int j = 0;  j < H;  ++j)
 			for (int i = 0;  i < W;  ++i)
 				mPipes[i][j] &= mask;
-			fill(mLastRotated.i, mLastRotated.j);
+			fill(mCursor.i, mCursor.j);
 
 			mSolvedFlagIsDirty = false;
 			mSolvedFlag = (mFilledCount == W*H);
@@ -180,6 +180,15 @@ class Board
 	boolean up    (int i, int j)  { return (pipe(i,j) & UP    )!=0; }
 	boolean moved (int i, int j)  { return (pipe(i,j) & MOVED )!=0; }
 	boolean locked(int i, int j)  { return (pipe(i,j) & LOCKED)!=0; }
+	boolean filled(int i, int j)  { return (pipe(i,j) & FILLED)!=0; }
+
+	void setCursor(int i, int j)
+	{//
+		if (!mCursor.equals(i, j)) {
+			mCursor.set(i,j);
+			mSolvedFlagIsDirty = true;
+		}
+	}//
 
 	boolean toggleLock (Position pos)
 	{//
@@ -296,6 +305,7 @@ class Board
 	private byte[][] mPipes;
 	private Config mConfig;
 	private Position mLastRotated = new Position();
+	private Position mCursor = new Position();
 	private int mFilledCount = 0;
 	private boolean mSolvedFlag = false;
 	private boolean mSolvedFlagIsDirty = true;

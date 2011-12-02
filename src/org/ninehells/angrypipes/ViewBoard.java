@@ -80,6 +80,7 @@ class ViewBoard extends SurfaceView
 		}
 
 		mMovePos.set(i, j);
+		mBoard.setCursor(i, j);
 
 		int longPressTimeoutMillis = 400;
 		if (event.getAction() == event.ACTION_DOWN) {
@@ -144,7 +145,7 @@ class ViewBoard extends SurfaceView
 			if (mBoard.isSolved())
 				paint.setARGB(0xff, 0x00, 0xff, 0x00);
 			else
-				paint.setARGB(0xff, 0xff, 0xff, mBoard.moved(i,j)?0x40:0xff);
+				paint.setARGB(0xff, 0xff, 0xff, mBoard.filled(i,j)?0x40:0xff);
 
 			/* draw pipe */
 			boolean simple = (scale < .5);
@@ -154,6 +155,11 @@ class ViewBoard extends SurfaceView
 			if (mBoard.up   (i,j)) drawSegment(xc, yc, xc, y0, simple, canvas, paint);
 			if (mBoard.left (i,j)) drawSegment(xc, yc, x0, yc, simple, canvas, paint);
 			if (mBoard.down (i,j)) drawSegment(xc, yc, xc, y1, simple, canvas, paint);
+
+			if (mBoard.moved(i,j)) {
+				paint.setARGB(0x20, 0x00, 0xff, 0x00);
+				canvas.drawRect(x0, y0, x1, y1, paint);
+			}
 
 			/* torus border */
 			if (i<0 || j<0 || i>=mBoard.config().width || j>=mBoard.config().height) {
