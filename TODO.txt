@@ -1,11 +1,21 @@
-- rotate both ways
+bugs
+- zoom based on the center of the screen, not 0,0
+- timer/miss count sometimes start freezed, resets
 - only draw torus border if don't fit screen
 - don't zoom out if board already fits the screen
+
+missing features
 - scroll overshoot indication
-- record screen
 - gameplay settings (auto-rotate, auto-lock, auto-pan, longpress timeout, sound, vibration)
+
+gameplay enhancements
+- rotate both ways
 - auto-pan
 - multi-level undo
+- popup action buttons (!auto-rotate mode)
+- campaign mode
+
+polishment
 - app icon
 - better graphics (bitmap?)
 - animation
