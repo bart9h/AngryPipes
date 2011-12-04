@@ -5,7 +5,7 @@
 - record screen
 - gameplay settings (auto-rotate, auto-lock, auto-pan, longpress timeout, sound, vibration)
 - auto-pan
-- undo
+- multi-level undo
 - app icon
 - better graphics (bitmap?)
 - animation

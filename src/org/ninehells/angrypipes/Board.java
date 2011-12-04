@@ -44,8 +44,9 @@ class Board
 			return false;
 		else {
 			if (!pos.equals(mLastRotated)) {
+				undoAdd(pos, mLastRotated);
+
 				if (mLastRotated.valid) {
-					mPipes[mLastRotated.i][mLastRotated.j] |= MOVED;
 					if (mConfig.auto_lock || mConfig.challenge_mode)
 						mPipes[mLastRotated.i][mLastRotated.j] |= LOCKED;
 				}
@@ -53,15 +54,31 @@ class Board
 				if (moved(pos.i, pos.j))
 					++mConfig.mistake_count;
 			}
+
+			mPipes[pos.i][pos.j] |= MOVED;
 			doRotate(pos.i, pos.j);
 			return true;
 		}
 	}//
 
 	void undo()
-	{
-		//TODO
-	}
+	{//
+		if (mUndoPosition1.valid) {
+			byte old = mPipes[mUndoPosition1.i][mUndoPosition1.j];
+			mPipes[mUndoPosition1.i][mUndoPosition1.j] = mUndoPipe1;
+			mUndoPipe1 = old;
+
+			setCursor(mUndoPosition1.i, mUndoPosition1.j);
+			mSolvedFlagIsDirty = true;;
+		}
+
+		if (mUndoPosition2.valid) {
+			mLastRotated.set(mUndoPosition2);
+			byte old = mPipes[mUndoPosition2.i][mUndoPosition2.j];
+			mPipes[mUndoPosition2.i][mUndoPosition2.j] = mUndoPipe2;
+			mUndoPipe2 = old;
+		}
+	}//
 
 	boolean isSolved()
 	{//
@@ -195,9 +212,11 @@ class Board
 		if (locked(pos.i, pos.j)) {
 			if (mConfig.challenge_mode)
 				return false;
+			undoAdd(pos, new Position());
 			mPipes[pos.i][pos.j] &= (byte)(0xff ^ LOCKED);
 		}
 		else {
+			undoAdd(pos, new Position());
 			mPipes[pos.i][pos.j] |= LOCKED;
 		}
 		return true;
@@ -302,6 +321,22 @@ class Board
 			border.add(i|j<<12);
 	}//
 
+	private void undoAdd (Position pos1, Position pos2)
+	{//
+		if (pos1.valid) {
+			mUndoPosition1.set(pos1);
+			mUndoPipe1 = mPipes[pos1.i][pos1.j];
+		}
+
+		if (pos2.valid) {
+			mUndoPosition2.set(pos2);
+			mUndoPipe2 = mPipes[pos2.i][pos2.j];
+		}
+		else {
+			mUndoPosition2.reset();
+		}
+	}//
+
 	private byte[][] mPipes;
 	private Config mConfig;
 	private Position mLastRotated = new Position();
@@ -311,6 +346,11 @@ class Board
 	private boolean mSolvedFlagIsDirty = true;
 	private boolean mGameOver = false;
 	private int W, H;
+
+	private Position mUndoPosition1 = new Position();
+	private Position mUndoPosition2 = new Position();
+	private byte mUndoPipe1;
+	private byte mUndoPipe2;
 
 	private final byte RIGHT  = 0x01;
 	private final byte DOWN   = 0x02;
