@@ -80,7 +80,6 @@ class ViewBoard extends SurfaceView
 		}
 
 		mMovePos.set(i, j);
-		mBoard.setCursor(i, j);
 
 		int longPressTimeoutMillis = 400;
 		if (event.getAction() == event.ACTION_DOWN) {
@@ -91,10 +90,12 @@ class ViewBoard extends SurfaceView
 		else if (event.getAction() == event.ACTION_UP) {
 			mTimerHandler.removeCallbacks(mTimerTask);
 			if (mDownPos.valid && event.getEventTime() - event.getDownTime() >= longPressTimeoutMillis) {
+				mBoard.setCursor(i, j);
 				if (!mComputeScroll && mBoard.toggleLock(mDownPos))
 					invalidate();
 			}
 			else if (mDownPos.equals(i, j)) {
+				mBoard.setCursor(i, j);
 				if (mAutoRotate || mCursor.equals(mDownPos))
 					mBoard.rotate(mDownPos);
 				mCursor.set(mDownPos);
