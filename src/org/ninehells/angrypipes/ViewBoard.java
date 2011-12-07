@@ -74,9 +74,15 @@ class ViewBoard extends SurfaceView
 		int torus = mBoard.config().torus_mode ? 1 : 0;
 		int i = -torus+ (int)(event.getX()/(scale*mCellSize));
 		int j = -torus+ (int)(event.getY()/(scale*mCellSize));
+		int W = mBoard.config().width;
+		int H = mBoard.config().height;
 		if (mBoard.config().torus_mode) {
-			i = (i + mBoard.config().width ) % mBoard.config().width;
-			j = (j + mBoard.config().height) % mBoard.config().height;
+			i = (i + W) % W;
+			j = (j + H) % H;
+		}
+		else {
+			if (i < 0) i = 0;  if (i >= W) i = W-1;
+			if (j < 0) j = 0;  if (j >= H) j = H-1;
 		}
 
 		mMovePos.set(i, j);
