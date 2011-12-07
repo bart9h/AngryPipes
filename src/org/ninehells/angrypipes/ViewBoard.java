@@ -212,6 +212,7 @@ class ViewBoard extends SurfaceView
 
 	private void drawLock (float x, float y, boolean simple, Canvas canvas, Paint paint)
 	{//
+		if (simple) return;
 		paint.setAlpha(0x60);
 		canvas.drawLine(x-5, y-5, x+5, y-5, paint);
 		canvas.drawLine(x+5, y-5, x+5, y+5, paint);
