@@ -131,11 +131,22 @@ class ViewBoard extends SurfaceView
 		h += 2*torus;
 
 		paint.setARGB(0xff, 0x30, 0x30, 0x30);
-		for (int j = j0; j <= j1; ++j)
-			canvas.drawLine(0, j*mCellSize, w*mCellSize, j*mCellSize, paint);
-		for (int i = i0; i <= i1;  ++i)
-			canvas.drawLine(i*mCellSize, 0, i*mCellSize, h*mCellSize, paint);
 
+		// grid
+		for (int j = j0; j <= j1+1; ++j)
+			canvas.drawLine(0, j*mCellSize, w*mCellSize-1, j*mCellSize, paint);
+		for (int i = i0; i <= i1+1; ++i)
+			canvas.drawLine(i*mCellSize, 0, i*mCellSize, h*mCellSize-1, paint);
+
+		// border
+		if (!mBoard.config().torus_mode) {
+			canvas.drawLine(3, 3, w*mCellSize-3-1, 3, paint);
+			canvas.drawLine(3, 3, 3, h*mCellSize-3-1, paint);
+			canvas.drawLine(w*mCellSize-3-1, h*mCellSize-3-1, w*mCellSize-3-1, 3, paint);
+			canvas.drawLine(w*mCellSize-3-1, h*mCellSize-3-1, 3, h*mCellSize-3-1, paint);
+		}
+
+		// pipes
 		for (int j = j0; j <= j1; ++j)
 		for (int i = i0; i <= i1; ++i) {
 			float x0 = (i+torus)*mCellSize+mBorder,  y0 = (j+torus)*mCellSize+mBorder;
