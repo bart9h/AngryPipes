@@ -104,9 +104,10 @@ public class Settings extends Activity
 			}
 		});
 
-		CheckBox autolock = new CheckBox(this);
+		final CheckBox autolock = new CheckBox(this);
 		autolock.setText(R.string.auto_lock);
 		autolock.setChecked(mConfig.auto_lock);
+		autolock.setEnabled(!mConfig.challenge_mode);
 		autolock.setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener() {
 			public void onCheckedChanged(CompoundButton box, boolean isChecked) {
 				mConfig.auto_lock = isChecked;
@@ -119,6 +120,7 @@ public class Settings extends Activity
 		challenge.setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener() {
 			public void onCheckedChanged(CompoundButton box, boolean isChecked) {
 				mConfig.challenge_mode = isChecked;
+				autolock.setEnabled(!isChecked);
 			}
 		});
 
