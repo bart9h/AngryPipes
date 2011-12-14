@@ -50,9 +50,17 @@ class Board
 					if (mConfig.auto_lock || mConfig.challenge_mode)
 						mPipes[mLastRotated.i][mLastRotated.j] |= LOCKED;
 				}
-				mLastRotated.set(pos);
-				if (moved(pos.i, pos.j))
-					++mConfig.mistake_count;
+
+				if (isBlocked(pos.i, pos.j)) {
+					toggleLock(pos);
+					undoAdd(pos, mLastRotated);
+					return true;
+				}
+				else {
+					mLastRotated.set(pos);
+					if (moved(pos.i, pos.j))
+						++mConfig.mistake_count;
+				}
 			}
 
 			mPipes[pos.i][pos.j] |= MOVED;
@@ -305,6 +313,27 @@ class Board
 				return true;
 		}
 		return false;
+	}//
+
+	private boolean setPos (Position pos, int i, int j)
+	{//
+		if (!mConfig.torus_mode && (i<0 || i>=W || j<0 || j>=H))
+			return false;
+
+		pos.set((i+W)%W, (j+H)%H);
+		return true;
+	}//
+
+	private boolean isBlocked (int i, int j)
+	{//
+		Position p = new Position();
+
+		if (right(i,j) && !(setPos(p,i+1,j+0) && left (p.i,p.j) && locked(p.i,p.j)))  return false;
+		if (down (i,j) && !(setPos(p,i+0,j+1) && up   (p.i,p.j) && locked(p.i,p.j)))  return false;
+		if (left (i,j) && !(setPos(p,i-1,j-0) && right(p.i,p.j) && locked(p.i,p.j)))  return false;
+		if (up   (i,j) && !(setPos(p,i-0,j-1) && down (p.i,p.j) && locked(p.i,p.j)))  return false;
+
+		return true;
 	}//
 
 	private void addBorder (ArrayList<Integer> border, int i, int j)
