@@ -175,7 +175,7 @@ class ViewBoard extends SurfaceView
 			if (mBoard.down (i,j)) drawSegment(xc, yc, xc, y1, simple, canvas, paint);
 
 			if (mBoard.moved(i,j) || mBoard.locked(i,j)) {
-				paint.setARGB(0x10, 0x00, 0x80, 0x00);
+				paint.setARGB(0x20, 0x00, 0x80, 0x00);
 				canvas.drawRect(x0, y0, x1, y1, paint);
 			}
 
