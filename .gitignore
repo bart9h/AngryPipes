@@ -1,0 +1,4 @@
+bin/
+gen/
+local.properties
+my-release-key.keystore
