@@ -245,8 +245,11 @@ class ViewBoard extends SurfaceView
 	{//
 		public void run() {
 			if (mMovePos.equals(mDownPos)) {
-				if (!mComputeScroll && mBoard.toggleLock(mDownPos))
+				if (!mComputeScroll && mBoard.toggleLock(mDownPos)) {
+					mCursor.set(mDownPos);
+					mBoard.setCursor(mDownPos.i, mDownPos.j);
 					invalidate();
+				}
 			}
 			mDownPos.reset();
 		}
