@@ -236,7 +236,7 @@ class Board
 			j = (j+H)%H;
 		}
 
-		if ((mPipes[i][j] & FILLED)!=0)
+		if (filled(i,j) || mConfig.auto_lock && !locked(i,j) && !moved(i,j))
 			return;
 
 		mPipes[i][j] |= FILLED;
