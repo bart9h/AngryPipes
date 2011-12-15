@@ -54,4 +54,11 @@
 		auto-lock
 	</string>
 
+	<string name="save_checkpoint">
+		save checkpoint
+	</string>
+	<string name="restore_checkpoint">
+		restore checkpoint
+	</string>
+
 </resources>

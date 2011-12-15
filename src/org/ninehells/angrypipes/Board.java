@@ -272,7 +272,7 @@ class Board
 		}
 	}//
 
-	private void serialize(byte[] board)
+	void serialize(byte[] board)
 	{//
 		if (board.length != W*H)
 			throw new IllegalArgumentException("Invalid board string size.");
@@ -280,6 +280,8 @@ class Board
 		for (int j = 0;  j < H;  ++j)
 		for (int i = 0;  i < W;  ++i)
 			mPipes[i][j] = board[i+j*W];
+
+		mLastRotated.reset();
 	}//
 
 	private void doRotate (int i, int j)

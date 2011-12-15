@@ -8,6 +8,8 @@ import android.os.Handler;
 import android.os.SystemClock;
 import android.content.SharedPreferences;
 import android.util.Base64;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -87,9 +89,37 @@ public class Game extends Activity
 		mTimerHandler.removeCallbacks(mTimerTask);
 	}//
 
+	@Override
+	public boolean onCreateOptionsMenu (Menu menu)
+	{//
+		menu.add(Menu.NONE, R.integer.save_checkpoint, Menu.NONE, R.string.save_checkpoint);
+		mRestoreMenuItem = menu.add(Menu.NONE, R.integer.restore_checkpoint, Menu.NONE, R.string.restore_checkpoint);
+		mRestoreMenuItem.setEnabled(mCheckpointBoard != null);
+		return true;
+	}//
+
+	@Override
+	public boolean onOptionsItemSelected (MenuItem item)
+	{//
+		switch (item.getItemId()) {
+			case R.integer.save_checkpoint:
+				mCheckpointBoard = mBoard.serialize();
+				mRestoreMenuItem.setEnabled(true);
+				return true;
+			case R.integer.restore_checkpoint:
+				mBoard.serialize(mCheckpointBoard);
+				mBoardView.invalidate();
+				return true;
+			default:
+				return super.onOptionsItemSelected(item);
+		}
+	}//
+
 	private Board mBoard;
 	private ViewBoard mBoardView;
 	private TextView mTimeLabel;
+	private byte[] mCheckpointBoard;
+	private MenuItem mRestoreMenuItem;
 
 	private Config mConfig;
 	private Handler mTimerHandler = new Handler();
