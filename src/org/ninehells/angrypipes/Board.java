@@ -51,7 +51,7 @@ class Board
 						mPipes[mLastRotated.i][mLastRotated.j] |= LOCKED;
 				}
 
-				if (isBlocked(pos.i, pos.j)) {
+				if (mConfig.auto_lock && isBlocked(pos.i, pos.j)) {
 					toggleLock(pos);
 					undoAdd(pos, mLastRotated);
 					return true;
