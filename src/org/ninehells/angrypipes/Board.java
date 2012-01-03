@@ -347,10 +347,10 @@ class Board
 	{//
 		Position p = new Position();
 
-		if (!right(i,j) && !(setPos(p,i+1,j+0) && !left (p.i,p.j) && locked(p.i,p.j)))  return false;
-		if (!down (i,j) && !(setPos(p,i+0,j+1) && !up   (p.i,p.j) && locked(p.i,p.j)))  return false;
-		if (!left (i,j) && !(setPos(p,i-1,j-0) && !right(p.i,p.j) && locked(p.i,p.j)))  return false;
-		if (!up   (i,j) && !(setPos(p,i-0,j-1) && !down (p.i,p.j) && locked(p.i,p.j)))  return false;
+		if (!right(i,j) && !(!setPos(p,i+1,j+0) || !left (p.i,p.j) && locked(p.i,p.j)))  return false;
+		if (!down (i,j) && !(!setPos(p,i+0,j+1) || !up   (p.i,p.j) && locked(p.i,p.j)))  return false;
+		if (!left (i,j) && !(!setPos(p,i-1,j-0) || !right(p.i,p.j) && locked(p.i,p.j)))  return false;
+		if (!up   (i,j) && !(!setPos(p,i-0,j-1) || !down (p.i,p.j) && locked(p.i,p.j)))  return false;
 
 		return true;
 	}//
