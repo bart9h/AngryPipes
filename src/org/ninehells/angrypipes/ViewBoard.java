@@ -162,8 +162,14 @@ class ViewBoard extends SurfaceView
 			/* set pipe color */
 			if (mBoard.isSolved())
 				paint.setARGB(0xff, 0x00, 0xff, 0x00);
+			else if (mBoard.filled(i,j)) {
+				if (mBoard.isBadFill())
+					paint.setARGB(0xff, 0xff, 0x00, 0x00);
+				else
+					paint.setARGB(0xff, 0xff, 0xff, 0x40);
+			}
 			else
-				paint.setARGB(0xff, 0xff, 0xff, mBoard.filled(i,j)?0x40:0xff);
+				paint.setARGB(0xff, 0xff, 0xff, 0xff);
 
 			/* draw pipe */
 			boolean simple = (scale < .5);

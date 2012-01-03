@@ -96,6 +96,7 @@ class Board
 				return false;
 
 			mFilledCount = 0;
+			mBadFillFlag = false;
 
 			byte mask = (byte)(0xff ^ FILLED);
 			for (int j = 0;  j < H;  ++j)
@@ -199,6 +200,7 @@ class Board
 
 	Config config() { return mConfig; }
 	boolean gameOver() { return mGameOver; }
+	boolean isBadFill() { return mBadFillFlag; }
 	boolean right (int i, int j)  { return (pipe(i,j) & RIGHT )!=0; }
 	boolean down  (int i, int j)  { return (pipe(i,j) & DOWN  )!=0; }
 	boolean left  (int i, int j)  { return (pipe(i,j) & LEFT  )!=0; }
@@ -250,25 +252,34 @@ class Board
 		mPipes[i][j] |= FILLED;
 		++mFilledCount;
 
-		if ((mPipes[i][j] & RIGHT) != 0) {
-			int p = pipe(i+1, j);
-			if (p > 0  &&  (p & LEFT) != 0)
-				fill(i+1, j);
-		}
-		if ((mPipes[i][j] & DOWN) != 0) {
-			int p = pipe(i, j+1);
-			if (p > 0  &&  (p & UP) != 0)
-				fill(i, j+1);
-		}
-		if ((mPipes[i][j] & LEFT) != 0) {
-			int p = pipe(i-1, j);
-			if (p > 0  &&  (p & RIGHT) != 0)
-				fill(i-1, j);
-		}
-		if ((mPipes[i][j] & UP) != 0) {
-			int p = pipe(i, j-1);
-			if (p > 0  &&  (p & DOWN) != 0)
-				fill(i, j-1);
+		refill(i, j, RIGHT);
+		refill(i, j, DOWN);
+		refill(i, j, LEFT);
+		refill(i, j, UP);
+	}//
+
+	private void refill (int i, int j, byte dir)
+	{//
+		if ((mPipes[i][j] & dir) != 0) {
+
+			byte bdir = 0;
+			int bi = i, bj = j;
+			switch (dir) {
+				case RIGHT:  bdir = LEFT;   bi++;  break;
+				case DOWN:   bdir = UP;     bj++;  break;
+				case LEFT:   bdir = RIGHT;  bi--;  break;
+				case UP:     bdir = DOWN;   bj--;  break;
+			}
+
+			int p = pipe(bi, bj);
+			if (p > 0) {
+				if ((p & bdir) != 0)
+					fill(bi, bj);
+				else if ((p & LOCKED) != 0) // dead end
+					mBadFillFlag = true;
+			}
+			else
+				mBadFillFlag = true;
 		}
 	}//
 
@@ -393,6 +404,7 @@ class Board
 	private boolean mSolvedFlag = false;
 	private boolean mSolvedFlagIsDirty = true;
 	private boolean mGameOver = false;
+	private boolean mBadFillFlag = false;
 	private int W, H;
 
 	private Position mUndoPosition1 = new Position();
