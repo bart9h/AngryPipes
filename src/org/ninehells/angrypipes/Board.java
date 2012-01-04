@@ -102,7 +102,7 @@ class Board
 			for (int j = 0;  j < H;  ++j)
 			for (int i = 0;  i < W;  ++i)
 				mPipes[i][j] &= mask;
-			fill(mCursor.i, mCursor.j);
+			fill(mCursor.i, mCursor.j, (byte)0);
 
 			mSolvedFlagIsDirty = false;
 			mSolvedFlag = (mFilledCount == W*H);
@@ -239,7 +239,7 @@ class Board
 			: (i>=0 && j>=0 && i<W && j<H) ? mPipes[i][j] : -1;
 	}//
 
-	private void fill (int i, int j)
+	private void fill (int i, int j, byte originDir)
 	{//
 		if (mConfig.torus_mode) {
 			i = (i+W)%W;
@@ -252,10 +252,10 @@ class Board
 		mPipes[i][j] |= FILLED;
 		++mFilledCount;
 
-		refill(i, j, RIGHT);
-		refill(i, j, DOWN);
-		refill(i, j, LEFT);
-		refill(i, j, UP);
+		if (originDir != LEFT)   refill(i, j, RIGHT);
+		if (originDir != UP)     refill(i, j, DOWN);
+		if (originDir != RIGHT)  refill(i, j, LEFT);
+		if (originDir != DOWN)   refill(i, j, UP);
 	}//
 
 	private void refill (int i, int j, byte dir)
@@ -273,8 +273,12 @@ class Board
 
 			int p = pipe(bi, bj);
 			if (p > 0) {
-				if ((p & bdir) != 0)
-					fill(bi, bj);
+				if ((p & bdir) != 0) {
+					if ((p & FILLED) != 0) // loop
+						mBadFillFlag = true;
+					else
+						fill(bi, bj, dir);
+				}
 				else if ((p & LOCKED) != 0) // dead end
 					mBadFillFlag = true;
 			}
