@@ -5,7 +5,6 @@ package org.ninehells.angrypipes;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.SystemClock;
 import android.content.SharedPreferences;
 import android.util.Base64;
 import android.view.Menu;

@@ -4,7 +4,6 @@ package org.ninehells.angrypipes;
 
 import java.util.ArrayList;
 import java.util.Random;
-import java.io.Console;
 
 import org.ninehells.angrypipes.Config;
 import org.ninehells.angrypipes.Position;

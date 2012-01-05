@@ -5,11 +5,9 @@ package org.ninehells.angrypipes;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
-import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Handler;
-import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.SurfaceView;
 
@@ -88,12 +86,12 @@ class ViewBoard extends SurfaceView
 		mMovePos.set(i, j);
 
 		int longPressTimeoutMillis = 400;
-		if (event.getAction() == event.ACTION_DOWN) {
+		if (event.getAction() == MotionEvent.ACTION_DOWN) {
 			mComputeScroll = false;
 			mDownPos.set(i, j);
 			mTimerHandler.postDelayed(mTimerTask, longPressTimeoutMillis);
 		}
-		else if (event.getAction() == event.ACTION_UP) {
+		else if (event.getAction() == MotionEvent.ACTION_UP) {
 			mTimerHandler.removeCallbacks(mTimerTask);
 			if (mDownPos.valid && event.getEventTime() - event.getDownTime() >= longPressTimeoutMillis) {
 				mBoard.setCursor(i, j);

@@ -29,9 +29,7 @@ import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.Scroller;
-import android.widget.TextView;
 
 /**
  * Layout container for a view hierarchy that can be scrolled by the user,
