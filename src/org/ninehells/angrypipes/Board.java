@@ -4,6 +4,7 @@ package org.ninehells.angrypipes;
 
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.Stack;
 
 import org.ninehells.angrypipes.Config;
 import org.ninehells.angrypipes.Position;
@@ -101,7 +102,7 @@ class Board
 			for (int j = 0;  j < H;  ++j)
 			for (int i = 0;  i < W;  ++i)
 				mPipes[i][j] &= mask;
-			fill(mCursor.i, mCursor.j, (byte)0);
+			fill(mCursor.i, mCursor.j);
 
 			mSolvedFlagIsDirty = false;
 			mSolvedFlag = (mFilledCount == W*H);
@@ -238,30 +239,40 @@ class Board
 			: (i>=0 && j>=0 && i<W && j<H) ? mPipes[i][j] : -1;
 	}//
 
-	private int int2i (int x) { return x & 0xfff; }
-	private int int2j (int x) { return (x >> 12) & 0xfff; }
-	private int ij2int (int i, int j) { return i|j<<12; }
+	private int int2i     (int x)                 { return (x >> 00) & 0xfff;   }
+	private int int2j     (int x)                 { return (x >> 12) & 0xfff;   }
+	private int int2dir   (int x)                 { return (x >> 24) & 0xf;     }
+	private int ij2int    (int i, int j)          { return i|(j<<12);           }
+	private int ijdir2int (int i, int j, int dir) { return i|(j<<12)|(dir<<24); }
 
-	private void fill (int i, int j, byte originDir)
+	private void fill (int i, int j)
 	{//
+		if (!mFillStack.empty())
+			throw new RuntimeException("Fill stack is not empty.");
+
 		if (mConfig.torus_mode) {
 			i = (i+W)%W;
 			j = (j+H)%H;
 		}
+		mFillStack.push(ij2int(i,j));
 
-		if (filled(i,j) || mConfig.auto_lock && !locked(i,j) && !moved(i,j))
-			return;
+		while (!mFillStack.empty()) {
+			int x = mFillStack.pop();
+			int ni = int2i(x);
+			int nj = int2j(x);
+			int originDir = int2dir(x);
 
-		mPipes[i][j] |= FILLED;
-		++mFilledCount;
+			mPipes[ni][nj] |= FILLED;
+			++mFilledCount;
 
-		if (originDir != LEFT)   refill(i, j, RIGHT);
-		if (originDir != UP)     refill(i, j, DOWN);
-		if (originDir != RIGHT)  refill(i, j, LEFT);
-		if (originDir != DOWN)   refill(i, j, UP);
+			if (originDir != LEFT)   propagateFill(ni, nj, RIGHT);
+			if (originDir != UP)     propagateFill(ni, nj, DOWN);
+			if (originDir != RIGHT)  propagateFill(ni, nj, LEFT);
+			if (originDir != DOWN)   propagateFill(ni, nj, UP);
+		}
 	}//
 
-	private void refill (int i, int j, byte dir)
+	private void propagateFill (int i, int j, byte dir)
 	{//
 		if ((mPipes[i][j] & dir) != 0) {
 
@@ -273,6 +284,13 @@ class Board
 				case LEFT:   bdir = RIGHT;  bi--;  break;
 				case UP:     bdir = DOWN;   bj--;  break;
 			}
+			if (mConfig.torus_mode) {
+				bi = (bi+W)%W;
+				bj = (bj+H)%H;
+			}
+
+			if (mConfig.auto_lock && !locked(bi,bj) && !moved(bi,bj))
+				return;
 
 			int p = pipe(bi, bj);
 			if (p > 0) {
@@ -280,7 +298,7 @@ class Board
 					if ((p & FILLED) != 0) // loop
 						mBadFillFlag = true;
 					else
-						fill(bi, bj, dir);
+						mFillStack.push(ijdir2int(bi, bj, dir));
 				}
 				else if ((p & LOCKED) != 0) // dead end
 					mBadFillFlag = true;
@@ -408,6 +426,7 @@ class Board
 	private Position mLastRotated = new Position();
 	private Position mCursor = new Position();
 	private int mFilledCount = 0;
+	private Stack<Integer> mFillStack = new Stack<Integer>();
 	private boolean mSolvedFlag = false;
 	private boolean mSolvedFlagIsDirty = true;
 	private boolean mGameOver = false;
