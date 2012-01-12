@@ -198,6 +198,7 @@ class Board
 			doRotate(i, j);
 	}//
 
+	//{// acessors
 	Config config() { return mConfig; }
 	boolean gameOver() { return mGameOver; }
 	boolean isBadFill() { return mBadFillFlag; }
@@ -208,6 +209,7 @@ class Board
 	boolean moved (int i, int j)  { return (pipe(i,j) & MOVED )!=0; }
 	boolean locked(int i, int j)  { return (pipe(i,j) & LOCKED)!=0; }
 	boolean filled(int i, int j)  { return (pipe(i,j) & FILLED)!=0; }
+	//}//
 
 	void setCursor(int i, int j)
 	{//
@@ -232,19 +234,6 @@ class Board
 		return true;
 	}//
 
-	private int pipe (int i, int j)
-	{//
-		return mConfig.torus_mode
-			? mPipes [(i+W)%W] [(j+H)%H]
-			: (i>=0 && j>=0 && i<W && j<H) ? mPipes[i][j] : -1;
-	}//
-
-	private int int2i     (int x)                 { return (x >> 00) & 0xfff;   }
-	private int int2j     (int x)                 { return (x >> 12) & 0xfff;   }
-	private int int2dir   (int x)                 { return (x >> 24) & 0xf;     }
-	private int ij2int    (int i, int j)          { return i|(j<<12);           }
-	private int ijdir2int (int i, int j, int dir) { return i|(j<<12)|(dir<<24); }
-
 	private void fill (int i, int j)
 	{//
 		if (!mFillStack.empty())
@@ -258,53 +247,47 @@ class Board
 
 		while (!mFillStack.empty()) {
 			int x = mFillStack.pop();
-			int ni = int2i(x);
-			int nj = int2j(x);
+			int ai = int2i(x);
+			int aj = int2j(x);
 			int originDir = int2dir(x);
 
-			mPipes[ni][nj] |= FILLED;
+			mPipes[ai][aj] |= FILLED;
 			++mFilledCount;
 
-			if (originDir != LEFT)   propagateFill(ni, nj, RIGHT);
-			if (originDir != UP)     propagateFill(ni, nj, DOWN);
-			if (originDir != RIGHT)  propagateFill(ni, nj, LEFT);
-			if (originDir != DOWN)   propagateFill(ni, nj, UP);
-		}
-	}//
+			byte[] dirs = { RIGHT, DOWN, LEFT, UP };
+			for (byte adir : dirs) {
 
-	private void propagateFill (int i, int j, byte dir)
-	{//
-		if ((mPipes[i][j] & dir) != 0) {
-
-			byte bdir = 0;
-			int bi = i, bj = j;
-			switch (dir) {
-				case RIGHT:  bdir = LEFT;   bi++;  break;
-				case DOWN:   bdir = UP;     bj++;  break;
-				case LEFT:   bdir = RIGHT;  bi--;  break;
-				case UP:     bdir = DOWN;   bj--;  break;
-			}
-			if (mConfig.torus_mode) {
-				bi = (bi+W)%W;
-				bj = (bj+H)%H;
-			}
-
-			if (mConfig.auto_lock && !locked(bi,bj) && !moved(bi,bj))
-				return;
-
-			int p = pipe(bi, bj);
-			if (p > 0) {
-				if ((p & bdir) != 0) {
-					if ((p & FILLED) != 0) // loop
-						mBadFillFlag = true;
-					else
-						mFillStack.push(ijdir2int(bi, bj, dir));
+				byte bdir = 0;
+				int bi = ai, bj = aj;
+				switch (adir) {
+					case RIGHT:  bdir = LEFT;   bi++;  break;
+					case DOWN:   bdir = UP;     bj++;  break;
+					case LEFT:   bdir = RIGHT;  bi--;  break;
+					case UP:     bdir = DOWN;   bj--;  break;
 				}
-				else if ((p & LOCKED) != 0) // dead end
-					mBadFillFlag = true;
+				if (mConfig.torus_mode) {
+					bi = (bi+W)%W;
+					bj = (bj+H)%H;
+				}
+
+				if ((originDir != bdir) && (mPipes[ai][aj] & adir) != 0 &&
+						(!mConfig.auto_lock || locked(bi,bj) || moved(bi,bj))
+				) {
+					int p = pipe(bi, bj);
+					if (p > 0) {
+						if ((p & bdir) != 0) {
+							if ((p & FILLED) != 0) // loop
+								mBadFillFlag = true;
+							else
+								mFillStack.push(ijdir2int(bi, bj, adir));
+						}
+						else if ((p & LOCKED) != 0) // dead end
+							mBadFillFlag = true;
+					}
+					else
+						mBadFillFlag = true;
+				}
 			}
-			else
-				mBadFillFlag = true;
 		}
 	}//
 
@@ -420,6 +403,19 @@ class Board
 			mUndoPosition2.reset();
 		}
 	}//
+
+	private int pipe (int i, int j)
+	{//
+		return mConfig.torus_mode
+			? mPipes [(i+W)%W] [(j+H)%H]
+			: (i>=0 && j>=0 && i<W && j<H) ? mPipes[i][j] : -1;
+	}//
+
+	private int int2i     (int x)                 { return (x >> 00) & 0xfff;   }
+	private int int2j     (int x)                 { return (x >> 12) & 0xfff;   }
+	private int int2dir   (int x)                 { return (x >> 24) & 0xf;     }
+	private int ij2int    (int i, int j)          { return i|(j<<12);           }
+	private int ijdir2int (int i, int j, int dir) { return i|(j<<12)|(dir<<24); }
 
 	private byte[][] mPipes;
 	private Config mConfig;
