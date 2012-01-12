@@ -146,8 +146,8 @@ class Board
 			/* remove a random cell from the border */
 			int borderToRemove = rand.nextInt(border.size());
 			int e = border.remove(borderToRemove);
-			int i = e & 0xfff;
-			int j = e >> 12;
+			int i = int2i(e);
+			int j = int2j(e);
 
 			/* which directions can we connect? */
 			ArrayList<Byte> dirs = new ArrayList<Byte>();
@@ -238,6 +238,10 @@ class Board
 			: (i>=0 && j>=0 && i<W && j<H) ? mPipes[i][j] : -1;
 	}//
 
+	private int int2i (int x) { return x & 0xfff; }
+	private int int2j (int x) { return (x >> 12) & 0xfff; }
+	private int ij2int (int i, int j) { return i|j<<12; }
+
 	private void fill (int i, int j, byte originDir)
 	{//
 		if (mConfig.torus_mode) {
@@ -323,8 +327,8 @@ class Board
 
 		for (int b = 0;  b < border.size();  ++b) {
 			int e = border.get(b);
-			int i = e & 0xfff;
-			int j = e >> 12;
+			int i = int2i(e);
+			int j = int2j(e);
 			if (i == I  &&  j == J)
 				return true;
 		}
@@ -380,7 +384,7 @@ class Board
 		}
 
 		if (i>=0 && j>=0 && i<W && j<H && mPipes[i][j]==0)
-			border.add(i|j<<12);
+			border.add(ij2int(i,j));
 	}//
 
 	private void undoAdd (Position pos1, Position pos2)
