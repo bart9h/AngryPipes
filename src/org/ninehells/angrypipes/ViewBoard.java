@@ -99,10 +99,9 @@ class ViewBoard extends SurfaceView
 					invalidate();
 			}
 			else if (mDownPos.equals(i, j)) {
-				mBoard.setCursor(i, j);
-				if (mAutoRotate || mCursor.equals(mDownPos))
+				if (mAutoRotate || mBoard.cursor().equals(mDownPos))
 					mBoard.rotate(mDownPos);
-				mCursor.set(mDownPos);
+				mBoard.setCursor(i, j);
 				invalidate();
 			}
 			mDownPos.reset();
@@ -190,7 +189,7 @@ class ViewBoard extends SurfaceView
 			}
 
 			/* cursor */
-			if (mCursor.valid && mCursor.equals(i, j)) {
+			if (mBoard.cursor().equals(i, j)) {
 				paint.setStyle(Paint.Style.STROKE);
 				paint.setARGB(0xff, 0xff, 0x00, 0x00);
 				canvas.drawRect(x0+1, y0+1, x1-1, y1-1, paint);
@@ -231,7 +230,6 @@ class ViewBoard extends SurfaceView
 	}//
 
 	private Board mBoard = null;
-	private Position mCursor  = new Position();
 	private Position mDownPos = new Position();
 	private Position mMovePos = new Position();
 	private boolean mAutoRotate = true;
@@ -250,7 +248,6 @@ class ViewBoard extends SurfaceView
 		public void run() {
 			if (mMovePos.equals(mDownPos)) {
 				if (!mComputeScroll && mBoard.toggleLock(mDownPos)) {
-					mCursor.set(mDownPos);
 					mBoard.setCursor(mDownPos.i, mDownPos.j);
 					invalidate();
 				}

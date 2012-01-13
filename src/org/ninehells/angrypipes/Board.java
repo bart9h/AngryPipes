@@ -43,22 +43,13 @@ class Board
 		if (locked(pos.i, pos.j))
 			return false;
 
-		if (!pos.equals(mLastRotated)) {
-
-			if (mLastRotated.valid) {
-				if (mConfig.auto_lock || mConfig.challenge_mode) {
-					undoAdd(mLastRotated);
-					mPipes[mLastRotated.i][mLastRotated.j] |= LOCKED;
-				}
-			}
-		}
+		setLastRotated(pos);
 
 		undoAdd(pos);
 		if (mConfig.auto_lock && isBlocked(pos.i, pos.j)) {
 			mPipes[pos.i][pos.j] |= LOCKED;
 		}
 		else {
-			mLastRotated.set(pos);
 			if (moved(pos.i, pos.j))
 				++mConfig.mistake_count;
 			else
@@ -80,6 +71,7 @@ class Board
 
 			mPipes[i][j] = (byte) b;
 			mLastRotated.set(i, j);
+			setCursor(i, j);
 		}
 	}//
 
@@ -195,6 +187,7 @@ class Board
 
 	//{// acessors
 	Config config() { return mConfig; }
+	Position cursor() { return mCursor; }
 	boolean gameOver() { return mGameOver; }
 	boolean isBadFill() { return mBadFillFlag; }
 	boolean right (int i, int j)  { return (pipe(i,j) & RIGHT )!=0; }
@@ -219,10 +212,12 @@ class Board
 		if (locked(pos.i, pos.j)) {
 			if (mConfig.challenge_mode)
 				return false;
+			setLastRotated(pos);
 			undoAdd(pos);
 			mPipes[pos.i][pos.j] &= (byte)(0xff ^ LOCKED);
 		}
 		else {
+			setLastRotated(pos);
 			undoAdd(pos);
 			mPipes[pos.i][pos.j] |= LOCKED;
 		}
@@ -312,6 +307,18 @@ class Board
 		);
 
 		mSolvedFlagIsDirty = true;
+	}//
+
+	private void setLastRotated (Position pos)
+	{//
+		if (!pos.equals(mLastRotated) && mLastRotated.valid) {
+			if (mConfig.auto_lock || mConfig.challenge_mode) {
+				undoAdd(mLastRotated);
+				mPipes[mLastRotated.i][mLastRotated.j] |= LOCKED;
+			}
+		}
+
+		mLastRotated.set(pos);
 	}//
 
 	private boolean isBorder (ArrayList<Integer> border, int I, int J)
