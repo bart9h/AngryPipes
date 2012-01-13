@@ -249,7 +249,7 @@ class Board
 			int x = mFillStack.pop();
 			int ai = int2i(x);
 			int aj = int2j(x);
-			int originDir = int2dir(x);
+			int originDir = int2b(x);
 
 			mPipes[ai][aj] |= FILLED;
 			++mFilledCount;
@@ -279,7 +279,7 @@ class Board
 							if ((p & FILLED) != 0) // loop
 								mBadFillFlag = true;
 							else
-								mFillStack.push(ijdir2int(bi, bj, adir));
+								mFillStack.push(ijb2int(bi, bj, adir));
 						}
 						else if ((p & LOCKED) != 0) // dead end
 							mBadFillFlag = true;
@@ -411,11 +411,11 @@ class Board
 			: (i>=0 && j>=0 && i<W && j<H) ? mPipes[i][j] : -1;
 	}//
 
-	private int int2i     (int x)                 { return (x >> 00) & 0xfff;   }
-	private int int2j     (int x)                 { return (x >> 12) & 0xfff;   }
-	private int int2dir   (int x)                 { return (x >> 24) & 0xf;     }
-	private int ij2int    (int i, int j)          { return i|(j<<12);           }
-	private int ijdir2int (int i, int j, int dir) { return i|(j<<12)|(dir<<24); }
+	private int int2i   (int x)                { return (x >> 00) & 0xfff; }
+	private int int2j   (int x)                { return (x >> 12) & 0xfff; }
+	private int int2b   (int x)                { return (x >> 24) & 0x7f;  }
+	private int ij2int  (int i, int j)         { return i|(j<<12);         }
+	private int ijb2int (int i, int j, int b)  { return i|(j<<12)|(b<<24); }
 
 	private byte[][] mPipes;
 	private Config mConfig;
