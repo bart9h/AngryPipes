@@ -42,49 +42,44 @@ class Board
 	{//
 		if (locked(pos.i, pos.j))
 			return false;
-		else {
-			if (!pos.equals(mLastRotated)) {
-				undoAdd(pos, mLastRotated);
 
-				if (mLastRotated.valid) {
-					if (mConfig.auto_lock || mConfig.challenge_mode)
-						mPipes[mLastRotated.i][mLastRotated.j] |= LOCKED;
-				}
+		if (!pos.equals(mLastRotated)) {
 
-				if (mConfig.auto_lock && isBlocked(pos.i, pos.j)) {
-					toggleLock(pos);
-					undoAdd(pos, mLastRotated);
-					return true;
-				}
-				else {
-					mLastRotated.set(pos);
-					if (moved(pos.i, pos.j))
-						++mConfig.mistake_count;
+			if (mLastRotated.valid) {
+				if (mConfig.auto_lock || mConfig.challenge_mode) {
+					undoAdd(mLastRotated);
+					mPipes[mLastRotated.i][mLastRotated.j] |= LOCKED;
 				}
 			}
-
-			mPipes[pos.i][pos.j] |= MOVED;
-			doRotate(pos.i, pos.j);
-			return true;
 		}
+
+		undoAdd(pos);
+		if (mConfig.auto_lock && isBlocked(pos.i, pos.j)) {
+			mPipes[pos.i][pos.j] |= LOCKED;
+		}
+		else {
+			mLastRotated.set(pos);
+			if (moved(pos.i, pos.j))
+				++mConfig.mistake_count;
+			else
+				mPipes[pos.i][pos.j] |= MOVED;
+			doRotate(pos.i, pos.j);
+		}
+
+		return true;
 	}//
 
 	void undo()
 	{//
-		if (mUndoPosition1.valid) {
-			byte old = mPipes[mUndoPosition1.i][mUndoPosition1.j];
-			mPipes[mUndoPosition1.i][mUndoPosition1.j] = mUndoPipe1;
-			mUndoPipe1 = old;
+		if (!mUndoStack.empty()) {
 
-			setCursor(mUndoPosition1.i, mUndoPosition1.j);
-			mSolvedFlagIsDirty = true;;
-		}
+			int x = mUndoStack.pop();
+			int i = int2i(x);
+			int j = int2j(x);
+			int b = int2b(x);
 
-		if (mUndoPosition2.valid) {
-			mLastRotated.set(mUndoPosition2);
-			byte old = mPipes[mUndoPosition2.i][mUndoPosition2.j];
-			mPipes[mUndoPosition2.i][mUndoPosition2.j] = mUndoPipe2;
-			mUndoPipe2 = old;
+			mPipes[i][j] = (byte) b;
+			mLastRotated.set(i, j);
 		}
 	}//
 
@@ -224,11 +219,11 @@ class Board
 		if (locked(pos.i, pos.j)) {
 			if (mConfig.challenge_mode)
 				return false;
-			undoAdd(pos, new Position());
+			undoAdd(pos);
 			mPipes[pos.i][pos.j] &= (byte)(0xff ^ LOCKED);
 		}
 		else {
-			undoAdd(pos, new Position());
+			undoAdd(pos);
 			mPipes[pos.i][pos.j] |= LOCKED;
 		}
 		return true;
@@ -388,20 +383,21 @@ class Board
 			border.add(ij2int(i,j));
 	}//
 
-	private void undoAdd (Position pos1, Position pos2)
+	private void undoAdd (Position pos)
 	{//
-		if (pos1.valid) {
-			mUndoPosition1.set(pos1);
-			mUndoPipe1 = mPipes[pos1.i][pos1.j];
+		if (!pos.valid)
+			return;
+
+		if (!mUndoStack.empty()) {
+			int x = mUndoStack.peek();
+			int i = int2i(x);
+			int j = int2j(x);
+			if (pos.equals(i,j))
+				return;
 		}
 
-		if (pos2.valid) {
-			mUndoPosition2.set(pos2);
-			mUndoPipe2 = mPipes[pos2.i][pos2.j];
-		}
-		else {
-			mUndoPosition2.reset();
-		}
+		mUndoStack.push(ijb2int(pos.i, pos.j, pipe(pos.i, pos.j)));
+
 	}//
 
 	private int pipe (int i, int j)
@@ -429,10 +425,7 @@ class Board
 	private boolean mBadFillFlag = false;
 	private int W, H;
 
-	private Position mUndoPosition1 = new Position();
-	private Position mUndoPosition2 = new Position();
-	private byte mUndoPipe1;
-	private byte mUndoPipe2;
+	private Stack<Integer> mUndoStack = new Stack<Integer>();
 
 	private final byte RIGHT  = 0x01;
 	private final byte DOWN   = 0x02;
