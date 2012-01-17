@@ -50,10 +50,7 @@ class Board
 			mPipes[pos.i][pos.j] |= LOCKED;
 		}
 		else {
-			if (moved(pos.i, pos.j))
-				++mConfig.mistake_count;
-			else
-				mPipes[pos.i][pos.j] |= MOVED;
+			mPipes[pos.i][pos.j] |= MOVED;
 			doRotate(pos.i, pos.j);
 		}
 
@@ -315,6 +312,9 @@ class Board
 			if (mConfig.auto_lock || mConfig.challenge_mode) {
 				undoAdd(mLastRotated);
 				mPipes[mLastRotated.i][mLastRotated.j] |= LOCKED;
+			}
+			else if (moved(pos.i, pos.j)) {
+				++mConfig.mistake_count;
 			}
 		}
 
