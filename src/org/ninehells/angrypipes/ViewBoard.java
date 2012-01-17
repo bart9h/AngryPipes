@@ -9,14 +9,14 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Handler;
 import android.view.MotionEvent;
-import android.view.SurfaceView;
 
 import org.ninehells.angrypipes.Board;
 import org.ninehells.angrypipes.Position;
+import org.ninehells.angrypipes.ZoomView;
 
 //}//
 
-class ViewBoard extends SurfaceView
+class ViewBoard extends ZoomView
 {
 	ViewBoard (Context context, Board board)
 	{//
@@ -27,8 +27,6 @@ class ViewBoard extends SurfaceView
 		Resources res  = context.getResources();
 		mZoomLevels = res.getIntArray(R.array.zoom_levels);
 		mZoomLevel = res.getInteger(R.integer.zoom_level);
-
-		setWillNotDraw(false);
 	}//
 
 	void zoomIn()

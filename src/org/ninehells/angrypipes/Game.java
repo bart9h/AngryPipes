@@ -15,7 +15,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ZoomControls;
 
-import us.gorges.viewaclue.TwoDScrollView;
 import org.ninehells.angrypipes.Board;
 import org.ninehells.angrypipes.ViewBoard;
 
@@ -38,9 +37,6 @@ public class Game extends Activity
 
 		mBoard = new Board(mConfig, Base64.decode(boardString, 0));
 		mBoardView = new ViewBoard(this, mBoard);
-
-		TwoDScrollView scrollView = new TwoDScrollView(this);
-		scrollView.addView(mBoardView);
 
 		Button undoButton = new Button(this);
 		undoButton.setText(R.string.undo);
@@ -73,7 +69,7 @@ public class Game extends Activity
 		LinearLayout layout = new LinearLayout(this);
 		layout.setOrientation(LinearLayout.VERTICAL);
 		layout.addView(buttonBar);
-		layout.addView(scrollView);
+		layout.addView(mBoardView);
 		setContentView(layout);
 
 		mTimerHandler.postDelayed(mTimerTask, 1000);
