@@ -6,11 +6,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.Button;
-import android.widget.TextView;
 
 import org.ninehells.angrypipes.Game;
 import org.ninehells.angrypipes.Settings;
@@ -24,11 +21,9 @@ public class AngryPipes extends Activity
 	{//
 		super.onCreate(state);
 
-		TextView text = new TextView(this);
-		text.setText(R.string.intro);
+		setContentView(R.layout.main);
 
-		mNewGameButton = new Button(this);
-		mNewGameButton.setText(R.string.new_game);
+		mNewGameButton = (Button)findViewById(R.id.new_game_button);
 		mNewGameButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				if (hasGame()) {
@@ -40,34 +35,19 @@ public class AngryPipes extends Activity
 			}
 		});
 
-		mResumeGameButton = new Button(this);
-		mResumeGameButton.setText(R.string.resume_game);
+		mResumeGameButton = (Button)findViewById(R.id.resume_game_button);
 		mResumeGameButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				startActivity(new Intent(AngryPipes.this, Game.class));
 			}
 		});
 
-		Button settings = new Button(this);
-		settings.setText(R.string.settings);
+		Button settings = (Button)findViewById(R.id.settings_button);
 		settings.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				startActivity(new Intent(AngryPipes.this, Settings.class));
 			}
 		});
-
-		Button about = new Button(this);
-		about.setText(R.string.about);
-
-		LinearLayout group = new LinearLayout(this);
-		group.setOrientation(LinearLayout.VERTICAL);
-		group.setGravity(Gravity.CENTER);
-		group.addView(text);
-		group.addView(mResumeGameButton);
-		group.addView(mNewGameButton);
-		group.addView(settings);
-		group.addView(about);
-		setContentView(group);
 	}//
 
 	@Override
