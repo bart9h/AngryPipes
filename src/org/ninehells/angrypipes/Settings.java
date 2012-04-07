@@ -12,7 +12,6 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import org.ninehells.angrypipes.Config;
@@ -27,67 +26,63 @@ public class Settings extends Activity
 	{//
 		super.onCreate(state);
 
+		setContentView(R.layout.settings);
+
 		final Resources res = getResources();
 		mConfig = new Config(this, state);
+		final int minimal = R.id.minimal_radio;
+		final int small   = R.id.small_radio;
+		final int medium  = R.id.medium_radio;
+		final int big     = R.id.big_radio;
+		final int max     = R.id.max_radio;
 
-		final RadioButton minimal = new RadioButton(this);
-		final RadioButton small   = new RadioButton(this);
-		final RadioButton medium  = new RadioButton(this);
-		final RadioButton big     = new RadioButton(this);
-		final RadioButton max     = new RadioButton(this);
-		minimal.setText(R.string.size_minimal);
-		small  .setText(R.string.size_small);
-		medium .setText(R.string.size_medium);
-		big    .setText(R.string.size_big);
-		max    .setText(R.string.size_max);
-		RadioGroup size = new RadioGroup(this);
-		size.addView(minimal);
-		size.addView(small);
-		size.addView(medium);
-		size.addView(big);
-		size.addView(max);
+		RadioGroup size = (RadioGroup) findViewById(R.id.size_radio_group);
 		if (mConfig.width == res.getInteger(R.integer.min_width) &&
 				mConfig.height == res.getInteger(R.integer.min_height))
-			size.check(minimal.getId());
+			size .check(minimal);
+
 		else if (mConfig.width  == res.getInteger(R.integer.small_width) &&
 				mConfig.height == res.getInteger(R.integer.small_height))
-			size.check(small.getId());
+			size.check(small);
+
 		else if (mConfig.width == res.getInteger(R.integer.medium_width) &&
 				mConfig.height == res.getInteger(R.integer.medium_height))
-			size.check(medium.getId());
+			size.check(medium);
+
 		else if (mConfig.width == res.getInteger(R.integer.big_width) &&
 				mConfig.height == res.getInteger(R.integer.big_height))
-			size.check(big.getId());
+			size.check(big);
+
 		else if (mConfig.width == res.getInteger(R.integer.max_width) &&
 				mConfig.height == res.getInteger(R.integer.max_height))
-			size.check(max.getId());
+			size.check(max);
+
 		size.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
 			public void onCheckedChanged(RadioGroup group, int checkedId) {
-				if (checkedId == minimal.getId()) {
+				if (checkedId == minimal) {
 					mConfig.width  = res.getInteger(R.integer.min_width);
 					mConfig.height = res.getInteger(R.integer.min_height);
 				}
-				else if (checkedId == small.getId()) {
+				else if (checkedId == small) {
 					mConfig.width  = res.getInteger(R.integer.small_width);
 					mConfig.height = res.getInteger(R.integer.small_height);
 				}
-				else if (checkedId == medium.getId()) {
+				else if (checkedId == medium) {
 					mConfig.width  = res.getInteger(R.integer.medium_width);
 					mConfig.height = res.getInteger(R.integer.medium_height);
 				}
-				else if (checkedId == big.getId()) {
+				else if (checkedId == big) {
 					mConfig.width  = res.getInteger(R.integer.big_width);
 					mConfig.height = res.getInteger(R.integer.big_height);
 				}
-				else if (checkedId == max.getId()) {
+				else if (checkedId == max) {
 					mConfig.width  = res.getInteger(R.integer.max_width);
 					mConfig.height = res.getInteger(R.integer.max_height);
 				}
 			}
 		});
 
-		CheckBox torus = new CheckBox(this);
-		torus.setText(R.string.torus_mode);
+		CheckBox torus = (CheckBox) findViewById(R.id.torus_button);
 		torus.setChecked(mConfig.torus_mode);
 		torus.setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener() {
 			public void onCheckedChanged(CompoundButton box, boolean isChecked) {
@@ -95,8 +90,7 @@ public class Settings extends Activity
 			}
 		});
 
-		CheckBox nocross = new CheckBox(this);
-		nocross.setText(R.string.no_cross_mode);
+		CheckBox nocross = (CheckBox) findViewById(R.id.no_cross_button);
 		nocross.setChecked(mConfig.no_cross_mode);
 		nocross.setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener() {
 			public void onCheckedChanged(CompoundButton box, boolean isChecked) {
@@ -104,8 +98,7 @@ public class Settings extends Activity
 			}
 		});
 
-		final CheckBox autolock = new CheckBox(this);
-		autolock.setText(R.string.auto_lock);
+		final CheckBox autolock = (CheckBox) findViewById(R.id.auto_lock_button);
 		autolock.setChecked(mConfig.auto_lock);
 		autolock.setEnabled(!mConfig.challenge_mode);
 		autolock.setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener() {
@@ -114,8 +107,7 @@ public class Settings extends Activity
 			}
 		});
 
-		CheckBox challenge = new CheckBox(this);
-		challenge.setText(R.string.challenge_mode);
+		CheckBox challenge = (CheckBox) findViewById(R.id.challenge_button);
 		challenge.setChecked(mConfig.challenge_mode);
 		challenge.setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener() {
 			public void onCheckedChanged(CompoundButton box, boolean isChecked) {
@@ -124,24 +116,12 @@ public class Settings extends Activity
 			}
 		});
 
-		Button play = new Button(this);
-		play.setText(R.string.new_game);
+		Button play = (Button) findViewById(R.id.new_game_settings_button);
 		play.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				saveAndRun();
 			}
 		});
-
-		LinearLayout layout = new LinearLayout(this);
-		layout.setOrientation(LinearLayout.VERTICAL);
-		layout.setGravity(Gravity.CENTER);
-		layout.addView(size);
-		layout.addView(torus);
-		layout.addView(nocross);
-		layout.addView(autolock);
-		layout.addView(challenge);
-		layout.addView(play);
-		setContentView(layout);
 	}//
 
 	private void saveAndRun()
