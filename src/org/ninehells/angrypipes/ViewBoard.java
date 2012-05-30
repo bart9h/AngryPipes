@@ -108,8 +108,7 @@ class ViewBoard extends SurfaceView
 			mDownPos.reset();
 		}
 
-		if (mBoard.popFeedback())
-			performHapticFeedback(0, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
+		handlePendingFeedbacks();
 
 		return true;
 	}//
@@ -204,6 +203,12 @@ class ViewBoard extends SurfaceView
 		canvas.restore();
 	}//
 
+	private void handlePendingFeedbacks()
+	{//
+		if (mBoard.popFeedback())
+			performHapticFeedback(0, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
+	}//
+
 	private void drawSegment (float x, float y, float x1, float y1, boolean simple, Canvas canvas, Paint paint)
 	{//
 		canvas.drawLine(x, y, x1, y1, paint);
@@ -252,6 +257,7 @@ class ViewBoard extends SurfaceView
 		public void run() {
 			if (mMovePos.equals(mDownPos)) {
 				if (!mComputeScroll && mBoard.toggleLock(mDownPos)) {
+					handlePendingFeedbacks();
 					mBoard.setCursor(mDownPos.i, mDownPos.j);
 					invalidate();
 				}
