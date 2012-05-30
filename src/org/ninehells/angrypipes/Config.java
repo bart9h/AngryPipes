@@ -17,6 +17,7 @@ class Config
 	boolean  torus_mode;
 	boolean  no_cross_mode;
 	boolean  challenge_mode;
+	boolean  haptic_feedback;
 	int seconds_elapsed;
 	int mistake_count;
 
@@ -29,6 +30,7 @@ class Config
 		no_cross_mode   = res.getBoolean(R.bool   .no_cross_mode);
 		auto_lock       = res.getBoolean(R.bool   .auto_lock);
 		challenge_mode  = res.getBoolean(R.bool   .challenge_mode);
+		haptic_feedback = res.getBoolean(R.bool   .haptic_feedback);
 		seconds_elapsed = -1;
 		mistake_count = 0;
 
@@ -39,6 +41,7 @@ class Config
 			no_cross_mode   = state.getBoolean("no_cross_mode",   no_cross_mode);
 			auto_lock       = state.getBoolean("auto_lock",       auto_lock);
 			challenge_mode  = state.getBoolean("challenge_mode",  challenge_mode);
+			haptic_feedback = state.getBoolean("haptic_feedback", haptic_feedback);
 			seconds_elapsed = state.getInt    ("seconds_elapsed", seconds_elapsed);
 			mistake_count   = state.getInt    ("mistake_count",   mistake_count);
 		}
@@ -50,6 +53,7 @@ class Config
 			no_cross_mode   = prefs.getBoolean("no_cross_mode",   no_cross_mode);
 			auto_lock       = prefs.getBoolean("auto_lock",       auto_lock);
 			challenge_mode  = prefs.getBoolean("challenge_mode",  challenge_mode);
+			haptic_feedback = prefs.getBoolean("haptic_feedback", haptic_feedback);
 			seconds_elapsed = prefs.getInt    ("seconds_elapsed", seconds_elapsed);
 			mistake_count   = prefs.getInt    ("mistake_count",   mistake_count);
 		}
@@ -67,6 +71,7 @@ class Config
 		ed.putBoolean("no_cross_mode",   no_cross_mode);
 		ed.putBoolean("auto_lock",       auto_lock);
 		ed.putBoolean("challenge_mode",  challenge_mode);
+		ed.putBoolean("haptic_feedback", haptic_feedback);
 		ed.putInt    ("seconds_elapsed", seconds_elapsed);
 		ed.putInt    ("mistake_count",   mistake_count);
 		if (board != null)
@@ -76,12 +81,13 @@ class Config
 
 	void save (Bundle state, String board)
 	{//
-		state.putInt    ("width",          width);
-		state.putInt    ("height",         height);
-		state.putBoolean("torus_mode",     torus_mode);
-		state.putBoolean("no_cross_mode",  no_cross_mode);
+		state.putInt    ("width",           width);
+		state.putInt    ("height",          height);
+		state.putBoolean("torus_mode",      torus_mode);
+		state.putBoolean("no_cross_mode",   no_cross_mode);
 		state.putBoolean("auto_lock",       auto_lock);
-		state.putBoolean("challenge_mode", challenge_mode);
+		state.putBoolean("challenge_mode",  challenge_mode);
+		state.putBoolean("haptic_feedback", haptic_feedback);
 		state.putInt    ("seconds_elapsed", seconds_elapsed);
 		state.putInt    ("mistake_count",   mistake_count);
 		if (board != null)

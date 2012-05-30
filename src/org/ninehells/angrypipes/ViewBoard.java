@@ -205,8 +205,10 @@ class ViewBoard extends SurfaceView
 
 	private void handlePendingFeedbacks()
 	{//
-		if (mBoard.popFeedback())
-			performHapticFeedback(0, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
+		if (mBoard.popFeedback()) {
+			if (mBoard.config().haptic_feedback)
+				performHapticFeedback(0, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
+		}
 	}//
 
 	private void drawSegment (float x, float y, float x1, float y1, boolean simple, Canvas canvas, Paint paint)
