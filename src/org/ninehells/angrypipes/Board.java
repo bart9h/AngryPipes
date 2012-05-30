@@ -216,7 +216,7 @@ class Board
 		else {
 			setLastRotated(pos);
 			undoAdd(pos);
-			mPipes[pos.i][pos.j] |= LOCKED;
+			lock(pos);
 		}
 		return true;
 	}//
