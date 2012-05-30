@@ -47,8 +47,7 @@ class Board
 
 		undoAdd(pos);
 		if (mConfig.auto_lock && isBlocked(pos.i, pos.j)) {
-			mPipes[pos.i][pos.j] |= LOCKED;
-			mHasPendingFeedback = true; // trigger bzzztt
+			lock(pos);
 		}
 		else {
 			mPipes[pos.i][pos.j] |= MOVED;
@@ -220,6 +219,14 @@ class Board
 			mPipes[pos.i][pos.j] |= LOCKED;
 		}
 		return true;
+	}//
+
+	void lock (Position pos)
+	{//
+		if (!locked(pos.i, pos.j)) {
+			mPipes[pos.i][pos.j] |= LOCKED;
+			mHasPendingFeedback = true; // bzzztt trigger
+		}
 	}//
 
 	private void fill (int i, int j)
