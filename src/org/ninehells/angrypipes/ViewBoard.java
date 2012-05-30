@@ -8,6 +8,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Handler;
+import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
 import android.view.SurfaceView;
 
@@ -106,6 +107,9 @@ class ViewBoard extends SurfaceView
 			}
 			mDownPos.reset();
 		}
+
+		if (mBoard.popFeedback())
+			performHapticFeedback(0, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
 
 		return true;
 	}//
