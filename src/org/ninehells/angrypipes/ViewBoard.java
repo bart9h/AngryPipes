@@ -8,6 +8,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Handler;
+import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
 import android.view.SurfaceView;
 
@@ -107,6 +108,8 @@ class ViewBoard extends SurfaceView
 			mDownPos.reset();
 		}
 
+		handlePendingFeedbacks();
+
 		return true;
 	}//
 
@@ -200,6 +203,14 @@ class ViewBoard extends SurfaceView
 		canvas.restore();
 	}//
 
+	private void handlePendingFeedbacks()
+	{//
+		if (mBoard.popFeedback()) {
+			if (mBoard.config().haptic_feedback)
+				performHapticFeedback(0, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
+		}
+	}//
+
 	private void drawSegment (float x, float y, float x1, float y1, boolean simple, Canvas canvas, Paint paint)
 	{//
 		canvas.drawLine(x, y, x1, y1, paint);
@@ -248,6 +259,7 @@ class ViewBoard extends SurfaceView
 		public void run() {
 			if (mMovePos.equals(mDownPos)) {
 				if (!mComputeScroll && mBoard.toggleLock(mDownPos)) {
+					handlePendingFeedbacks();
 					mBoard.setCursor(mDownPos.i, mDownPos.j);
 					invalidate();
 				}

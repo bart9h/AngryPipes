@@ -47,7 +47,7 @@ class Board
 
 		undoAdd(pos);
 		if (mConfig.auto_lock && isBlocked(pos.i, pos.j)) {
-			mPipes[pos.i][pos.j] |= LOCKED;
+			lock(pos);
 		}
 		else {
 			mPipes[pos.i][pos.j] |= MOVED;
@@ -216,9 +216,17 @@ class Board
 		else {
 			setLastRotated(pos);
 			undoAdd(pos);
-			mPipes[pos.i][pos.j] |= LOCKED;
+			lock(pos);
 		}
 		return true;
+	}//
+
+	void lock (Position pos)
+	{//
+		if (!locked(pos.i, pos.j)) {
+			mPipes[pos.i][pos.j] |= LOCKED;
+			mHasPendingFeedback = true; // bzzztt trigger
+		}
 	}//
 
 	private void fill (int i, int j)
@@ -376,6 +384,13 @@ class Board
 		return true;
 	}//
 
+	boolean popFeedback()
+	{//
+		boolean rc = mHasPendingFeedback;
+		mHasPendingFeedback = false;
+		return rc;
+	}//
+
 	private void addBorder (ArrayList<Integer> border, int i, int j)
 	{//
 		if (isBorder(border, i, j))
@@ -430,6 +445,7 @@ class Board
 	private boolean mSolvedFlagIsDirty = true;
 	private boolean mGameOver = false;
 	private boolean mBadFillFlag = false;
+	private boolean mHasPendingFeedback = false;
 	private int W, H;
 
 	private Stack<Integer> mUndoStack = new Stack<Integer>();
