@@ -4,6 +4,7 @@ package org.ninehells.angrypipes;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
@@ -13,6 +14,7 @@ import android.view.SurfaceView;
 
 import org.ninehells.angrypipes.Board;
 import org.ninehells.angrypipes.Position;
+import org.ninehells.angrypipes.Theme;
 
 //}//
 
@@ -29,6 +31,16 @@ class ViewBoard extends SurfaceView
 		mZoomLevel = res.getInteger(R.integer.zoom_level);
 
 		setWillNotDraw(false);
+
+		theme.background = 0xff000000;
+		theme.grid       = 0xff303030;
+		theme.solved     = 0xff00ff00;
+		theme.badFill    = 0xffff4040;
+		theme.filled     = 0xffffff40;
+		theme.pipe       = 0xffffffff;
+		theme.locked     = 0x20008000;
+		theme.torus      = 0x40808080;
+		theme.cursor     = 0xffff0000;
 	}//
 
 	void zoomIn()
@@ -122,7 +134,11 @@ class ViewBoard extends SurfaceView
 		int torus = mBoard.config().torus_mode ? 1 : 0;
 
 		Paint paint = new Paint();
-		canvas.drawRGB(0, 0, 0);
+		canvas.drawRGB(
+				Color.red  (theme.background),
+				Color.green(theme.background),
+				Color.blue (theme.background)
+		);
 
 		Rect r = canvas.getClipBounds();
 		int i0 = -torus+ r.left/mCellSize;
@@ -133,7 +149,7 @@ class ViewBoard extends SurfaceView
 		w += 2*torus;
 		h += 2*torus;
 
-		paint.setARGB(0xff, 0x30, 0x30, 0x30);
+		paint.setColor(theme.grid);
 
 		// grid
 		for (int j = j0; j <= j1+1; ++j)
@@ -158,15 +174,15 @@ class ViewBoard extends SurfaceView
 
 			/* set pipe color */
 			if (mBoard.isSolved())
-				paint.setARGB(0xff, 0x00, 0xff, 0x00);
+				paint.setColor(theme.solved);
 			else if (mBoard.filled(i,j)) {
 				if (mBoard.isBadFill())
-					paint.setARGB(0xff, 0xff, 0x40, 0x40);
+					paint.setColor(theme.badFill);
 				else
-					paint.setARGB(0xff, 0xff, 0xff, 0x40);
+					paint.setColor(theme.filled);
 			}
 			else
-				paint.setARGB(0xff, 0xff, 0xff, 0xff);
+				paint.setColor(theme.pipe);
 
 			/* draw pipe */
 			boolean simple = (scale < .5);
@@ -178,20 +194,20 @@ class ViewBoard extends SurfaceView
 			if (mBoard.down (i,j)) drawSegment(xc, yc, xc, y1, simple, canvas, paint);
 
 			if (mBoard.moved(i,j) || mBoard.locked(i,j)) {
-				paint.setARGB(0x20, 0x00, 0x80, 0x00);
+				paint.setColor(theme.locked);
 				canvas.drawRect(x0, y0, x1, y1, paint);
 			}
 
 			/* torus border */
 			if (i<0 || j<0 || i>=mBoard.config().width || j>=mBoard.config().height) {
-				paint.setARGB(0x40, 0x80, 0x80, 0x80);
+				paint.setColor(theme.torus);
 				canvas.drawRect(x0, y0, x1, y1, paint);
 			}
 
 			/* cursor */
 			if (mBoard.cursor().equals(i, j)) {
 				paint.setStyle(Paint.Style.STROKE);
-				paint.setARGB(0xff, 0xff, 0x00, 0x00);
+				paint.setColor(theme.cursor);
 				canvas.drawRect(x0+1, y0+1, x1-1, y1-1, paint);
 				paint.setStyle(Paint.Style.FILL);
 			}
@@ -241,6 +257,7 @@ class ViewBoard extends SurfaceView
 	private final int mBorder = 1;
 	private final int mCellSize = 2*mBorder+2*mSegmentSize;
 
+	private Theme theme = new Theme();
 	private boolean mComputeScroll = false;
 	private Handler mTimerHandler = new Handler();
 	private Runnable mTimerTask = new Runnable()
