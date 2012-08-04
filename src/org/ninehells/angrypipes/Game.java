@@ -5,6 +5,7 @@ package org.ninehells.angrypipes;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Base64;
 import android.view.Menu;
@@ -17,6 +18,7 @@ import android.widget.ZoomControls;
 
 import us.gorges.viewaclue.TwoDScrollView;
 import org.ninehells.angrypipes.Board;
+import org.ninehells.angrypipes.Preferences;
 import org.ninehells.angrypipes.ViewBoard;
 
 //}//
@@ -94,6 +96,7 @@ public class Game extends Activity
 		menu.add(Menu.NONE, R.integer.save_checkpoint, Menu.NONE, R.string.save_checkpoint);
 		mRestoreMenuItem = menu.add(Menu.NONE, R.integer.restore_checkpoint, Menu.NONE, R.string.restore_checkpoint);
 		mRestoreMenuItem.setEnabled(mCheckpointBoard != null);
+		menu.add(Menu.NONE, R.integer.open_preferences, Menu.NONE, R.string.open_preferences);
 		return true;
 	}//
 
@@ -108,6 +111,9 @@ public class Game extends Activity
 			case R.integer.restore_checkpoint:
 				mBoard.serialize(mCheckpointBoard);
 				mBoardView.invalidate();
+				return true;
+			case R.integer.open_preferences:
+				startActivity(new Intent(Game.this, Preferences.class));
 				return true;
 			default:
 				return super.onOptionsItemSelected(item);
