@@ -32,15 +32,27 @@ class ViewBoard extends SurfaceView
 
 		setWillNotDraw(false);
 
-		theme.background = 0xff000000;
-		theme.grid       = 0xff303030;
-		theme.solved     = 0xff00ff00;
-		theme.badFill    = 0xffff4040;
-		theme.filled     = 0xffffff40;
-		theme.pipe       = 0xffffffff;
-		theme.locked     = 0x20008000;
-		theme.torus      = 0x40808080;
-		theme.cursor     = 0xffff0000;
+		mThemes[0] = new Theme();
+		mThemes[0].background = 0xff000000;
+		mThemes[0].grid       = 0xff303030;
+		mThemes[0].solved     = 0xff00ff00;
+		mThemes[0].badFill    = 0xffff4040;
+		mThemes[0].filled     = 0xffffff40;
+		mThemes[0].pipe       = 0xffffffff;
+		mThemes[0].locked     = 0x20008000;
+		mThemes[0].torus      = 0x40808080;
+		mThemes[0].cursor     = 0xffff0000;
+
+		mThemes[1] = new Theme();
+		mThemes[1].background = 0xffffffff;
+		mThemes[1].grid       = 0x20000000;
+		mThemes[1].solved     = 0xff0099cc;
+		mThemes[1].badFill    = 0xffcc0000;
+		mThemes[1].filled     = 0xffff8800;
+		mThemes[1].pipe       = 0xff000000;
+		mThemes[1].locked     = 0x10000000;
+		mThemes[1].torus      = 0x40000000;
+		mThemes[1].cursor     = 0xffff0000;
 	}//
 
 	void zoomIn()
@@ -132,6 +144,8 @@ class ViewBoard extends SurfaceView
 		int w = mBoard.config().width;
 		int h = mBoard.config().height;
 		int torus = mBoard.config().torus_mode ? 1 : 0;
+
+		Theme theme = mThemes[1];
 
 		Paint paint = new Paint();
 		canvas.drawRGB(
@@ -257,7 +271,7 @@ class ViewBoard extends SurfaceView
 	private final int mBorder = 1;
 	private final int mCellSize = 2*mBorder+2*mSegmentSize;
 
-	private Theme theme = new Theme();
+	private Theme[] mThemes = new Theme[2];
 	private boolean mComputeScroll = false;
 	private Handler mTimerHandler = new Handler();
 	private Runnable mTimerTask = new Runnable()
