@@ -16,12 +16,13 @@ class Board
 	Board (Config config, byte[] board)
 	{//
 		mConfig = config;
+
 		W = mConfig.width;
 		H = mConfig.height;
-		mPipes = new byte[W][H];
-
 		if (W < 2  ||  H < 2  ||  W > 4000  ||  H > 4000)
 			throw new IllegalArgumentException("Invalid board dimensions.");
+
+		mPipes = new byte[W][H];
 
 		if (board.length == 0)
 			randomize();
@@ -281,7 +282,10 @@ class Board
 	void serialize(byte[] board)
 	{//
 		if (board.length != W*H)
-			throw new IllegalArgumentException("Invalid board string size.");
+			throw new IllegalArgumentException(String.format(
+					"Invalid board string size (board.length=%d, W=%d, H=%d).",
+					board.length, W, H
+			));
 
 		for (int j = 0;  j < H;  ++j)
 		for (int i = 0;  i < W;  ++i)
