@@ -9,8 +9,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-import org.ninehells.angrypipes.Game;
-import org.ninehells.angrypipes.Settings;
+import org.ninehells.angrypipes.GameActivity;
+import org.ninehells.angrypipes.BoardActivity;
 
 //}//
 
@@ -28,24 +28,24 @@ public class AngryPipes extends Activity
 			public void onClick(View v) {
 				if (hasGame()) {
 					//TODO confirmation
-					Config cfg = new Config(AngryPipes.this);
-					cfg.save(AngryPipes.this, "");
+					BoardData b = new BoardData(AngryPipes.this);
+					b.save(AngryPipes.this, "");
 				}
-				startActivity(new Intent(AngryPipes.this, Game.class));
+				startActivity(new Intent(AngryPipes.this, GameActivity.class));
 			}
 		});
 
 		mResumeGameButton = (Button)findViewById(R.id.resume_game_button);
 		mResumeGameButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				startActivity(new Intent(AngryPipes.this, Game.class));
+				startActivity(new Intent(AngryPipes.this, GameActivity.class));
 			}
 		});
 
 		Button settings = (Button)findViewById(R.id.settings_button);
 		settings.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				startActivity(new Intent(AngryPipes.this, Settings.class));
+				startActivity(new Intent(AngryPipes.this, BoardActivity.class));
 			}
 		});
 	}//

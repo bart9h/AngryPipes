@@ -14,12 +14,12 @@ import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 
-import org.ninehells.angrypipes.Config;
-import org.ninehells.angrypipes.Game;
+import org.ninehells.angrypipes.SettingsData;
+import org.ninehells.angrypipes.GameActivity;
 
 //}//
 
-public class Preferences extends Activity
+public class SettingsActivity extends Activity
 {
 	@Override
 	public void onCreate (Bundle state)
@@ -29,30 +29,29 @@ public class Preferences extends Activity
 		setContentView(R.layout.preferences);
 
 		final Resources res = getResources();
-		mConfig = new Config(this);
+		mSettingsData = new SettingsData(this);
 
 		CheckBox light_theme = (CheckBox) findViewById(R.id.light_theme_button);
-		light_theme.setChecked(mConfig.light_theme);
+		light_theme.setChecked(mSettingsData.light_theme);
 		light_theme.setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener() {
 			public void onCheckedChanged(CompoundButton box, boolean isChecked) {
-				mConfig.light_theme = isChecked;
+				mSettingsData.light_theme = isChecked;
 			}
 		});
 
 		CheckBox auto_pan = (CheckBox) findViewById(R.id.auto_pan_button);
-		auto_pan.setChecked(mConfig.no_cross_mode);
+		auto_pan.setChecked(mSettingsData.auto_pan);
 		auto_pan.setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener() {
 			public void onCheckedChanged(CompoundButton box, boolean isChecked) {
-				mConfig.auto_pan = isChecked;
+				mSettingsData.auto_pan = isChecked;
 			}
 		});
 
 		final CheckBox autolock = (CheckBox) findViewById(R.id.auto_lock_button);
-		autolock.setChecked(mConfig.auto_lock);
-		autolock.setEnabled(!mConfig.challenge_mode);
+		autolock.setChecked(mSettingsData.auto_lock);
 		autolock.setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener() {
 			public void onCheckedChanged(CompoundButton box, boolean isChecked) {
-				mConfig.auto_lock = isChecked;
+				mSettingsData.auto_lock = isChecked;
 			}
 		});
 	}//
@@ -62,10 +61,10 @@ public class Preferences extends Activity
 	{//
 		super.onPause();
 
-		mConfig.save(this, null);
+		mSettingsData.save(this, null);
 	}//
 
-	private Config mConfig;
+	private SettingsData mSettingsData;
 }
 
 // vim600:fdm=marker:fmr={//,}//:fdn=2:nu:

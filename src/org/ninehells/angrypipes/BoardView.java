@@ -18,9 +18,9 @@ import org.ninehells.angrypipes.Theme;
 
 //}//
 
-class ViewBoard extends SurfaceView
+class BoardView extends SurfaceView
 {
-	ViewBoard (Context context, Board board)
+	BoardView (Context context, Board board)
 	{//
 		super(context);
 
@@ -75,11 +75,11 @@ class ViewBoard extends SurfaceView
 	@Override
 	public void onMeasure (int w, int h)
 	{//
-		int torus = mBoard.config().torus_mode ? 1 : 0;
+		int torus = mBoard.data().torus_mode ? 1 : 0;
 		double scale = (mZoomLevels[mZoomLevel]*1.0)/100.0;
 		setMeasuredDimension(
-				(int)(scale*(2 + mCellSize*(2*torus + mBoard.config().width))),
-				(int)(scale*(2 + mCellSize*(2*torus + mBoard.config().height)))
+				(int)(scale*(2 + mCellSize*(2*torus + mBoard.data().width))),
+				(int)(scale*(2 + mCellSize*(2*torus + mBoard.data().height)))
 		);
 	}//
 
@@ -93,12 +93,12 @@ class ViewBoard extends SurfaceView
 	public boolean onTouchEvent (MotionEvent event)
 	{//
 		double scale = (mZoomLevels[mZoomLevel]*1.0)/100.0;
-		int torus = mBoard.config().torus_mode ? 1 : 0;
+		int torus = mBoard.data().torus_mode ? 1 : 0;
 		int i = -torus+ (int)(event.getX()/(scale*mCellSize));
 		int j = -torus+ (int)(event.getY()/(scale*mCellSize));
-		int W = mBoard.config().width;
-		int H = mBoard.config().height;
-		if (mBoard.config().torus_mode) {
+		int W = mBoard.data().width;
+		int H = mBoard.data().height;
+		if (mBoard.data().torus_mode) {
 			i = (i + W) % W;
 			j = (j + H) % H;
 		}
@@ -141,11 +141,11 @@ class ViewBoard extends SurfaceView
 		double scale = (mZoomLevels[mZoomLevel]*1.0)/100.0;
 		canvas.scale((float)scale, (float)scale);
 
-		int w = mBoard.config().width;
-		int h = mBoard.config().height;
-		int torus = mBoard.config().torus_mode ? 1 : 0;
+		int w = mBoard.data().width;
+		int h = mBoard.data().height;
+		int torus = mBoard.data().torus_mode ? 1 : 0;
 
-		Theme theme = mThemes[mBoard.config().light_theme ? 1 : 0];
+		Theme theme = mThemes[mBoard.settings().light_theme ? 1 : 0];
 
 		Paint paint = new Paint();
 		canvas.drawRGB(
@@ -172,7 +172,7 @@ class ViewBoard extends SurfaceView
 			canvas.drawLine(i*mCellSize, 0, i*mCellSize, h*mCellSize-1, paint);
 
 		// border
-		if (!mBoard.config().torus_mode) {
+		if (!mBoard.data().torus_mode) {
 			canvas.drawLine(3, 3, w*mCellSize-3-1, 3, paint);
 			canvas.drawLine(3, 3, 3, h*mCellSize-3-1, paint);
 			canvas.drawLine(w*mCellSize-3-1, h*mCellSize-3-1, w*mCellSize-3-1, 3, paint);
@@ -213,7 +213,7 @@ class ViewBoard extends SurfaceView
 			}
 
 			/* torus border */
-			if (i<0 || j<0 || i>=mBoard.config().width || j>=mBoard.config().height) {
+			if (i<0 || j<0 || i>=mBoard.data().width || j>=mBoard.data().height) {
 				paint.setColor(theme.torus);
 				canvas.drawRect(x0, y0, x1, y1, paint);
 			}

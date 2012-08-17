@@ -6,19 +6,19 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.Stack;
 
-import org.ninehells.angrypipes.Config;
+import org.ninehells.angrypipes.BoardData;
 import org.ninehells.angrypipes.Position;
 
 //}//
 
 class Board
 {
-	Board (Config config, byte[] board)
+	Board (BoardData data, byte[] board)
 	{//
-		mConfig = config;
+		mBoardData = data;
 
-		W = mConfig.width;
-		H = mConfig.height;
+		W = mBoardData.width;
+		H = mBoardData.height;
 		if (W < 2  ||  H < 2  ||  W > 4000  ||  H > 4000)
 			throw new IllegalArgumentException("Invalid board dimensions.");
 
@@ -47,7 +47,7 @@ class Board
 		setLastRotated(pos);
 
 		undoAdd(pos);
-		if (mConfig.auto_lock && isBlocked(pos.i, pos.j)) {
+		if (mSettingsData.auto_lock && isBlocked(pos.i, pos.j)) {
 			mPipes[pos.i][pos.j] |= LOCKED;
 		}
 		else {
@@ -137,7 +137,7 @@ class Board
 
 			/* which directions can we connect? */
 			ArrayList<Byte> dirs = new ArrayList<Byte>();
-			boolean nc = mConfig.no_cross_mode;
+			boolean nc = mBoardData.no_cross_mode;
 			int r=pipe(i+1,j), d=pipe(i,j+1), l=pipe(i-1,j), u=pipe(i,j-1);
 			if (r>0 && !(nc && (r&ALLDIRS)==(RIGHT|DOWN|UP  )))  dirs.add(RIGHT);
 			if (d>0 && !(nc && (d&ALLDIRS)==(RIGHT|DOWN|LEFT)))  dirs.add(DOWN);
@@ -184,7 +184,12 @@ class Board
 	}//
 
 	//{// acessors
-	Config config() { return mConfig; }
+	BoardData data() { return mBoardData; }
+	SettingsData settings() { return mSettingsData; }
+	GameData game() { return mGameData; }
+	void setGameData (GameData a) { mGameData = a; }
+	void setSettingsData (SettingsData a) { mSettingsData = a; }
+
 	Position cursor() { return mCursor; }
 	boolean gameOver() { return mGameOver; }
 	boolean isBadFill() { return mBadFillFlag; }
@@ -208,7 +213,7 @@ class Board
 	boolean toggleLock (Position pos)
 	{//
 		if (locked(pos.i, pos.j)) {
-			if (mConfig.challenge_mode)
+			if (mBoardData.challenge_mode)
 				return false;
 			setLastRotated(pos);
 			undoAdd(pos);
@@ -227,7 +232,7 @@ class Board
 		if (!mFillStack.empty())
 			throw new RuntimeException("Fill stack is not empty.");
 
-		if (mConfig.torus_mode) {
+		if (mBoardData.torus_mode) {
 			i = (i+W)%W;
 			j = (j+H)%H;
 		}
@@ -253,13 +258,13 @@ class Board
 					case LEFT:   bdir = RIGHT;  bi--;  break;
 					case UP:     bdir = DOWN;   bj--;  break;
 				}
-				if (mConfig.torus_mode) {
+				if (mBoardData.torus_mode) {
 					bi = (bi+W)%W;
 					bj = (bj+H)%H;
 				}
 
 				if ((originDir != bdir) && (mPipes[ai][aj] & adir) != 0 &&
-						(!mConfig.auto_lock || locked(bi,bj) || moved(bi,bj))
+						(!mSettingsData.auto_lock || locked(bi,bj) || moved(bi,bj))
 				) {
 					int p = pipe(bi, bj);
 					if (p > 0) {
@@ -313,12 +318,12 @@ class Board
 	private void setLastRotated (Position pos)
 	{//
 		if (!pos.equals(mLastRotated) && mLastRotated.valid) {
-			if (mConfig.auto_lock || mConfig.challenge_mode) {
+			if (mSettingsData.auto_lock || mBoardData.challenge_mode) {
 				undoAdd(mLastRotated);
 				mPipes[mLastRotated.i][mLastRotated.j] |= LOCKED;
 			}
 			else if (moved(pos.i, pos.j)) {
-				++mConfig.mistake_count;
+				++mGameData.mistake_count;
 			}
 		}
 
@@ -327,7 +332,7 @@ class Board
 
 	private boolean isBorder (ArrayList<Integer> border, int I, int J)
 	{//
-		if (mConfig.torus_mode) {
+		if (mBoardData.torus_mode) {
 			I = (I+W)%W;
 			J = (J+H)%H;
 		}
@@ -344,7 +349,7 @@ class Board
 
 	private boolean setPos (Position pos, int i, int j)
 	{//
-		if (!mConfig.torus_mode && (i<0 || i>=W || j<0 || j>=H))
+		if (!mBoardData.torus_mode && (i<0 || i>=W || j<0 || j>=H))
 			return false;
 
 		pos.set((i+W)%W, (j+H)%H);
@@ -385,7 +390,7 @@ class Board
 		if (isBorder(border, i, j))
 			return;
 
-		if (mConfig.torus_mode) {
+		if (mBoardData.torus_mode) {
 			i = (i+W)%W;
 			j = (j+H)%H;
 		}
@@ -413,7 +418,7 @@ class Board
 
 	private int pipe (int i, int j)
 	{//
-		return mConfig.torus_mode
+		return mBoardData.torus_mode
 			? mPipes [(i+W)%W] [(j+H)%H]
 			: (i>=0 && j>=0 && i<W && j<H) ? mPipes[i][j] : -1;
 	}//
@@ -425,7 +430,9 @@ class Board
 	private int ijb2int (int i, int j, int b)  { return i|(j<<12)|(b<<24); }
 
 	private byte[][] mPipes;
-	private Config mConfig;
+	private BoardData mBoardData;
+	private GameData mGameData;
+	private SettingsData mSettingsData;
 	private Position mLastRotated = new Position();
 	private Position mCursor = new Position();
 	private int mFilledCount = 0;

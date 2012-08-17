@@ -14,12 +14,12 @@ import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 
-import org.ninehells.angrypipes.Config;
-import org.ninehells.angrypipes.Game;
+import org.ninehells.angrypipes.BoardData;
+import org.ninehells.angrypipes.GameActivity;
 
 //}//
 
-public class Settings extends Activity
+public class BoardActivity extends Activity
 {
 	@Override
 	public void onCreate (Bundle state)
@@ -29,7 +29,7 @@ public class Settings extends Activity
 		setContentView(R.layout.settings);
 
 		final Resources res = getResources();
-		mConfig = new Config(this);
+		mBoardData = new BoardData(this);
 		final int minimal = R.id.minimal_radio;
 		final int small   = R.id.small_radio;
 		final int medium  = R.id.medium_radio;
@@ -37,72 +37,72 @@ public class Settings extends Activity
 		final int max     = R.id.max_radio;
 
 		RadioGroup size = (RadioGroup) findViewById(R.id.size_radio_group);
-		if (mConfig.width == res.getInteger(R.integer.min_width) &&
-				mConfig.height == res.getInteger(R.integer.min_height))
+		if (mBoardData.width == res.getInteger(R.integer.min_width) &&
+				mBoardData.height == res.getInteger(R.integer.min_height))
 			size .check(minimal);
 
-		else if (mConfig.width  == res.getInteger(R.integer.small_width) &&
-				mConfig.height == res.getInteger(R.integer.small_height))
+		else if (mBoardData.width  == res.getInteger(R.integer.small_width) &&
+				mBoardData.height == res.getInteger(R.integer.small_height))
 			size.check(small);
 
-		else if (mConfig.width == res.getInteger(R.integer.medium_width) &&
-				mConfig.height == res.getInteger(R.integer.medium_height))
+		else if (mBoardData.width == res.getInteger(R.integer.medium_width) &&
+				mBoardData.height == res.getInteger(R.integer.medium_height))
 			size.check(medium);
 
-		else if (mConfig.width == res.getInteger(R.integer.big_width) &&
-				mConfig.height == res.getInteger(R.integer.big_height))
+		else if (mBoardData.width == res.getInteger(R.integer.big_width) &&
+				mBoardData.height == res.getInteger(R.integer.big_height))
 			size.check(big);
 
-		else if (mConfig.width == res.getInteger(R.integer.max_width) &&
-				mConfig.height == res.getInteger(R.integer.max_height))
+		else if (mBoardData.width == res.getInteger(R.integer.max_width) &&
+				mBoardData.height == res.getInteger(R.integer.max_height))
 			size.check(max);
 
 		size.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
 			public void onCheckedChanged(RadioGroup group, int checkedId) {
 				if (checkedId == minimal) {
-					mConfig.width  = res.getInteger(R.integer.min_width);
-					mConfig.height = res.getInteger(R.integer.min_height);
+					mBoardData.width  = res.getInteger(R.integer.min_width);
+					mBoardData.height = res.getInteger(R.integer.min_height);
 				}
 				else if (checkedId == small) {
-					mConfig.width  = res.getInteger(R.integer.small_width);
-					mConfig.height = res.getInteger(R.integer.small_height);
+					mBoardData.width  = res.getInteger(R.integer.small_width);
+					mBoardData.height = res.getInteger(R.integer.small_height);
 				}
 				else if (checkedId == medium) {
-					mConfig.width  = res.getInteger(R.integer.medium_width);
-					mConfig.height = res.getInteger(R.integer.medium_height);
+					mBoardData.width  = res.getInteger(R.integer.medium_width);
+					mBoardData.height = res.getInteger(R.integer.medium_height);
 				}
 				else if (checkedId == big) {
-					mConfig.width  = res.getInteger(R.integer.big_width);
-					mConfig.height = res.getInteger(R.integer.big_height);
+					mBoardData.width  = res.getInteger(R.integer.big_width);
+					mBoardData.height = res.getInteger(R.integer.big_height);
 				}
 				else if (checkedId == max) {
-					mConfig.width  = res.getInteger(R.integer.max_width);
-					mConfig.height = res.getInteger(R.integer.max_height);
+					mBoardData.width  = res.getInteger(R.integer.max_width);
+					mBoardData.height = res.getInteger(R.integer.max_height);
 				}
 			}
 		});
 
 		CheckBox torus = (CheckBox) findViewById(R.id.torus_button);
-		torus.setChecked(mConfig.torus_mode);
+		torus.setChecked(mBoardData.torus_mode);
 		torus.setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener() {
 			public void onCheckedChanged(CompoundButton box, boolean isChecked) {
-				mConfig.torus_mode = isChecked;
+				mBoardData.torus_mode = isChecked;
 			}
 		});
 
 		CheckBox nocross = (CheckBox) findViewById(R.id.no_cross_button);
-		nocross.setChecked(mConfig.no_cross_mode);
+		nocross.setChecked(mBoardData.no_cross_mode);
 		nocross.setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener() {
 			public void onCheckedChanged(CompoundButton box, boolean isChecked) {
-				mConfig.no_cross_mode = isChecked;
+				mBoardData.no_cross_mode = isChecked;
 			}
 		});
 
 		CheckBox challenge = (CheckBox) findViewById(R.id.challenge_button);
-		challenge.setChecked(mConfig.challenge_mode);
+		challenge.setChecked(mBoardData.challenge_mode);
 		challenge.setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener() {
 			public void onCheckedChanged(CompoundButton box, boolean isChecked) {
-				mConfig.challenge_mode = isChecked;
+				mBoardData.challenge_mode = isChecked;
 			}
 		});
 
@@ -119,17 +119,17 @@ public class Settings extends Activity
 	{//
 		super.onPause();
 
-		mConfig.save(this, null);
+		mBoardData.save(this, null);
 	}//
 
 	private void saveAndRun()
 	{//
-		mConfig.save(this, "");
+		mBoardData.save(this, "");
 
-		startActivity(new Intent(Settings.this, Game.class));
+		startActivity(new Intent(BoardActivity.this, GameActivity.class));
 	}//
 
-	private Config mConfig;
+	private BoardData mBoardData;
 }
 
 // vim600:fdm=marker:fmr={//,}//:fdn=2:nu:
