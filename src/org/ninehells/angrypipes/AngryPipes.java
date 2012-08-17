@@ -28,7 +28,7 @@ public class AngryPipes extends Activity
 			public void onClick(View v) {
 				if (hasGame()) {
 					//TODO confirmation
-					Config cfg = new Config(AngryPipes.this, null);
+					Config cfg = new Config(AngryPipes.this);
 					cfg.save(AngryPipes.this, "");
 				}
 				startActivity(new Intent(AngryPipes.this, Game.class));

@@ -29,7 +29,7 @@ public class Preferences extends Activity
 		setContentView(R.layout.preferences);
 
 		final Resources res = getResources();
-		mConfig = new Config(this, state);
+		mConfig = new Config(this);
 
 		CheckBox light_theme = (CheckBox) findViewById(R.id.light_theme_button);
 		light_theme.setChecked(mConfig.light_theme);
@@ -58,11 +58,11 @@ public class Preferences extends Activity
 	}//
 
 	@Override
-	public void onSaveInstanceState (Bundle state)
+	public void onPause()
 	{//
-		super.onSaveInstanceState(state);
+		super.onPause();
 
-		mConfig.save(state, null);
+		mConfig.save(this, null);
 	}//
 
 	private Config mConfig;

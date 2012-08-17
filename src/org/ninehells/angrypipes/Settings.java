@@ -29,7 +29,7 @@ public class Settings extends Activity
 		setContentView(R.layout.settings);
 
 		final Resources res = getResources();
-		mConfig = new Config(this, state);
+		mConfig = new Config(this);
 		final int minimal = R.id.minimal_radio;
 		final int small   = R.id.small_radio;
 		final int medium  = R.id.medium_radio;
@@ -98,21 +98,11 @@ public class Settings extends Activity
 			}
 		});
 
-		final CheckBox autolock = (CheckBox) findViewById(R.id.auto_lock_button);
-		autolock.setChecked(mConfig.auto_lock);
-		autolock.setEnabled(!mConfig.challenge_mode);
-		autolock.setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener() {
-			public void onCheckedChanged(CompoundButton box, boolean isChecked) {
-				mConfig.auto_lock = isChecked;
-			}
-		});
-
 		CheckBox challenge = (CheckBox) findViewById(R.id.challenge_button);
 		challenge.setChecked(mConfig.challenge_mode);
 		challenge.setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener() {
 			public void onCheckedChanged(CompoundButton box, boolean isChecked) {
 				mConfig.challenge_mode = isChecked;
-				autolock.setEnabled(!isChecked);
 			}
 		});
 
@@ -124,19 +114,19 @@ public class Settings extends Activity
 		});
 	}//
 
+	@Override
+	public void onPause()
+	{//
+		super.onPause();
+
+		mConfig.save(this, null);
+	}//
+
 	private void saveAndRun()
 	{//
 		mConfig.save(this, "");
 
 		startActivity(new Intent(Settings.this, Game.class));
-	}//
-
-	@Override
-	public void onSaveInstanceState (Bundle state)
-	{//
-		super.onSaveInstanceState(state);
-
-		mConfig.save(state, null);
 	}//
 
 	private Config mConfig;

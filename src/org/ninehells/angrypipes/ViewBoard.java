@@ -145,7 +145,7 @@ class ViewBoard extends SurfaceView
 		int h = mBoard.config().height;
 		int torus = mBoard.config().torus_mode ? 1 : 0;
 
-		Theme theme = mThemes[1];
+		Theme theme = mThemes[mBoard.config().light_theme ? 1 : 0];
 
 		Paint paint = new Paint();
 		canvas.drawRGB(
