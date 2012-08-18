@@ -5,8 +5,8 @@ $(TARGET): clean
 
 release: clean
 	ant release
-	jarsigner -verbose -keystore my-release-key.keystore bin/AngryPipes-unsigned.apk bart9h
-	zipalign -v 4 bin/AngryPipes-unsigned.apk AngryPipes.apk
+	jarsigner -verbose -keystore my-release-key.keystore bin/AngryPipes-release-unsigned.apk bart9h
+	zipalign -v 4 bin/AngryPipes-release-unsigned.apk AngryPipes.apk
 
 clean:
 	rm -rf bin/ gen/
