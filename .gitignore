@@ -1,4 +1,6 @@
 bin/
 gen/
-local.properties
+build.xml
+proguard*
+*.properties
 my-release-key.keystore
