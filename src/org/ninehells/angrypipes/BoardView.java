@@ -4,6 +4,7 @@ package org.ninehells.angrypipes;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
@@ -14,12 +15,13 @@ import android.view.SurfaceView;
 
 import org.ninehells.angrypipes.Board;
 import org.ninehells.angrypipes.Position;
+import org.ninehells.angrypipes.Theme;
 
 //}//
 
-class ViewBoard extends SurfaceView
+class BoardView extends SurfaceView
 {
-	ViewBoard (Context context, Board board)
+	BoardView (Context context, Board board)
 	{//
 		super(context);
 
@@ -30,6 +32,28 @@ class ViewBoard extends SurfaceView
 		mZoomLevel = res.getInteger(R.integer.zoom_level);
 
 		setWillNotDraw(false);
+
+		mThemes[0] = new Theme();
+		mThemes[0].background = 0xff000000;
+		mThemes[0].grid       = 0xff303030;
+		mThemes[0].solved     = 0xff00ff00;
+		mThemes[0].badFill    = 0xffff4040;
+		mThemes[0].filled     = 0xffffff40;
+		mThemes[0].pipe       = 0xffffffff;
+		mThemes[0].locked     = 0x20008000;
+		mThemes[0].torus      = 0x40808080;
+		mThemes[0].cursor     = 0xffff0000;
+
+		mThemes[1] = new Theme();
+		mThemes[1].background = 0xffffffff;
+		mThemes[1].grid       = 0x20000000;
+		mThemes[1].solved     = 0xff0099cc;
+		mThemes[1].badFill    = 0xffcc0000;
+		mThemes[1].filled     = 0xffff8800;
+		mThemes[1].pipe       = 0xff000000;
+		mThemes[1].locked     = 0x10000000;
+		mThemes[1].torus      = 0x40000000;
+		mThemes[1].cursor     = 0xffff0000;
 	}//
 
 	void zoomIn()
@@ -52,11 +76,11 @@ class ViewBoard extends SurfaceView
 	@Override
 	public void onMeasure (int w, int h)
 	{//
-		int torus = mBoard.config().torus_mode ? 1 : 0;
+		int torus = mBoard.data().torus_mode ? 1 : 0;
 		double scale = (mZoomLevels[mZoomLevel]*1.0)/100.0;
 		setMeasuredDimension(
-				(int)(scale*(2 + mCellSize*(2*torus + mBoard.config().width))),
-				(int)(scale*(2 + mCellSize*(2*torus + mBoard.config().height)))
+				(int)(scale*(2 + mCellSize*(2*torus + mBoard.data().width))),
+				(int)(scale*(2 + mCellSize*(2*torus + mBoard.data().height)))
 		);
 	}//
 
@@ -70,12 +94,12 @@ class ViewBoard extends SurfaceView
 	public boolean onTouchEvent (MotionEvent event)
 	{//
 		double scale = (mZoomLevels[mZoomLevel]*1.0)/100.0;
-		int torus = mBoard.config().torus_mode ? 1 : 0;
+		int torus = mBoard.data().torus_mode ? 1 : 0;
 		int i = -torus+ (int)(event.getX()/(scale*mCellSize));
 		int j = -torus+ (int)(event.getY()/(scale*mCellSize));
-		int W = mBoard.config().width;
-		int H = mBoard.config().height;
-		if (mBoard.config().torus_mode) {
+		int W = mBoard.data().width;
+		int H = mBoard.data().height;
+		if (mBoard.data().torus_mode) {
 			i = (i + W) % W;
 			j = (j + H) % H;
 		}
@@ -120,12 +144,18 @@ class ViewBoard extends SurfaceView
 		double scale = (mZoomLevels[mZoomLevel]*1.0)/100.0;
 		canvas.scale((float)scale, (float)scale);
 
-		int w = mBoard.config().width;
-		int h = mBoard.config().height;
-		int torus = mBoard.config().torus_mode ? 1 : 0;
+		int w = mBoard.data().width;
+		int h = mBoard.data().height;
+		int torus = mBoard.data().torus_mode ? 1 : 0;
+
+		Theme theme = mThemes[mBoard.settings().light_theme ? 1 : 0];
 
 		Paint paint = new Paint();
-		canvas.drawRGB(0, 0, 0);
+		canvas.drawRGB(
+				Color.red  (theme.background),
+				Color.green(theme.background),
+				Color.blue (theme.background)
+		);
 
 		Rect r = canvas.getClipBounds();
 		int i0 = -torus+ r.left/mCellSize;
@@ -136,7 +166,7 @@ class ViewBoard extends SurfaceView
 		w += 2*torus;
 		h += 2*torus;
 
-		paint.setARGB(0xff, 0x30, 0x30, 0x30);
+		paint.setColor(theme.grid);
 
 		// grid
 		for (int j = j0; j <= j1+1; ++j)
@@ -145,7 +175,7 @@ class ViewBoard extends SurfaceView
 			canvas.drawLine(i*mCellSize, 0, i*mCellSize, h*mCellSize-1, paint);
 
 		// border
-		if (!mBoard.config().torus_mode) {
+		if (!mBoard.data().torus_mode) {
 			canvas.drawLine(3, 3, w*mCellSize-3-1, 3, paint);
 			canvas.drawLine(3, 3, 3, h*mCellSize-3-1, paint);
 			canvas.drawLine(w*mCellSize-3-1, h*mCellSize-3-1, w*mCellSize-3-1, 3, paint);
@@ -161,15 +191,15 @@ class ViewBoard extends SurfaceView
 
 			/* set pipe color */
 			if (mBoard.isSolved())
-				paint.setARGB(0xff, 0x00, 0xff, 0x00);
+				paint.setColor(theme.solved);
 			else if (mBoard.filled(i,j)) {
 				if (mBoard.isBadFill())
-					paint.setARGB(0xff, 0xff, 0x40, 0x40);
+					paint.setColor(theme.badFill);
 				else
-					paint.setARGB(0xff, 0xff, 0xff, 0x40);
+					paint.setColor(theme.filled);
 			}
 			else
-				paint.setARGB(0xff, 0xff, 0xff, 0xff);
+				paint.setColor(theme.pipe);
 
 			/* draw pipe */
 			boolean simple = (scale < .5);
@@ -181,20 +211,20 @@ class ViewBoard extends SurfaceView
 			if (mBoard.down (i,j)) drawSegment(xc, yc, xc, y1, simple, canvas, paint);
 
 			if (mBoard.moved(i,j) || mBoard.locked(i,j)) {
-				paint.setARGB(0x20, 0x00, 0x80, 0x00);
+				paint.setColor(theme.locked);
 				canvas.drawRect(x0, y0, x1, y1, paint);
 			}
 
 			/* torus border */
-			if (i<0 || j<0 || i>=mBoard.config().width || j>=mBoard.config().height) {
-				paint.setARGB(0x40, 0x80, 0x80, 0x80);
+			if (i<0 || j<0 || i>=mBoard.data().width || j>=mBoard.data().height) {
+				paint.setColor(theme.torus);
 				canvas.drawRect(x0, y0, x1, y1, paint);
 			}
 
 			/* cursor */
 			if (mBoard.cursor().equals(i, j)) {
 				paint.setStyle(Paint.Style.STROKE);
-				paint.setARGB(0xff, 0xff, 0x00, 0x00);
+				paint.setColor(theme.cursor);
 				canvas.drawRect(x0+1, y0+1, x1-1, y1-1, paint);
 				paint.setStyle(Paint.Style.FILL);
 			}
@@ -252,6 +282,7 @@ class ViewBoard extends SurfaceView
 	private final int mBorder = 1;
 	private final int mCellSize = 2*mBorder+2*mSegmentSize;
 
+	private Theme[] mThemes = new Theme[2];
 	private boolean mComputeScroll = false;
 	private Handler mTimerHandler = new Handler();
 	private Runnable mTimerTask = new Runnable()

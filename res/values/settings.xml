@@ -19,8 +19,10 @@
 	<bool name="torus_mode">false</bool>
 	<bool name="no_cross_mode">false</bool>
 	<bool name="auto_lock">false</bool>
-	<bool name="challenge_mode">true</bool>
+	<bool name="challenge_mode">false</bool>
 	<bool name="haptic_feedback">true</bool>
+	<bool name="light_theme">false</bool>
+	<bool name="auto_pan">false</bool>
 
 	<integer-array name="zoom_levels">
 		<item>8</item>
@@ -35,5 +37,6 @@
 
 	<integer name="save_checkpoint">1</integer>
 	<integer name="restore_checkpoint">2</integer>
+	<integer name="open_preferences">3</integer>
 
 </resources>

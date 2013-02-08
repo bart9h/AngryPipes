@@ -54,11 +54,22 @@
 		auto-lock
 	</string>
 
+	<string name="auto_pan">
+		auto-pan
+	</string>
+
+	<string name="light_theme">
+		light theme
+	</string>
+
 	<string name="save_checkpoint">
 		save checkpoint
 	</string>
 	<string name="restore_checkpoint">
 		restore checkpoint
+	</string>
+	<string name="open_preferences">
+		preferences
 	</string>
 
 </resources>

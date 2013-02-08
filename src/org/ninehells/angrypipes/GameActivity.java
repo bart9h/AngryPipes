@@ -5,6 +5,7 @@ package org.ninehells.angrypipes;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Base64;
 import android.view.Menu;
@@ -17,11 +18,12 @@ import android.widget.ZoomControls;
 
 import us.gorges.viewaclue.TwoDScrollView;
 import org.ninehells.angrypipes.Board;
-import org.ninehells.angrypipes.ViewBoard;
+import org.ninehells.angrypipes.BoardView;
+import org.ninehells.angrypipes.SettingsActivity;
 
 //}//
 
-public class Game extends Activity
+public class GameActivity extends Activity
 {
 	@Override
 	public void onCreate (Bundle state)
@@ -30,14 +32,16 @@ public class Game extends Activity
 
 		SharedPreferences prefs = getSharedPreferences(getString(R.string.app_name), MODE_PRIVATE);
 		String boardString = prefs.getString("board", "");
-		mConfig = new Config(this, state);
+
+		mGameData = new GameData(this);
 		if (boardString == "") {
-			mConfig.seconds_elapsed = -1;
-			mConfig.mistake_count = 0;
+			mGameData.seconds_elapsed = -1;
+			mGameData.mistake_count = 0;
 		}
 
-		mBoard = new Board(mConfig, Base64.decode(boardString, 0));
-		mBoardView = new ViewBoard(this, mBoard);
+		mBoardData = new BoardData(this);
+		mBoard = new Board(mBoardData, Base64.decode(boardString, 0));
+		mBoardView = new BoardView(this, mBoard);
 
 		TwoDScrollView scrollView = new TwoDScrollView(this);
 		scrollView.addView(mBoardView);
@@ -84,8 +88,21 @@ public class Game extends Activity
 	{//
 		super.onPause();
 
-		mBoard.config().save(this, mBoard.gameOver() ? "" : Base64.encodeToString(mBoard.serialize(), 0));
+		mBoard.data().save(this, mBoard.gameOver() ? "" : Base64.encodeToString(mBoard.serialize(), 0));
+		mGameData.save(this);
 		mTimerHandler.removeCallbacks(mTimerTask);
+	}//
+
+	@Override
+	public void onResume()
+	{//
+		super.onResume();
+
+		mGameData = new GameData(this);
+		mBoard.setGameData(mGameData);
+		mBoard.setSettingsData(new SettingsData(this));
+
+		mTimerHandler.postDelayed(mTimerTask, 1000);
 	}//
 
 	@Override
@@ -94,6 +111,7 @@ public class Game extends Activity
 		menu.add(Menu.NONE, R.integer.save_checkpoint, Menu.NONE, R.string.save_checkpoint);
 		mRestoreMenuItem = menu.add(Menu.NONE, R.integer.restore_checkpoint, Menu.NONE, R.string.restore_checkpoint);
 		mRestoreMenuItem.setEnabled(mCheckpointBoard != null);
+		menu.add(Menu.NONE, R.integer.open_preferences, Menu.NONE, R.string.open_preferences);
 		return true;
 	}//
 
@@ -109,27 +127,31 @@ public class Game extends Activity
 				mBoard.serialize(mCheckpointBoard);
 				mBoardView.invalidate();
 				return true;
+			case R.integer.open_preferences:
+				startActivity(new Intent(GameActivity.this, SettingsActivity.class));
+				return true;
 			default:
 				return super.onOptionsItemSelected(item);
 		}
 	}//
 
 	private Board mBoard;
-	private ViewBoard mBoardView;
+	private BoardView mBoardView;
 	private TextView mTimeLabel;
 	private byte[] mCheckpointBoard;
 	private MenuItem mRestoreMenuItem;
 
-	private Config mConfig;
+	private GameData mGameData;
+	private BoardData mBoardData;
 	private Handler mTimerHandler = new Handler();
 	private Runnable mTimerTask = new Runnable()
 	{//
 		public void run() {
 
 			if (!mBoard.gameOver())
-				++mConfig.seconds_elapsed;
+				++mGameData.seconds_elapsed;
 
-			int seconds = (int)(mConfig.seconds_elapsed);
+			int seconds = (int)(mGameData.seconds_elapsed);
 			int minutes = (int)(seconds/60);  seconds -= 60*minutes;
 			int hours   = (int)(minutes/60);  minutes -= 60*hours;
 			int days    = (int)(hours  /24);  hours   -= 24*days;
@@ -138,15 +160,15 @@ public class Game extends Activity
 			if (days  > 0) s += String.format("%dd ", days);
 			if (hours > 0) s += String.format("%dh ", hours);
 			s += String.format("%d:%02d", minutes, seconds);
-			if (!mConfig.challenge_mode && mConfig.mistake_count>0)
+			if (!mBoardData.challenge_mode && mGameData.mistake_count>0)
 				s += String.format(", %d %s",
-						mConfig.mistake_count,
-						mConfig.mistake_count>1 ? "misses" : "miss");
+						mGameData.mistake_count,
+						mGameData.mistake_count>1 ? "misses" : "miss");
 			mTimeLabel.setText(s);
 
 			if (mBoard.gameOver()) {
-				mConfig.seconds_elapsed = -1;
-				mConfig.mistake_count = 0;
+				mGameData.seconds_elapsed = -1;
+				mGameData.mistake_count = 0;
 			}
 			else
 				mTimerHandler.postDelayed(this, 1000);
