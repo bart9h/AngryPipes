@@ -58,6 +58,10 @@
 		auto-pan
 	</string>
 
+	<string name="haptic_feedback">
+		haptic feedback
+	</string>
+
 	<string name="light_theme">
 		light theme
 	</string>

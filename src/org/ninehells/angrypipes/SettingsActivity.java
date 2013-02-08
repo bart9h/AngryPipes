@@ -54,6 +54,15 @@ public class SettingsActivity extends Activity
 				mSettingsData.auto_lock = isChecked;
 			}
 		});
+
+		CheckBox haptic_feedback = (CheckBox) findViewById(R.id.haptic_feedback_button);
+		haptic_feedback.setChecked(mSettingsData.haptic_feedback);
+		haptic_feedback.setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener() {
+			public void onCheckedChanged(CompoundButton box, boolean isChecked) {
+				mSettingsData.haptic_feedback = isChecked;
+			}
+		});
+
 	}//
 
 	@Override
