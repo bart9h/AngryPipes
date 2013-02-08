@@ -236,7 +236,7 @@ class BoardView extends SurfaceView
 	private void handlePendingFeedbacks()
 	{//
 		if (mBoard.popFeedback()) {
-			if (mBoard.config().haptic_feedback)
+			if (mBoard.settings().haptic_feedback)
 				performHapticFeedback(0, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
 		}
 	}//
